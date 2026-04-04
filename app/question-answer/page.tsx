@@ -20,7 +20,7 @@ const previousConsultations = [
 ]
 
 const aiResponses: Record<string, string> = {
-  default:   "Hi! I'm the BuildingHelp AI. I can answer questions about architecture, construction, permits, interior design, and more. What would you like to know?",
+  default:   "Hi! I'm the Planr AI. I can answer questions about architecture, construction, permits, interior design, and more. What would you like to know?",
   fee:       "Architect fees typically range from 5–20% of total construction cost:\n\n• **Percentage of construction cost** — most common for residential\n• **Fixed fee** — good for well-defined scopes\n• **Hourly rate** — $150–$400/hr for consultations\n\nAlways ask for a detailed scope of work to avoid surprise costs.",
   permit:    "Building permits are required for most structural work. The process:\n\n1. Submit drawings to your local building department\n2. Plan review (2–8 weeks)\n3. Permit issuance and fee payment\n4. Inspections during construction\n\nYour architect can manage this entire process, often included in their fee.",
   interior:  "For interior design, expect discussions on:\n\n• Space planning and layout\n• Material and finish selections\n• Lighting design\n• Furniture specifications\n\nInitial consultations are often free.",
@@ -276,7 +276,7 @@ export default function QuestionAnswerPage() {
                     <Sparkles className="w-5 h-5 text-indigo-600" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-bold text-gray-900">BuildingHelp AI</p>
+                    <p className="text-sm font-bold text-gray-900">Planr AI</p>
                     <p className="text-xs text-indigo-500 font-medium">Available 24/7 · Instant answers</p>
                   </div>
                   <span className="text-xs bg-indigo-100 text-indigo-700 font-semibold px-2.5 py-1 rounded-full">Beta</span>

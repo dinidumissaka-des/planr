@@ -25,7 +25,7 @@ export default function SignupPage() {
           <div className="w-8 h-8 bg-yellow-400 rounded-md flex items-center justify-center">
             <Home className="w-4 h-4 text-black" />
           </div>
-          <span className="font-bold text-gray-900 text-lg tracking-tight">buildinghelp.</span>
+          <span className="font-bold text-gray-900 text-lg tracking-tight">planr.</span>
         </div>
 
         {/* Dashed oval SVG */}

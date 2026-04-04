@@ -66,7 +66,7 @@ export default function LoginPage() {
             <Home className="w-4 h-4 text-black" />
           </div>
           <span className="font-bold text-white text-lg tracking-tight">
-            buildinghelp.
+            planr.
           </span>
         </div>
 

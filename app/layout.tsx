@@ -8,7 +8,7 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "BuildingHelp",
+  title: "Planr",
   description: "Connect with architects and building professionals",
 };
 

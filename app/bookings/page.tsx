@@ -443,9 +443,9 @@ export default function BookingsPage() {
                 <label className="flex items-center gap-2 cursor-pointer pt-1">
                   <Checkbox checked={agreedConsult} onCheckedChange={v => setAgreedConsult(!!v)} />
                   <span className="text-sm text-gray-600">
-                    I agree to Buildinghelp{" "}
+                    I agree to Planr{" "}
                     <a href="#" className="text-orange-500 hover:underline font-medium">Terms of Use</a>
-                    {" "}and to receive electronic communication from Buildinghelp
+                    {" "}and to receive electronic communication from Planr
                   </span>
                 </label>
               </div>
@@ -504,9 +504,9 @@ export default function BookingsPage() {
                   <label className="flex items-center gap-2 cursor-pointer">
                     <Checkbox checked={agreedPayment} onCheckedChange={v => setAgreedPayment(!!v)} />
                     <span className="text-sm text-gray-600">
-                      I agree to Buildinghelp{" "}
+                      I agree to Planr{" "}
                       <a href="#" className="text-orange-500 hover:underline font-medium">Terms of Use</a>
-                      {" "}and to receive electronic communication from Buildinghelp
+                      {" "}and to receive electronic communication from Planr
                     </span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">

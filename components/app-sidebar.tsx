@@ -19,7 +19,7 @@ export function AppSidebar() {
         <div className="w-7 h-7 bg-yellow-400 rounded flex items-center justify-center">
           <Home className="w-3.5 h-3.5 text-black" />
         </div>
-        <span className="font-bold text-gray-900 text-base tracking-tight">buildinghelp.</span>
+        <span className="font-bold text-gray-900 text-base tracking-tight">planr.</span>
       </Link>
       <nav className="flex flex-col gap-1 flex-1">
         {navItems.map(({ icon: Icon, label, href }) => {
