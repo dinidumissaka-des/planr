@@ -1,6 +1,6 @@
 "use client"
 
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, CheckCircle2, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -9,12 +9,50 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 
+function ConfirmModal({ tab, onConfirm, onCancel }: { tab: "customer" | "architect"; onConfirm: () => void; onCancel: () => void }) {
+  return (
+    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-end md:items-center justify-center z-50 px-4">
+      <div className="bg-white dark:bg-[#0D1B2E] w-full md:max-w-sm rounded-t-3xl md:rounded-2xl p-7 shadow-2xl">
+
+        {/* Icon */}
+        <div className="flex justify-center mb-5">
+          <div className="w-16 h-16 rounded-2xl bg-secondary/15 dark:bg-secondary/10 flex items-center justify-center">
+            <CheckCircle2 className="w-8 h-8 text-secondary" />
+          </div>
+        </div>
+
+        {/* Text */}
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white text-center mb-2">
+          Create your account?
+        </h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 text-center leading-relaxed mb-6">
+          You're signing up as a <span className="font-semibold text-gray-800 dark:text-gray-200 capitalize">{tab}</span>. You can always change your role later from your profile settings.
+        </p>
+
+        {/* Actions */}
+        <button
+          onClick={onConfirm}
+          className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold rounded-xl mb-3 transition-colors"
+        >
+          Yes, create account
+        </button>
+        <button
+          onClick={onCancel}
+          className="w-full h-12 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-semibold rounded-xl transition-colors"
+        >
+          Go back
+        </button>
+      </div>
+    </div>
+  )
+}
 
 export default function SignupPage() {
   const router = useRouter()
   const [tab, setTab] = useState<"customer" | "architect">("customer")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [showModal, setShowModal] = useState(false)
 
   return (
     <div className="flex h-screen w-screen overflow-hidden">
@@ -29,14 +67,10 @@ export default function SignupPage() {
           backgroundPosition: "center",
         }}
       >
-        {/* Logo */}
         <div className="relative z-10">
           <img src="/planr-logo-light.svg" alt="Planr" className="h-7" />
         </div>
-
         <div className="flex-1" />
-
-        {/* Bottom text */}
         <div className="relative z-10">
           <h2 className="text-4xl font-bold text-white leading-snug mb-3">
             You can dream, create, design and build it
@@ -50,7 +84,6 @@ export default function SignupPage() {
       {/* ── Right Panel ── */}
       <div className="flex-1 bg-white dark:bg-[#07111E] flex flex-col px-6 md:px-14 py-8 md:py-10 overflow-y-auto relative">
 
-        {/* Form */}
         <div className="relative z-10 flex-1 flex flex-col justify-center max-w-sm w-full mx-auto py-8">
           <div className="mb-7">
             <Link href="/login" className="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors block mb-1">Go back</Link>
@@ -119,7 +152,7 @@ export default function SignupPage() {
 
           <Button
             className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold rounded-xl mb-4"
-            onClick={() => router.push("/ask")}
+            onClick={() => setShowModal(true)}
           >
             Create Account
           </Button>
@@ -141,6 +174,15 @@ export default function SignupPage() {
           </p>
         </div>
       </div>
+
+      {/* ── Confirmation Modal ── */}
+      {showModal && (
+        <ConfirmModal
+          tab={tab}
+          onConfirm={() => router.push("/ask")}
+          onCancel={() => setShowModal(false)}
+        />
+      )}
     </div>
   )
 }
