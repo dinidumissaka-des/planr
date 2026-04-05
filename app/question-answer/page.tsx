@@ -15,8 +15,8 @@ const initialConsultMessages: Message[] = [
 ]
 
 const previousConsultations = [
-  { name: "Alex Rivera",    date: "2022/01/18", photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&auto=format&fit=crop&q=80" },
-  { name: "James Thornton", date: "2022/01/18", photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" },
+  { name: "Alex Rivera",    initials: "AR", date: "2022/01/18" },
+  { name: "James Thornton", initials: "JT", date: "2022/01/18", photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" },
 ]
 
 const aiResponses: Record<string, string> = {
@@ -36,6 +36,17 @@ function getAIResponse(input: string): string {
   if (l.includes("time") || l.includes("long") || l.includes("timeline")) return aiResponses.timeline
   if (l.includes("landscape") || l.includes("garden"))                 return aiResponses.landscape
   return "Great question! For specific professional advice tailored to your project, I recommend booking a consultation with one of our certified architects.\n\nIs there anything else I can help clarify?"
+}
+
+// ─── Avatar ───────────────────────────────────────────────
+
+function Avatar({ photo, initials, size = "w-8 h-8", textSize = "text-[10px]" }: { photo?: string; initials: string; size?: string; textSize?: string }) {
+  if (photo) return <img src={photo} alt={initials} className={`${size} rounded-full object-cover flex-shrink-0`} />
+  return (
+    <div className={`${size} rounded-full bg-secondary/25 dark:bg-secondary/20 flex items-center justify-center flex-shrink-0`}>
+      <span className={`${textSize} font-bold text-primary dark:text-secondary`}>{initials}</span>
+    </div>
+  )
 }
 
 // ─── Types ────────────────────────────────────────────────
@@ -106,7 +117,7 @@ function RightSidebar({ onAI, onView }: { onAI: () => void; onView: () => void }
         </div>
         {previousConsultations.map((c, i) => (
           <div key={i} className="grid grid-cols-[auto_1fr_auto_auto] items-center py-3 gap-2.5 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/60 dark:hover:bg-white/4 rounded-lg transition-colors px-1 -mx-1">
-            <img src={c.photo} alt={c.name} className="w-8 h-8 rounded-full object-cover" />
+            <Avatar photo={c.photo} initials={c.initials} />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">{c.name}</span>
             <span className="text-xs text-gray-400 dark:text-gray-600 whitespace-nowrap">{c.date}</span>
             <button onClick={onView} className="text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">View</button>

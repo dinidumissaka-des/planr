@@ -12,44 +12,50 @@ import { AppHeader } from "@/components/app-header"
 // ─── Data ─────────────────────────────────────────────────
 
 const ongoingConsultations = [
-  { name: "Sarah Mitchell",  initials: "SM", type: "Architecture",  date: "Oct 04, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&auto=format&fit=crop&q=80" },
-  { name: "Marcus Webb",     initials: "MW", type: "Urban Design",  date: "Oct 06, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80" },
-  { name: "Lauren Chen",     initials: "LC", type: "Construction",  date: "Oct 13, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=80" },
+  { name: "Sarah Mitchell", initials: "SM", type: "Architecture", date: "Oct 04, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&auto=format&fit=crop&q=80" },
+  { name: "Marcus Webb",    initials: "MW", type: "Urban Design", date: "Oct 06, 2022", color: "bg-secondary/20 text-primary dark:text-secondary" },
+  { name: "Lauren Chen",    initials: "LC", type: "Construction", date: "Oct 13, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=80&auto=format&fit=crop&q=80" },
 ]
 
 const upcomingConsultations = [
-  { name: "Priya Sharma",    initials: "PS", type: "Interior Design",       date: "Oct 14, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80" },
-  { name: "Tom Hargreaves",  initials: "TH", type: "Residential Architect", date: "Oct 15, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&auto=format&fit=crop&q=80" },
-  { name: "Nina Okafor",     initials: "NO", type: "Urban Design",          date: "Oct 16, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=80&auto=format&fit=crop&q=80" },
+  { name: "Priya Sharma",   initials: "PS", type: "Interior Design",       date: "Oct 14, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80" },
+  { name: "Tom Hargreaves", initials: "TH", type: "Residential Architect", date: "Oct 15, 2022", color: "bg-secondary/20 text-primary dark:text-secondary" },
+  { name: "Nina Okafor",    initials: "NO", type: "Urban Design",          date: "Oct 16, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80" },
 ]
 
 const recentQuestions = [
   {
     question: "What's your fee structure and what can I expect in costs?",
-    answer: "Architects use different fee structures. On your end, be open about your budget — cost limitations are extremely critical since quality work can be very expensive.",
     consultant: "James Thornton",
+    initials: "JT",
     role: "Architect",
     time: "14 minutes ago",
-    rating: 4.9,
     photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80",
   },
   {
     question: "How long does a typical residential project take?",
-    answer: "A full residential build typically takes 12–24 months from design to completion. Permitting alone can take 2–3 months depending on your jurisdiction.",
     consultant: "Alex Rivera",
+    initials: "AR",
     role: "Residential Architect",
     time: "2 days ago",
-    rating: 4.7,
-    photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&auto=format&fit=crop&q=80",
   },
 ]
 
 // ─── Sub-components ───────────────────────────────────────
 
+function Avatar({ photo, initials, size = "w-8 h-8", textSize = "text-[10px]" }: { photo?: string; initials: string; size?: string; textSize?: string }) {
+  if (photo) return <img src={photo} alt={initials} className={`${size} rounded-full object-cover flex-shrink-0`} />
+  return (
+    <div className={`${size} rounded-full bg-secondary/25 dark:bg-secondary/20 flex items-center justify-center flex-shrink-0`}>
+      <span className={`${textSize} font-bold text-primary dark:text-secondary`}>{initials}</span>
+    </div>
+  )
+}
+
 function ConsultationRow({ row }: { row: typeof ongoingConsultations[0] }) {
   return (
     <div className="flex items-center gap-3 py-3 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/60 dark:hover:bg-white/4 rounded-lg px-2 -mx-2 transition-colors">
-      <img src={row.photo} alt={row.name} className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+      <Avatar photo={row.photo} initials={row.initials} />
       <span className="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{row.name}</span>
       <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${row.color} hidden sm:inline-flex`}>{row.type}</span>
       <span className="text-xs text-gray-400 dark:text-gray-500 w-24 text-right hidden md:block">{row.date}</span>
@@ -140,7 +146,7 @@ export default function DashboardPage() {
                   {recentQuestions.map((q, i) => (
                     <Link key={i} href="/question-answer" className="group border border-gray-200 dark:border-white/12 hover:border-secondary/40 rounded-xl p-4 transition-all block" style={{ backgroundImage: "url('/grain-bg-lg.svg')", backgroundSize: "cover", backgroundPosition: "center" }}>
                       <div className="flex items-start gap-3">
-                        <img src={q.photo} alt={q.consultant} className="w-8 h-8 rounded-full object-cover flex-shrink-0 mt-0.5" />
+                        <div className="mt-0.5"><Avatar photo={q.photo} initials={q.initials} /></div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">{q.consultant}
                             <span className="font-normal text-gray-400 dark:text-gray-500"> · {q.role}</span>
@@ -187,7 +193,7 @@ export default function DashboardPage() {
               <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Next consultation</p>
                 <div className="flex items-center gap-3 mb-3">
-                  <img src={upcomingConsultations[0].photo} alt={upcomingConsultations[0].name} className="w-10 h-10 rounded-full object-cover" />
+                  <Avatar photo={upcomingConsultations[0].photo} initials={upcomingConsultations[0].initials} size="w-10 h-10" textSize="text-xs" />
                   <div>
                     <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{upcomingConsultations[0].name}</p>
                     <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${upcomingConsultations[0].color}`}>{upcomingConsultations[0].type}</span>
@@ -212,7 +218,7 @@ export default function DashboardPage() {
                 </div>
                 {upcomingConsultations.map((row, i) => (
                   <div key={i} className="flex items-center gap-2.5 py-2.5 border-b border-gray-50 dark:border-white/5 last:border-0">
-                    <img src={row.photo} alt={row.name} className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                    <Avatar photo={row.photo} initials={row.initials} />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{row.name}</p>
                       <p className="text-[10px] text-gray-400 dark:text-gray-600">{row.date}</p>
