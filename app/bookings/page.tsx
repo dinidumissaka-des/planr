@@ -17,7 +17,7 @@ const categories = ["Architecture", "Interior Design", "Construction", "Urban De
 
 const architects = [
   {
-    id: 1, name: "Richard Osei", role: "Architect", rating: 4.9, reviews: 28,
+    id: 1, name: "Richard Osei", role: "Architect", rating: 4.9, reviewCount: 28,
     photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&auto=format&fit=crop&q=80",
     company: "Osei Design Group",
     location: "Accra, Ghana",
@@ -36,7 +36,7 @@ const architects = [
     ],
   },
   {
-    id: 2, name: "Sophie Laurent", role: "Interior Designer", rating: 4.6, reviews: 19,
+    id: 2, name: "Sophie Laurent", role: "Interior Designer", rating: 4.6, reviewCount: 19,
     photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80",
     company: "Maison Laurent Studio",
     location: "Paris, France",
@@ -55,7 +55,7 @@ const architects = [
     ],
   },
   {
-    id: 3, name: "Amara Diallo", role: "Interior Designer", rating: 4.3, reviews: 14,
+    id: 3, name: "Amara Diallo", role: "Interior Designer", rating: 4.3, reviewCount: 14,
     photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80",
     company: "AD Interiors",
     location: "Nairobi, Kenya",
@@ -74,7 +74,7 @@ const architects = [
     ],
   },
   {
-    id: 4, name: "Oliver Marsh", role: "Landscape Designer", rating: 4.8, reviews: 31,
+    id: 4, name: "Oliver Marsh", role: "Landscape Designer", rating: 4.8, reviewCount: 31,
     photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80",
     company: "Marsh Landscape Co.",
     location: "Melbourne, Australia",
@@ -127,7 +127,7 @@ function ProfileDrawer({ architect, onClose, onSelect }: { architect: Architect;
                   ))}
                 </div>
                 <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{architect.rating}</span>
-                <span className="text-xs text-gray-400 dark:text-gray-500">({architect.reviews} reviews)</span>
+                <span className="text-xs text-gray-400 dark:text-gray-500">({architect.reviewCount} reviews)</span>
               </div>
             </div>
           </div>
@@ -297,7 +297,7 @@ function ArchitectBar({ architect, dateLabel, timeLabel, leftLabel, rightLabel }
           <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{architect.name}</p>
           <p className="text-sm font-bold text-gray-900 dark:text-white">{architect.role}</p>
           <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
-            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />{architect.rating} ({architect.reviews} Reviews)
+            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />{architect.rating} ({architect.reviewCount} Reviews)
           </p>
         </div>
         <button onClick={() => setProfileDrawer(architects.find(a => a.id === architect.id) ?? null)} className="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">View Profile</button>
@@ -523,7 +523,7 @@ export default function BookingsPage() {
                       <p className="text-sm text-[#07111E]/60 truncate">{a.name}</p>
                       <p className="text-sm font-bold text-[#07111E]">{a.role}</p>
                       <div className="flex items-center gap-1 text-xs text-[#07111E]/50 mb-4">
-                        <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />{a.rating} ({a.reviews} Reviews)
+                        <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />{a.rating} ({a.reviewCount} Reviews)
                       </div>
                       <div className="grid grid-cols-2 gap-1.5 mb-3">
                         <div>
@@ -578,7 +578,7 @@ export default function BookingsPage() {
                     <p className="text-sm text-[#07111E]/60 truncate">{a.name}</p>
                     <p className="text-sm font-bold text-[#07111E]">{a.role}</p>
                     <div className="flex items-center gap-1 text-xs text-[#07111E]/50 mb-4">
-                      <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />{a.rating} ({a.reviews} Reviews)
+                      <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />{a.rating} ({a.reviewCount} Reviews)
                     </div>
                     <div className="grid grid-cols-2 gap-1.5 mb-3">
                       <div>
