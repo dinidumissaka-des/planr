@@ -14,12 +14,12 @@ const navItems = [
 export function AppSidebar() {
   const pathname = usePathname()
   return (
-    <aside className="w-[220px] flex-shrink-0 bg-white border-r border-gray-100 flex flex-col py-6 px-4">
+    <aside className="w-[220px] flex-shrink-0 bg-white dark:bg-[#0A1525] border-r border-gray-100 dark:border-white/8 flex flex-col py-6 px-4">
       <Link href="/" className="flex items-center gap-2 px-2 mb-8">
         <div className="w-7 h-7 bg-yellow-400 rounded flex items-center justify-center">
           <Home className="w-3.5 h-3.5 text-black" />
         </div>
-        <span className="font-bold text-gray-900 text-base tracking-tight">planr.</span>
+        <span className="font-bold text-gray-900 dark:text-white text-base tracking-tight">planr.</span>
       </Link>
       <nav className="flex flex-col gap-1 flex-1">
         {navItems.map(({ icon: Icon, label, href }) => {
@@ -29,7 +29,9 @@ export function AppSidebar() {
               key={label}
               href={href}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                active ? "bg-gray-900 text-white" : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                active
+                  ? "bg-secondary/40 text-primary dark:text-white dark:bg-secondary/20"
+                  : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5"
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -40,7 +42,7 @@ export function AppSidebar() {
       </nav>
       <Link
         href="/login"
-        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-colors"
+        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
       >
         <LogOut className="w-4 h-4" />
         Sign out

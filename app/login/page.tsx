@@ -129,11 +129,11 @@ export default function LoginPage() {
       </div>
 
       {/* ── Right Panel ── */}
-      <div className="flex-1 bg-[#f5f5f5] flex flex-col px-14 py-10">
+      <div className="flex-1 bg-[#f5f5f5] dark:bg-[#07111E] flex flex-col px-14 py-10">
         {/* Go back */}
         <Link
           href="/"
-          className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors w-fit"
+          className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors w-fit"
         >
           <ArrowLeft className="w-4 h-4" />
           Go back
@@ -141,8 +141,8 @@ export default function LoginPage() {
 
         {/* Form */}
         <div className="flex-1 flex flex-col justify-center max-w-md w-full mx-auto">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">Hello again!</h1>
-          <p className="text-sm text-gray-500 leading-relaxed mb-10">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">Hello again!</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-10">
             Welcome back! Please enter your details. Manage all your consultations
             efficiently. Lets get all set up so you can verify your personal account
             and begin setting up your profile.
@@ -152,34 +152,34 @@ export default function LoginPage() {
             <Input
               type="email"
               placeholder="Email address"
-              className="h-12 bg-white border-gray-200 text-sm"
+              className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm"
             />
             <Input
               type="password"
               placeholder="Password"
-              className="h-12 bg-white border-gray-200 text-sm"
+              className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm"
             />
           </div>
 
           <div className="flex items-center justify-between mb-10">
             <div className="flex items-center gap-2">
               <Checkbox id="remember" />
-              <Label htmlFor="remember" className="text-sm text-gray-600 cursor-pointer">
+              <Label htmlFor="remember" className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
                 Remember me
               </Label>
             </div>
-            <Link href="#" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+            <Link href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
               Forgot password?
             </Link>
           </div>
 
-          <Button className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white text-base rounded-xl mb-4" onClick={() => router.push("/dashboard")}>
+          <Button className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-base rounded-xl mb-4" onClick={() => router.push("/dashboard")}>
             Sign In
           </Button>
 
-          <p className="text-sm text-center text-gray-500">
+          <p className="text-sm text-center text-gray-500 dark:text-gray-400">
             Not a member yet{" "}
-            <Link href="/signup" className="font-semibold text-gray-900 hover:underline">Sign Up</Link>
+            <Link href="/signup" className="font-semibold text-gray-900 dark:text-white hover:underline">Sign Up</Link>
           </p>
         </div>
       </div>

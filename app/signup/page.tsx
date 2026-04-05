@@ -90,11 +90,11 @@ export default function SignupPage() {
       </div>
 
       {/* ── Right Panel ── */}
-      <div className="flex-1 bg-[#f5f5f5] flex flex-col px-14 py-10 overflow-y-auto">
+      <div className="flex-1 bg-[#f5f5f5] dark:bg-[#07111E] flex flex-col px-14 py-10 overflow-y-auto">
         {/* Go back */}
         <Link
           href="/login"
-          className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors w-fit"
+          className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors w-fit"
         >
           <ArrowLeft className="w-4 h-4" />
           Go back
@@ -102,22 +102,22 @@ export default function SignupPage() {
 
         {/* Form */}
         <div className="flex-1 flex flex-col justify-center max-w-md w-full mx-auto py-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-3 leading-tight">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">
             You are few clicks away from<br />creating your account
           </h1>
-          <p className="text-sm text-gray-500 leading-relaxed mb-7">
+          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-7">
             Manage all your consultations efficiently. Lets get all set up so you
             can verify your personal account and begin setting up your profile.
           </p>
 
           {/* Tabs */}
-          <div className="flex mb-6 border-b border-gray-200">
+          <div className="flex mb-6 border-b border-gray-200 dark:border-white/10">
             <button
               onClick={() => setTab("customer")}
               className={`flex-1 pb-3 text-sm font-semibold transition-colors ${
                 tab === "customer"
-                  ? "text-gray-900 border-b-2 border-gray-900 -mb-px"
-                  : "text-gray-400"
+                  ? "text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white -mb-px"
+                  : "text-gray-400 dark:text-gray-600"
               }`}
             >
               Customer
@@ -126,8 +126,8 @@ export default function SignupPage() {
               onClick={() => setTab("architect")}
               className={`flex-1 pb-3 text-sm font-semibold transition-colors ${
                 tab === "architect"
-                  ? "text-gray-900 border-b-2 border-gray-900 -mb-px"
-                  : "text-gray-400"
+                  ? "text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white -mb-px"
+                  : "text-gray-400 dark:text-gray-600"
               }`}
             >
               Architect
@@ -137,21 +137,21 @@ export default function SignupPage() {
           {/* Form fields */}
           <div className="space-y-3 mb-5">
             <div className="flex gap-3">
-              <Input placeholder="First name" className="h-12 bg-white border-gray-200 text-sm" />
-              <Input placeholder="Last Name" className="h-12 bg-white border-gray-200 text-sm" />
+              <Input placeholder="First name" className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm" />
+              <Input placeholder="Last Name" className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm" />
             </div>
-            <Input type="email" placeholder="Email address" className="h-12 bg-white border-gray-200 text-sm" />
-            <Input type="tel" placeholder="Mobile Number" className="h-12 bg-white border-gray-200 text-sm" />
-            <Input type="password" placeholder="Password" className="h-12 bg-white border-gray-200 text-sm" />
-            <Input type="password" placeholder="Re-type password" className="h-12 bg-white border-gray-200 text-sm" />
+            <Input type="email" placeholder="Email address" className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm" />
+            <Input type="tel" placeholder="Mobile Number" className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm" />
+            <Input type="password" placeholder="Password" className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm" />
+            <Input type="password" placeholder="Re-type password" className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm" />
           </div>
 
           {/* Privacy checkbox */}
           <div className="flex items-center gap-2 mb-8">
             <Checkbox id="privacy" />
-            <Label htmlFor="privacy" className="text-sm text-gray-600 cursor-pointer">
+            <Label htmlFor="privacy" className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
               I agree all{" "}
-              <Link href="#" className="font-semibold text-gray-900 hover:underline">
+              <Link href="#" className="font-semibold text-gray-900 dark:text-white hover:underline">
                 Privacy Policy
               </Link>{" "}
               and Fees
@@ -159,15 +159,15 @@ export default function SignupPage() {
           </div>
 
           <Button
-            className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white text-base rounded-xl mb-4"
+            className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-base rounded-xl mb-4"
             onClick={() => router.push("/ask")}
           >
             Sign Up
           </Button>
 
-          <p className="text-sm text-center text-gray-500">
+          <p className="text-sm text-center text-gray-500 dark:text-gray-400">
             Already have a account{" "}
-            <Link href="/login" className="font-semibold text-gray-900 hover:underline">
+            <Link href="/login" className="font-semibold text-gray-900 dark:text-white hover:underline">
               Log In
             </Link>
           </p>

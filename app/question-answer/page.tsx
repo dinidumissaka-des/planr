@@ -49,26 +49,26 @@ interface Message { role: "user" | "consultant" | "ai"; text: string; time: stri
 function ChatBubble({ msg }: { msg: Message }) {
   if (msg.role === "user") return (
     <div className="flex flex-col items-end gap-1 mb-5">
-      <div className="bg-gray-100 text-gray-800 rounded-2xl rounded-tr-sm px-4 py-3 max-w-md text-sm leading-relaxed">{msg.text}</div>
-      <span className="text-[11px] text-gray-400">{msg.time}</span>
+      <div className="bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-200 rounded-2xl rounded-tr-sm px-4 py-3 max-w-md text-sm leading-relaxed">{msg.text}</div>
+      <span className="text-[11px] text-gray-400 dark:text-gray-600">{msg.time}</span>
     </div>
   )
   if (msg.role === "ai") return (
     <div className="flex items-start gap-3 mb-5">
-      <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-        <Bot className="w-4 h-4 text-indigo-600" />
+      <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <Bot className="w-4 h-4 text-primary dark:text-secondary" />
       </div>
       <div className="flex flex-col gap-1">
-        <div className="bg-white border border-indigo-100 rounded-2xl rounded-tl-sm px-4 py-3 max-w-lg text-sm text-gray-700 leading-relaxed whitespace-pre-wrap shadow-sm">{msg.text}</div>
-        <span className="text-[11px] text-gray-400">{msg.time}</span>
+        <div className="bg-white dark:bg-[#0D1B2E] border border-secondary/30 dark:border-secondary/20 rounded-2xl rounded-tl-sm px-4 py-3 max-w-lg text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">{msg.text}</div>
+        <span className="text-[11px] text-gray-400 dark:text-gray-600">{msg.time}</span>
       </div>
     </div>
   )
   return (
     <div className="flex items-start gap-0 mb-5">
       <div className="flex flex-col gap-1">
-        <div className="bg-white border-l-[3px] border-emerald-500 rounded-2xl rounded-tl-sm px-4 py-3 max-w-xl text-sm text-gray-700 leading-relaxed whitespace-pre-wrap shadow-sm">{msg.text}</div>
-        <span className="text-[11px] text-gray-400">{msg.time}</span>
+        <div className="bg-white dark:bg-[#0D1B2E] border-l-[3px] border-emerald-500 rounded-2xl rounded-tl-sm px-4 py-3 max-w-xl text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">{msg.text}</div>
+        <span className="text-[11px] text-gray-400 dark:text-gray-600">{msg.time}</span>
       </div>
     </div>
   )
@@ -77,12 +77,12 @@ function ChatBubble({ msg }: { msg: Message }) {
 function TypingDots() {
   return (
     <div className="flex items-start gap-3 mb-5">
-      <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-        <Bot className="w-4 h-4 text-indigo-600" />
+      <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
+        <Bot className="w-4 h-4 text-primary dark:text-secondary" />
       </div>
-      <div className="bg-white border border-indigo-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+      <div className="bg-white dark:bg-[#0D1B2E] border border-secondary/30 dark:border-secondary/20 rounded-2xl rounded-tl-sm px-4 py-3 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
         <div className="flex gap-1 items-center h-4">
-          {[0,1,2].map(i => <div key={i} className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />)}
+          {[0,1,2].map(i => <div key={i} className="w-1.5 h-1.5 bg-secondary rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />)}
         </div>
       </div>
     </div>
@@ -94,42 +94,44 @@ function TypingDots() {
 function RightSidebar({ onAI, onView }: { onAI: () => void; onView: () => void }) {
   return (
     <div className="w-72 flex flex-col gap-4 flex-shrink-0">
-      <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-        <p className="text-sm font-bold text-gray-900 mb-3">Book a consultation</p>
-        <Link href="/bookings" className="block w-full text-center bg-yellow-400 hover:bg-yellow-300 text-gray-900 text-sm font-bold py-3 rounded-full transition-colors">
-          Consult Now
-        </Link>
-      </div>
-
-      <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+      <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
         <div className="flex items-center justify-between mb-3">
-          <p className="text-sm font-bold text-gray-900">Previous consultations</p>
-          <button className="text-xs text-gray-400 hover:text-gray-700 flex items-center gap-0.5 transition-colors">
+          <p className="text-sm font-bold text-gray-900 dark:text-white">Previous consultations</p>
+          <button className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-0.5 transition-colors">
             View all <ArrowUpRight className="w-3 h-3" />
           </button>
         </div>
-        <div className="grid grid-cols-[1fr_auto_auto] text-xs text-gray-400 font-medium pb-2 border-b border-gray-100 gap-3">
+        <div className="grid grid-cols-[1fr_auto_auto] text-xs text-gray-400 dark:text-gray-600 font-medium pb-2 border-b border-gray-100 dark:border-white/8 gap-3">
           <span>Consult</span><span>Date</span><span />
         </div>
         {previousConsultations.map((c, i) => (
-          <div key={i} className="grid grid-cols-[auto_1fr_auto_auto] items-center py-3 gap-2.5 border-b border-gray-50 last:border-0 hover:bg-gray-50/60 rounded-lg transition-colors px-1 -mx-1">
+          <div key={i} className="grid grid-cols-[auto_1fr_auto_auto] items-center py-3 gap-2.5 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/60 dark:hover:bg-white/4 rounded-lg transition-colors px-1 -mx-1">
             <img src={c.photo} alt={c.name} className="w-8 h-8 rounded-full object-cover" />
-            <span className="text-sm font-medium text-gray-700 truncate">{c.name}</span>
-            <span className="text-xs text-gray-400 whitespace-nowrap">{c.date}</span>
-            <button onClick={onView} className="text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors">View</button>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">{c.name}</span>
+            <span className="text-xs text-gray-400 dark:text-gray-600 whitespace-nowrap">{c.date}</span>
+            <button onClick={onView} className="text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">View</button>
           </div>
         ))}
       </div>
 
-      <div className="bg-indigo-50 rounded-2xl border border-indigo-100 p-5">
-        <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="w-4 h-4 text-indigo-600" />
-          <p className="text-sm font-bold text-indigo-900">AI Assistant</p>
-        </div>
-        <p className="text-xs text-indigo-600 leading-relaxed mb-4">
+      <div
+        className="rounded-2xl pt-5 px-5 text-white relative overflow-hidden self-start w-full"
+        style={{
+          paddingBottom: '20px',
+          backgroundImage: `url('/bg-gradient.png'), linear-gradient(to right, #1A3050 0%, #81B9E9 100%)`,
+          backgroundBlendMode: 'overlay',
+          backgroundSize: 'cover, cover',
+        }}
+      >
+        <Sparkles className="w-5 h-5 text-white mb-4" />
+        <p className="text-base font-bold mb-1.5">AI Assistant</p>
+        <p className="text-sm text-white/55 leading-relaxed mb-5">
           Get instant answers about architecture, permits, costs, and timelines — available 24/7.
         </p>
-        <button onClick={onAI} className="w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">
+        <button
+          onClick={onAI}
+          className="block w-full text-center bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-semibold py-3 rounded-xl transition-colors"
+        >
           Try AI Assistant
         </button>
       </div>
@@ -141,38 +143,37 @@ function RightSidebar({ onAI, onView }: { onAI: () => void; onView: () => void }
 
 function EmptyState({ onStart, onAI }: { onStart: () => void; onAI: () => void }) {
   return (
-    <div className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center justify-center px-8 text-center min-h-0">
-      {/* Illustration */}
+    <div className="flex-1 rounded-2xl border border-gray-100 dark:border-white/8 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] flex flex-col items-center justify-center px-8 text-center min-h-0" style={{ backgroundImage: "url('/grain-bg-lg.png'), linear-gradient(135deg, #ffffff 0%, #f0f6ff 100%)", backgroundSize: "cover", backgroundPosition: "center" }}>
       <div className="relative mb-7">
-        <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center">
-          <MessageCircleQuestion className="w-12 h-12 text-gray-400" />
+        <div className="w-24 h-24 bg-gray-100 dark:bg-white/8 rounded-full flex items-center justify-center">
+          <MessageCircleQuestion className="w-12 h-12 text-gray-400 dark:text-gray-600" />
         </div>
-        <div className="absolute -top-1 -right-1 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-sm">
+        <div className="absolute -top-1 -right-1 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
           <Sparkles className="w-4 h-4 text-gray-900" />
         </div>
       </div>
 
-      <h2 className="text-xl font-bold text-gray-900 mb-2">No active consultation</h2>
-      <p className="text-sm text-gray-500 leading-relaxed max-w-xs mb-8">
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No active consultation</h2>
+      <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mb-8">
         You don't have an active question thread yet. Start by asking a question or pick up a previous conversation.
       </p>
 
       <div className="flex flex-col gap-3 w-full max-w-xs">
         <button
           onClick={onStart}
-          className="w-full bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold py-3 rounded-xl transition-colors"
+          className="w-full bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold py-3 rounded-xl transition-colors"
         >
           Ask a Question
         </button>
         <button
           onClick={onAI}
-          className="w-full flex items-center justify-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-semibold py-3 rounded-xl transition-colors border border-indigo-100"
+          className="w-full flex items-center justify-center gap-2 bg-secondary/15 hover:bg-secondary/25 text-primary dark:text-secondary text-sm font-semibold py-3 rounded-xl transition-colors border border-secondary/30"
         >
           <Sparkles className="w-4 h-4" /> Try AI Assistant
         </button>
         <Link
           href="/bookings"
-          className="w-full text-center text-sm text-gray-500 hover:text-gray-800 py-2 transition-colors"
+          className="w-full text-center text-sm text-gray-500 dark:text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 py-2 transition-colors"
         >
           Or book a consultation →
         </Link>
@@ -216,10 +217,10 @@ export default function QuestionAnswerPage() {
   function openChat() { setMode("consultant"); setView("chat") }
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <AppHeader title="Question Answer" icon={<MessageSquare className="w-5 h-5 text-gray-700" />} />
+        <AppHeader title="Question Answer" icon={<MessageSquare className="w-5 h-5 text-gray-700 dark:text-gray-400" />} />
 
         <div className="flex-1 overflow-hidden flex gap-5 p-6">
 
@@ -230,18 +231,18 @@ export default function QuestionAnswerPage() {
 
           {/* ── Chat view ── */}
           {view === "chat" && (
-            <div className="flex-1 bg-white rounded-2xl border border-gray-100 flex flex-col overflow-hidden shadow-sm min-w-0">
+            <div className="flex-1 bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 flex flex-col overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] min-w-0">
               {/* Tabs */}
-              <div className="flex items-center gap-2 px-5 pt-5 pb-4 border-b border-gray-100">
+              <div className="flex items-center gap-2 px-5 pt-5 pb-4 border-b border-gray-100 dark:border-white/8">
                 <button
                   onClick={() => setMode("consultant")}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all ${mode === "consultant" ? "bg-gray-900 text-white shadow-sm" : "text-gray-500 hover:bg-gray-100"}`}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${mode === "consultant" ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]" : "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/8"}`}
                 >
                   <User className="w-3.5 h-3.5" /> Consultant Chat
                 </button>
                 <button
                   onClick={() => setMode("ai")}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all ${mode === "ai" ? "bg-indigo-600 text-white shadow-sm" : "text-gray-400 hover:bg-gray-100"}`}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${mode === "ai" ? "bg-primary dark:bg-secondary/20 text-white dark:text-secondary shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]" : "text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-white/8"}`}
                 >
                   <Sparkles className="w-3.5 h-3.5" /> AI Assistant
                 </button>
@@ -249,19 +250,19 @@ export default function QuestionAnswerPage() {
 
               {/* Consultant header */}
               {mode === "consultant" && (
-                <div className="flex items-center gap-4 px-6 py-3 border-b border-gray-50">
+                <div className="flex items-center gap-4 px-6 py-3 border-b border-gray-50 dark:border-white/5">
                   <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="Davis" className="w-11 h-11 rounded-full object-cover flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-400 font-medium leading-none mb-0.5">Consult</p>
-                    <p className="text-base font-bold text-gray-900 leading-tight">Davis Calzoni</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-600 font-medium leading-none mb-0.5">Consult</p>
+                    <p className="text-base font-bold text-gray-900 dark:text-white leading-tight">Davis Calzoni</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-gray-900">Architect</p>
-                    <p className="text-xs text-gray-400 flex items-center gap-1 justify-end">
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">Architect</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 justify-end">
                       <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />4.9 (12 Reviews)
                     </p>
                   </div>
-                  <button className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-2">View Profile</button>
+                  <button className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors px-2">View Profile</button>
                   <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
                     <span className="text-sm font-semibold text-red-500">Live</span>
@@ -271,15 +272,15 @@ export default function QuestionAnswerPage() {
 
               {/* AI header */}
               {mode === "ai" && (
-                <div className="flex items-center gap-3 px-6 py-3 border-b border-indigo-50 bg-indigo-50/30">
-                  <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                    <Sparkles className="w-5 h-5 text-indigo-600" />
+                <div className="flex items-center gap-3 px-6 py-3 border-b border-secondary/20 bg-secondary/10 dark:bg-secondary/8">
+                  <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-5 h-5 text-primary dark:text-secondary" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-bold text-gray-900">Planr AI</p>
-                    <p className="text-xs text-indigo-500 font-medium">Available 24/7 · Instant answers</p>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">Planr AI</p>
+                    <p className="text-xs text-secondary font-medium">Available 24/7 · Instant answers</p>
                   </div>
-                  <span className="text-xs bg-indigo-100 text-indigo-700 font-semibold px-2.5 py-1 rounded-full">Beta</span>
+                  <span className="text-xs bg-secondary/20 text-primary dark:text-secondary font-semibold px-2.5 py-1 rounded-full">Beta</span>
                 </div>
               )}
 
@@ -291,23 +292,23 @@ export default function QuestionAnswerPage() {
               </div>
 
               {/* Input */}
-              <div className="px-5 py-4 border-t border-gray-100">
-                <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2.5">
+              <div className="px-5 py-4 border-t border-gray-100 dark:border-white/8">
+                <div className="flex items-center gap-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl px-4 py-2.5">
                   <input
                     type="text"
                     placeholder={mode === "ai" ? "Ask the AI about architecture, costs, permits..." : "Type here"}
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     onKeyDown={e => e.key === "Enter" && handleSend()}
-                    className="flex-1 bg-transparent text-sm text-gray-700 placeholder:text-gray-400 outline-none"
+                    className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-600 outline-none"
                   />
-                  <button className="text-gray-400 hover:text-gray-600 transition-colors"><Mic className="w-4 h-4" /></button>
-                  <button onClick={handleSend} disabled={!input.trim()} className={`text-sm font-semibold px-1 transition-colors disabled:text-gray-300 ${mode === "ai" ? "text-indigo-600 hover:text-indigo-800" : "text-gray-700 hover:text-gray-900"}`}>
+                  <button className="text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 transition-colors"><Mic className="w-4 h-4" /></button>
+                  <button onClick={handleSend} disabled={!input.trim()} className={`text-sm font-semibold px-1 transition-colors disabled:text-gray-300 dark:disabled:text-gray-700 ${mode === "ai" ? "text-primary dark:text-secondary hover:opacity-70" : "text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"}`}>
                     Send
                   </button>
                 </div>
                 {mode === "ai" && (
-                  <p className="text-[10px] text-gray-400 text-center mt-1.5">For professional advice, book a consultation with a certified architect.</p>
+                  <p className="text-[10px] text-gray-400 dark:text-gray-600 text-center mt-1.5">For professional advice, book a consultation with a certified architect.</p>
                 )}
               </div>
             </div>
