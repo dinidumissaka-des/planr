@@ -30,7 +30,7 @@ const recentQuestions = [
     initials: "JT",
     role: "Architect",
     time: "14 minutes ago",
-    photo: "https://images.unsplash.com/photo-1556157382-97eda2f9e2bf?w=80&auto=format&fit=crop&q=80",
+    photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&auto=format&fit=crop&q=80",
   },
   {
     question: "How long does a typical residential project take?",
