@@ -9,9 +9,19 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
+const DEMO_EMAIL = "demo@planr.app"
+const DEMO_PASSWORD = "demo1234"
+
 export default function LoginPage() {
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+  function fillDemo() {
+    setEmail(DEMO_EMAIL)
+    setPassword(DEMO_PASSWORD)
+  }
 
   return (
     <div className="flex h-screen w-screen overflow-hidden">
@@ -26,12 +36,9 @@ export default function LoginPage() {
           backgroundPosition: "center",
         }}
       >
-        {/* Logo */}
         <div className="relative z-10">
           <img src="/planr-logo-light.svg" alt="Planr" className="h-7" />
         </div>
-
-        {/* Bottom text */}
         <div className="relative z-10">
           <h2 className="text-4xl font-bold text-white leading-snug mb-3">
             Connect with expert architects & designers
@@ -45,7 +52,6 @@ export default function LoginPage() {
       {/* ── Right Panel ── */}
       <div className="flex-1 bg-white dark:bg-[#07111E] flex flex-col px-6 md:px-14 py-8 md:py-10 relative overflow-hidden overflow-y-auto">
 
-        {/* Form */}
         <div className="relative z-10 flex-1 flex flex-col justify-center max-w-sm w-full mx-auto">
           <div className="mb-8">
             <Link href="/" className="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors block mb-1">Go back</Link>
@@ -53,16 +59,34 @@ export default function LoginPage() {
             <p className="text-sm text-gray-500 dark:text-gray-400">Sign in to your Planr account to continue.</p>
           </div>
 
+          {/* Demo credentials banner */}
+          <button
+            onClick={fillDemo}
+            className="w-full mb-5 flex items-center justify-between px-4 py-3 rounded-xl border border-secondary/40 bg-secondary/8 dark:bg-secondary/10 hover:bg-secondary/15 dark:hover:bg-secondary/15 transition-colors group"
+          >
+            <div className="text-left">
+              <p className="text-xs font-bold text-primary dark:text-secondary mb-0.5">Try the demo</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 font-mono">{DEMO_EMAIL} · {DEMO_PASSWORD}</p>
+            </div>
+            <span className="text-xs font-semibold text-secondary bg-secondary/15 px-2.5 py-1 rounded-lg group-hover:bg-secondary/25 transition-colors whitespace-nowrap">
+              Fill in →
+            </span>
+          </button>
+
           <div className="space-y-3 mb-4">
             <Input
               type="email"
               placeholder="Email address"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl"
             />
             <div className="relative">
               <Input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
                 className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl pr-11"
               />
               <button
