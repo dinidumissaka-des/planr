@@ -26,8 +26,8 @@ export default function BillingPage() {
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Billing" icon={<CreditCard className="w-5 h-5 text-gray-700 dark:text-gray-400" />} />
-        <div className="flex-1 overflow-y-auto flex items-center justify-center px-8 py-10">
-      <div className="w-full max-w-4xl grid grid-cols-2 gap-24 items-start">
+        <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-10 pb-24 md:pb-10">
+      <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-24 items-start">
 
         {/* ── Left: Form ── */}
         <div>
@@ -114,12 +114,20 @@ export default function BillingPage() {
 
         {/* ── Right: How it works ── */}
         <div>
-          <div className="rounded-2xl overflow-hidden mb-7 h-48">
-            <img
-              src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&auto=format&fit=crop&q=80"
-              alt="Architecture"
-              className="w-full h-full object-cover"
-            />
+          {/* Brand card replacing image */}
+          <div className="rounded-2xl overflow-hidden mb-7 h-48 flex flex-col justify-between p-6"
+            style={{
+              backgroundColor: '#1A3050',
+              backgroundImage: "url('/pattern-portrait-2.png'), linear-gradient(to bottom right, #1A3050 0%, #81B9E9 100%)",
+              backgroundBlendMode: "screen, normal",
+              backgroundSize: "cover, cover",
+              backgroundPosition: "center",
+            }}
+          >
+            <img src="/planr-logo-light.svg" alt="Planr" className="h-6 w-fit" />
+            <h3 className="text-2xl font-bold text-white leading-snug">
+              Dream, create,<br />design, and build it
+            </h3>
           </div>
 
           <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">How it works</h2>

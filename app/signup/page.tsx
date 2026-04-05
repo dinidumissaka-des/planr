@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft, Home, HelpCircle, MessageSquare, Video } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -9,167 +9,135 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 
+
 export default function SignupPage() {
   const router = useRouter()
   const [tab, setTab] = useState<"customer" | "architect">("customer")
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
 
   return (
     <div className="flex h-screen w-screen overflow-hidden">
+
       {/* ── Left Panel ── */}
-      <div
-        className="relative w-[52%] h-full overflow-hidden"
-        style={{ background: "linear-gradient(160deg, #c8cfc0 0%, #b8bfaa 40%, #d4c9a8 100%)" }}
+      <div className="relative hidden md:flex w-[30%] h-full overflow-hidden flex-col justify-between p-8"
+        style={{
+          backgroundColor: '#1A3050',
+          backgroundImage: "url('/pattern-portrait-2.png'), linear-gradient(to bottom right, #1A3050 0%, #81B9E9 100%)",
+          backgroundBlendMode: "screen, normal",
+          backgroundSize: "cover, cover",
+          backgroundPosition: "center",
+        }}
       >
         {/* Logo */}
-        <div className="absolute top-6 left-6 z-20 flex items-center gap-2">
-          <div className="w-8 h-8 bg-yellow-400 rounded-md flex items-center justify-center">
-            <Home className="w-4 h-4 text-black" />
-          </div>
-          <span className="font-bold text-gray-900 text-lg tracking-tight">planr.</span>
+        <div className="relative z-10">
+          <img src="/planr-logo-light.svg" alt="Planr" className="h-7" />
         </div>
 
-        {/* Dashed oval SVG */}
-        <svg
-          className="absolute inset-0 w-full h-full z-10 pointer-events-none"
-          viewBox="0 0 520 800"
-          preserveAspectRatio="none"
-        >
-          <ellipse
-            cx="270" cy="370"
-            rx="195" ry="240"
-            fill="none"
-            stroke="black"
-            strokeWidth="1.5"
-            strokeDasharray="7 6"
-            strokeOpacity="0.35"
-          />
-        </svg>
-
-        {/* Floating icon circles */}
-        {/* Question mark — top left */}
-        <div className="absolute z-20 w-20 h-20 rounded-full bg-gray-800 flex items-center justify-center shadow-lg"
-          style={{ top: "24%", left: "8%" }}>
-          <HelpCircle className="w-8 h-8 text-white" />
-        </div>
-
-        {/* Chat bubble — top right */}
-        <div className="absolute z-20 rounded-full flex items-center justify-center shadow-lg"
-          style={{ top: "10%", left: "44%", width: "130px", height: "130px", background: "rgba(200,220,215,0.85)" }}>
-          <div className="w-20 h-20 rounded-full bg-white/60 flex items-center justify-center">
-            <MessageSquare className="w-10 h-10 text-blue-500" fill="#3b82f6" />
-          </div>
-        </div>
-
-        {/* Video camera — bottom center */}
-        <div className="absolute z-20 rounded-full flex items-center justify-center shadow-lg"
-          style={{ top: "64%", left: "34%", width: "110px", height: "110px", background: "rgba(200,220,215,0.85)" }}>
-          <div className="w-16 h-16 rounded-full bg-white/60 flex items-center justify-center">
-            <Video className="w-8 h-8 text-red-500" fill="#ef4444" />
-          </div>
-        </div>
-
-        {/* Person photo */}
-        <div
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 z-15 w-72 h-[68%]"
-          style={{ zIndex: 15 }}
-        >
-          <img
-            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80"
-            alt="Person"
-            className="w-full h-full object-cover object-top"
-            style={{ maskImage: "linear-gradient(to top, transparent 0%, black 25%)", WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 25%)" }}
-          />
-        </div>
+        <div className="flex-1" />
 
         {/* Bottom text */}
-        <div className="absolute bottom-8 left-6 z-20">
-          <p className="text-3xl font-bold text-gray-900 leading-tight">
-            You can dream,<br />create, design,<br />and build It
+        <div className="relative z-10">
+          <h2 className="text-4xl font-bold text-white leading-snug mb-3">
+            You can dream, create, design and build it
+          </h2>
+          <p className="text-white/60 text-sm leading-relaxed">
+            Join thousands of homeowners and professionals managing their projects on Planr.
           </p>
         </div>
       </div>
 
       {/* ── Right Panel ── */}
-      <div className="flex-1 bg-[#f5f5f5] dark:bg-[#07111E] flex flex-col px-14 py-10 overflow-y-auto">
-        {/* Go back */}
-        <Link
-          href="/login"
-          className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors w-fit"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Go back
-        </Link>
+      <div className="flex-1 bg-white dark:bg-[#07111E] flex flex-col px-6 md:px-14 py-8 md:py-10 overflow-y-auto relative">
 
         {/* Form */}
-        <div className="flex-1 flex flex-col justify-center max-w-md w-full mx-auto py-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">
-            You are few clicks away from<br />creating your account
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-7">
-            Manage all your consultations efficiently. Lets get all set up so you
-            can verify your personal account and begin setting up your profile.
-          </p>
+        <div className="relative z-10 flex-1 flex flex-col justify-center max-w-sm w-full mx-auto py-8">
+          <div className="mb-7">
+            <Link href="/login" className="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors block mb-1">Go back</Link>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 leading-tight">Create your account</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Get started with Planr — it only takes a minute.</p>
+          </div>
 
           {/* Tabs */}
-          <div className="flex mb-6 border-b border-gray-200 dark:border-white/10">
-            <button
-              onClick={() => setTab("customer")}
-              className={`flex-1 pb-3 text-sm font-semibold transition-colors ${
-                tab === "customer"
-                  ? "text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white -mb-px"
-                  : "text-gray-400 dark:text-gray-600"
-              }`}
-            >
-              Customer
-            </button>
-            <button
-              onClick={() => setTab("architect")}
-              className={`flex-1 pb-3 text-sm font-semibold transition-colors ${
-                tab === "architect"
-                  ? "text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white -mb-px"
-                  : "text-gray-400 dark:text-gray-600"
-              }`}
-            >
-              Architect
-            </button>
+          <div className="flex mb-6 bg-gray-100 dark:bg-white/5 rounded-xl p-1">
+            {(["customer", "architect"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setTab(t)}
+                className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all capitalize ${
+                  tab === t
+                    ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm"
+                    : "text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
           </div>
 
           {/* Form fields */}
-          <div className="space-y-3 mb-5">
+          <div className="space-y-3 mb-4">
             <div className="flex gap-3">
-              <Input placeholder="First name" className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm" />
-              <Input placeholder="Last Name" className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm" />
+              <Input placeholder="First name" className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl" />
+              <Input placeholder="Last name" className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl" />
             </div>
-            <Input type="email" placeholder="Email address" className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm" />
-            <Input type="tel" placeholder="Mobile Number" className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm" />
-            <Input type="password" placeholder="Password" className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm" />
-            <Input type="password" placeholder="Re-type password" className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm" />
+            <Input type="email" placeholder="Email address" className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl" />
+            <Input type="tel" placeholder="Mobile number" className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl" />
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl pr-11"
+              />
+              <button type="button" onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+            <div className="relative">
+              <Input
+                type={showConfirm ? "text" : "password"}
+                placeholder="Confirm password"
+                className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl pr-11"
+              />
+              <button type="button" onClick={() => setShowConfirm(!showConfirm)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
 
-          {/* Privacy checkbox */}
-          <div className="flex items-center gap-2 mb-8">
-            <Checkbox id="privacy" />
-            <Label htmlFor="privacy" className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
-              I agree all{" "}
-              <Link href="#" className="font-semibold text-gray-900 dark:text-white hover:underline">
-                Privacy Policy
-              </Link>{" "}
-              and Fees
+          <div className="flex items-start gap-2 mb-6">
+            <Checkbox id="privacy" className="mt-0.5" />
+            <Label htmlFor="privacy" className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer leading-relaxed">
+              I agree to the{" "}
+              <Link href="#" className="font-semibold text-gray-900 dark:text-white hover:underline">Privacy Policy</Link>
+              {" "}and{" "}
+              <Link href="#" className="font-semibold text-gray-900 dark:text-white hover:underline">Terms of Use</Link>
             </Label>
           </div>
 
           <Button
-            className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-base rounded-xl mb-4"
+            className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold rounded-xl mb-4"
             onClick={() => router.push("/ask")}
           >
-            Sign Up
+            Create Account
           </Button>
 
+          <div className="relative flex items-center gap-3 mb-4">
+            <div className="flex-1 h-px bg-gray-200 dark:bg-white/10" />
+            <span className="text-xs text-gray-400 dark:text-gray-600 font-medium">or</span>
+            <div className="flex-1 h-px bg-gray-200 dark:bg-white/10" />
+          </div>
+
+          <button className="w-full h-12 flex items-center justify-center gap-3 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors mb-6">
+            <svg className="w-4 h-4" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Continue with Google
+          </button>
+
           <p className="text-sm text-center text-gray-500 dark:text-gray-400">
-            Already have a account{" "}
-            <Link href="/login" className="font-semibold text-gray-900 dark:text-white hover:underline">
-              Log In
-            </Link>
+            Already have an account?{" "}
+            <Link href="/login" className="font-semibold text-gray-900 dark:text-white hover:underline">Sign in</Link>
           </p>
         </div>
       </div>

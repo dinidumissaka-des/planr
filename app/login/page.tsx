@@ -1,185 +1,109 @@
 "use client"
 
-import { ArrowLeft, Home } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-
-const BuildingIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <rect x="2" y="8" width="16" height="11" rx="1" stroke="currentColor" strokeWidth="1.5" />
-    <path d="M10 2L2 8h16L10 2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-    <rect x="7" y="12" width="3" height="4" rx="0.5" fill="currentColor" />
-    <rect x="11" y="12" width="3" height="3" rx="0.5" fill="currentColor" />
-  </svg>
-)
-
-const architectCards = [
-  {
-    label: "Residential\nArchitect",
-    style: "circle",
-    pos: { top: "20%", left: "12%" },
-    active: false,
-  },
-  {
-    label: "Interior Architect",
-    style: "pill",
-    pos: { top: "44%", left: "38%" },
-    active: true,
-  },
-  {
-    label: "Landscape Architect",
-    style: "pill",
-    pos: { top: "63%", left: "4%" },
-    active: true,
-  },
-  {
-    label: "Urban\nDesign",
-    style: "circle",
-    pos: { top: "76%", left: "36%" },
-    active: false,
-  },
-]
+import { useState } from "react"
 
 export default function LoginPage() {
   const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false)
+
   return (
     <div className="flex h-screen w-screen overflow-hidden">
-      {/* ── Left Panel ── */}
-      <div className="relative w-[52%] h-full overflow-hidden">
-        {/* Background */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1486325212027-8081e485255e?q=80&w=1400&auto=format&fit=crop')",
-          }}
-        />
-        <div className="absolute inset-0 bg-black/25" />
 
+      {/* ── Left Panel ── */}
+      <div className="relative hidden md:flex w-[30%] h-full overflow-hidden flex-col justify-between p-8"
+        style={{
+          backgroundColor: '#1A3050',
+          backgroundImage: "url('/pattern-portrait-1.png'), linear-gradient(to bottom right, #1A3050 0%, #81B9E9 100%)",
+          backgroundBlendMode: "screen, normal",
+          backgroundSize: "cover, cover",
+          backgroundPosition: "center",
+        }}
+      >
         {/* Logo */}
-        <div className="absolute top-6 left-6 z-20 flex items-center gap-2">
-          <div className="w-8 h-8 bg-yellow-400 rounded-md flex items-center justify-center">
-            <Home className="w-4 h-4 text-black" />
-          </div>
-          <span className="font-bold text-white text-lg tracking-tight">
-            planr.
-          </span>
+        <div className="relative z-10">
+          <img src="/planr-logo-light.svg" alt="Planr" className="h-7" />
         </div>
 
-        {/* SVG Dashed Lines */}
-        <svg
-          className="absolute inset-0 w-full h-full z-10 pointer-events-none"
-          viewBox="0 0 520 800"
-          preserveAspectRatio="none"
-        >
-          {/* Residential → Interior */}
-          <line
-            x1="120" y1="185"
-            x2="280" y2="365"
-            stroke="white" strokeWidth="1.5" strokeDasharray="6 5" strokeOpacity="0.7"
-          />
-          {/* Interior → Landscape */}
-          <line
-            x1="280" y1="395"
-            x2="130" y2="525"
-            stroke="white" strokeWidth="1.5" strokeDasharray="6 5" strokeOpacity="0.7"
-          />
-          {/* Landscape → Urban */}
-          <line
-            x1="210" y1="540"
-            x2="295" y2="635"
-            stroke="white" strokeWidth="1.5" strokeDasharray="6 5" strokeOpacity="0.7"
-          />
-        </svg>
-
-        {/* Floating Cards */}
-        {architectCards.map((card) =>
-          card.style === "circle" ? (
-            <div
-              key={card.label}
-              className="absolute z-20 w-28 h-28 rounded-full bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center shadow-md -translate-x-1/2 -translate-y-1/2"
-              style={{ top: card.pos.top, left: card.pos.left }}
-            >
-              <div className="text-yellow-500 mb-1">
-                <BuildingIcon />
-              </div>
-              <p className="text-xs font-semibold text-center text-gray-800 leading-tight whitespace-pre-line px-2">
-                {card.label}
-              </p>
-            </div>
-          ) : (
-            <div
-              key={card.label}
-              className="absolute z-20 flex items-center gap-2 bg-white/90 backdrop-blur-sm border-2 border-yellow-400 rounded-full px-4 py-2.5 shadow-md -translate-y-1/2"
-              style={{ top: card.pos.top, left: card.pos.left }}
-            >
-              <span className="text-yellow-500">
-                <BuildingIcon />
-              </span>
-              <span className="text-sm font-semibold text-gray-800 whitespace-nowrap">
-                {card.label}
-              </span>
-            </div>
-          )
-        )}
+        {/* Bottom text */}
+        <div className="relative z-10">
+          <h2 className="text-4xl font-bold text-white leading-snug mb-3">
+            Connect with expert architects & designers
+          </h2>
+          <p className="text-white/60 text-sm leading-relaxed">
+            Book consultations, get answers to your building questions, and manage your projects — all in one place.
+          </p>
+        </div>
       </div>
 
       {/* ── Right Panel ── */}
-      <div className="flex-1 bg-[#f5f5f5] dark:bg-[#07111E] flex flex-col px-14 py-10">
-        {/* Go back */}
-        <Link
-          href="/"
-          className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors w-fit"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Go back
-        </Link>
+      <div className="flex-1 bg-white dark:bg-[#07111E] flex flex-col px-6 md:px-14 py-8 md:py-10 relative overflow-hidden overflow-y-auto">
 
         {/* Form */}
-        <div className="flex-1 flex flex-col justify-center max-w-md w-full mx-auto">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">Hello again!</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mb-10">
-            Welcome back! Please enter your details. Manage all your consultations
-            efficiently. Lets get all set up so you can verify your personal account
-            and begin setting up your profile.
-          </p>
+        <div className="relative z-10 flex-1 flex flex-col justify-center max-w-sm w-full mx-auto">
+          <div className="mb-8">
+            <Link href="/" className="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors block mb-1">Go back</Link>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Welcome back</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Sign in to your Planr account to continue.</p>
+          </div>
 
-          <div className="space-y-3 mb-5">
+          <div className="space-y-3 mb-4">
             <Input
               type="email"
               placeholder="Email address"
-              className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm"
+              className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl"
             />
-            <Input
-              type="password"
-              placeholder="Password"
-              className="h-12 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm"
-            />
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl pr-11"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-2">
               <Checkbox id="remember" />
-              <Label htmlFor="remember" className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
-                Remember me
-              </Label>
+              <Label htmlFor="remember" className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer">Remember me</Label>
             </div>
-            <Link href="#" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-              Forgot password?
-            </Link>
+            <Link href="#" className="text-sm text-secondary font-medium hover:underline">Forgot password?</Link>
           </div>
 
-          <Button className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-base rounded-xl mb-4" onClick={() => router.push("/dashboard")}>
+          <Button
+            className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold rounded-xl mb-4"
+            onClick={() => router.push("/dashboard")}
+          >
             Sign In
           </Button>
 
+          <div className="relative flex items-center gap-3 mb-4">
+            <div className="flex-1 h-px bg-gray-200 dark:bg-white/10" />
+            <span className="text-xs text-gray-400 dark:text-gray-600 font-medium">or</span>
+            <div className="flex-1 h-px bg-gray-200 dark:bg-white/10" />
+          </div>
+
+          <button className="w-full h-12 flex items-center justify-center gap-3 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors mb-6">
+            <svg className="w-4 h-4" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Continue with Google
+          </button>
+
           <p className="text-sm text-center text-gray-500 dark:text-gray-400">
-            Not a member yet{" "}
-            <Link href="/signup" className="font-semibold text-gray-900 dark:text-white hover:underline">Sign Up</Link>
+            Don't have an account?{" "}
+            <Link href="/signup" className="font-semibold text-gray-900 dark:text-white hover:underline">Sign up</Link>
           </p>
         </div>
       </div>

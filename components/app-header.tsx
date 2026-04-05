@@ -38,8 +38,10 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
   const unread = notifications.length
 
   return (
-    <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-8 flex-shrink-0 relative z-30">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+    <header className="h-14 md:h-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-4 md:px-8 flex-shrink-0 relative z-30">
+      {/* Mobile: logo; Desktop: page title */}
+      <img src="/planr-logo.svg" alt="Planr" className="h-6 md:hidden dark:invert" />
+      <h1 className="hidden md:flex text-2xl font-bold text-gray-900 dark:text-white items-center gap-2">
         {icon}
         {title}
       </h1>
@@ -145,8 +147,8 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
           <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-semibold text-gray-600 dark:text-gray-300">
             SF
           </div>
-          <span>Sahan Fernando</span>
-          <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+          <span className="hidden sm:inline">Sahan Fernando</span>
+          <ChevronDown className="w-3.5 h-3.5 text-gray-400 hidden sm:block" />
         </button>
       </div>
     </header>

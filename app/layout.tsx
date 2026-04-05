@@ -12,6 +12,10 @@ export const metadata: Metadata = {
   title: "Planr",
   description: "Connect with architects and building professionals",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -25,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} h-full antialiased`}>
+    <html lang="en" className={`${manrope.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#07111E" />
         {/* Prevent dark mode flash */}

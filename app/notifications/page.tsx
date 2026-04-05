@@ -24,7 +24,7 @@ export default function NotificationsPage() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Notification" icon={<Bell className="w-5 h-5 text-gray-700 dark:text-gray-400" />} />
 
-        <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-20 md:pb-8">
           <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Recent Notification</p>
 
           <div className="flex flex-col gap-0 bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl overflow-hidden shadow-sm divide-y divide-gray-100 dark:divide-white/8">

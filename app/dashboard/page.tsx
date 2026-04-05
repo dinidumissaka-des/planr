@@ -51,8 +51,8 @@ function ConsultationRow({ row }: { row: typeof ongoingConsultations[0] }) {
     <div className="flex items-center gap-3 py-3 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/60 dark:hover:bg-white/4 rounded-lg px-2 -mx-2 transition-colors">
       <img src={row.photo} alt={row.name} className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
       <span className="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{row.name}</span>
-      <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${row.color}`}>{row.type}</span>
-      <span className="text-xs text-gray-400 dark:text-gray-500 w-24 text-right">{row.date}</span>
+      <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${row.color} hidden sm:inline-flex`}>{row.type}</span>
+      <span className="text-xs text-gray-400 dark:text-gray-500 w-24 text-right hidden md:block">{row.date}</span>
       <button className="text-gray-300 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 transition-colors ml-1">
         <MoreHorizontal className="w-4 h-4" />
       </button>
@@ -69,14 +69,14 @@ export default function DashboardPage() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Dashboard" />
 
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="flex gap-5">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6">
+          <div className="flex flex-col lg:flex-row gap-5">
 
             {/* ── Left / Main Column ── */}
             <div className="flex-1 min-w-0 flex flex-col gap-5">
 
               {/* ── Hero greeting banner ── */}
-              <div className="relative rounded-2xl overflow-hidden px-7 py-6 flex items-center justify-between"
+              <div className="relative rounded-2xl overflow-hidden px-5 md:px-7 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                 style={{
                   backgroundImage: `url('/banner.png'), linear-gradient(to right, #1A3050 0%, #81B9E9 100%)`,
                   backgroundBlendMode: 'overlay',
@@ -86,13 +86,13 @@ export default function DashboardPage() {
               >
                 <div className="relative z-10">
                   <p className="text-white/50 text-sm font-medium mb-1">Good morning</p>
-                  <h2 className="text-2xl font-bold text-white mb-1">Sahan Fernando</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Sahan Fernando</h2>
                   <p className="text-white/60 text-sm">You have <span className="text-secondary font-semibold">2 ongoing</span> and <span className="text-white font-semibold">1 upcoming</span> consultation</p>
                 </div>
                 <div className="relative z-10">
                   <Link
                     href="/bookings"
-                    className="flex items-center gap-2 bg-white hover:bg-white/90 text-primary text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm transition-colors"
+                    className="flex items-center gap-2 bg-white hover:bg-white/90 text-primary text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm transition-colors whitespace-nowrap"
                   >
                     <CalendarCheck className="w-4 h-4" /> Book Consultation
                   </Link>
@@ -100,7 +100,7 @@ export default function DashboardPage() {
               </div>
 
               {/* ── Stats row ── */}
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {[
                   { label: "Upcoming", value: "1", sub: "consultations", icon: Clock, color: "bg-violet-50 text-violet-500", trend: "Next on Oct 14" },
                   { label: "On-going", value: "2", sub: "consultations", icon: TrendingUp, color: "bg-emerald-50 text-emerald-500", trend: "2 active now" },
@@ -110,7 +110,7 @@ export default function DashboardPage() {
                     key={stat.label}
                     className="relative rounded-2xl p-5 flex items-start justify-between overflow-hidden"
                     style={{
-                      backgroundColor: '#81B9E9',
+                      backgroundColor: i === 1 ? '#E1C1A5' : i === 2 ? '#BDC7D9' : '#81B9E9',
                       backgroundImage: `url('${i === 1 ? '/bg-grain-2.png' : i === 2 ? '/bg-grain-1.png' : '/bg-grain-3.png'}')`,
                       backgroundBlendMode: 'screen',
                       backgroundSize: 'cover',
@@ -130,40 +130,23 @@ export default function DashboardPage() {
               {/* ── Recent Q&A — main feature highlight ── */}
               <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 flex-shrink-0">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 bg-secondary/20 rounded-lg flex items-center justify-center">
-                      <Sparkles className="w-3.5 h-3.5 text-secondary" />
-                    </div>
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">Recent Questions & Answers</p>
-                  </div>
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">Recent Questions & Answers</p>
                   <Link href="/question-answer" className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1 transition-colors">
                     View all <ArrowUpRight className="w-3 h-3" />
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {recentQuestions.map((q, i) => (
-                    <Link key={i} href="/question-answer" className="group border border-gray-100 dark:border-white/8 hover:border-secondary/40 hover:bg-secondary/10 dark:hover:bg-secondary/10 rounded-xl p-4 transition-all block">
+                    <Link key={i} href="/question-answer" className="group border border-gray-200 dark:border-white/12 hover:border-secondary/40 rounded-xl p-4 transition-all block" style={{ backgroundImage: "url('/grain-bg-lg.svg')", backgroundSize: "cover", backgroundPosition: "center" }}>
                       <div className="flex items-start gap-3">
-                        <img src={q.photo} alt={q.consultant} className="w-9 h-9 rounded-full object-cover flex-shrink-0 mt-0.5" />
+                        <img src={q.photo} alt={q.consultant} className="w-8 h-8 rounded-full object-cover flex-shrink-0 mt-0.5" />
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2 mb-1">
-                            <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{q.consultant}
-                              <span className="font-normal text-gray-400 dark:text-gray-500"> · {q.role}</span>
-                            </p>
-                            <div className="flex items-center gap-1 flex-shrink-0">
-                              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                              <span className="text-xs text-gray-400 dark:text-gray-500">{q.rating}</span>
-                            </div>
-                          </div>
-                          <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Q: {q.question}</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-500 leading-relaxed line-clamp-2">{q.answer}</p>
-                          <div className="flex items-center justify-between mt-2">
-                            <span className="text-[10px] text-gray-400 dark:text-gray-600">{q.time}</span>
-                            <span className="text-[10px] font-semibold text-secondary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
-                              Continue chat <ChevronRight className="w-3 h-3" />
-                            </span>
-                          </div>
+                          <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">{q.consultant}
+                            <span className="font-normal text-gray-400 dark:text-gray-500"> · {q.role}</span>
+                          </p>
+                          <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mt-1 mb-2">Q: {q.question}</p>
+                          <span className="text-xs text-gray-400 dark:text-gray-600">{q.time}</span>
                         </div>
                       </div>
                     </Link>
@@ -191,14 +174,14 @@ export default function DashboardPage() {
                   </button>
                 </div>
                 <div className="grid grid-cols-[1fr_auto_auto_auto] text-xs text-gray-400 dark:text-gray-600 font-medium pb-2 border-b border-gray-100 dark:border-white/8 px-2">
-                  <span>Consultant</span><span className="pr-12">Type</span><span className="pr-8">Date</span><span />
+                  <span>Consultant</span><span className="pr-12 hidden sm:block">Type</span><span className="pr-8 hidden md:block">Date</span><span />
                 </div>
                 {ongoingConsultations.map((row, i) => <ConsultationRow key={i} row={row} />)}
               </div>
             </div>
 
             {/* ── Right Column ── */}
-            <div className="w-[300px] flex-shrink-0 flex flex-col gap-4">
+            <div className="w-full lg:w-[300px] flex-shrink-0 flex flex-col gap-4">
 
               {/* Next upcoming */}
               <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
@@ -229,7 +212,7 @@ export default function DashboardPage() {
                 </div>
                 {upcomingConsultations.map((row, i) => (
                   <div key={i} className="flex items-center gap-2.5 py-2.5 border-b border-gray-50 dark:border-white/5 last:border-0">
-                    <img src={row.photo} alt={row.name} className="w-7 h-7 rounded-full object-cover flex-shrink-0" />
+                    <img src={row.photo} alt={row.name} className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{row.name}</p>
                       <p className="text-[10px] text-gray-400 dark:text-gray-600">{row.date}</p>

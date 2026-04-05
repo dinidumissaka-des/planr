@@ -93,7 +93,7 @@ function TypingDots() {
 
 function RightSidebar({ onAI, onView }: { onAI: () => void; onView: () => void }) {
   return (
-    <div className="w-72 flex flex-col gap-4 flex-shrink-0">
+    <div className="hidden lg:flex w-72 flex-col gap-4 flex-shrink-0">
       <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
         <div className="flex items-center justify-between mb-3">
           <p className="text-sm font-bold text-gray-900 dark:text-white">Previous consultations</p>
@@ -143,22 +143,20 @@ function RightSidebar({ onAI, onView }: { onAI: () => void; onView: () => void }
 
 function EmptyState({ onStart, onAI }: { onStart: () => void; onAI: () => void }) {
   return (
-    <div className="flex-1 rounded-2xl border border-gray-100 dark:border-white/8 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] flex flex-col items-center justify-center px-8 text-center min-h-0" style={{ backgroundImage: "url('/grain-bg-lg.png'), linear-gradient(135deg, #ffffff 0%, #f0f6ff 100%)", backgroundSize: "cover", backgroundPosition: "center" }}>
+    <div className="relative flex-1 rounded-2xl border border-gray-100 dark:border-white/8 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] flex flex-col items-center justify-center px-8 text-center min-h-0 bg-[#EAF3FB] dark:bg-[#0D1B2E] overflow-hidden">
+      <div className="absolute inset-0 bg-cover bg-center opacity-60 dark:opacity-20 pointer-events-none" style={{ backgroundImage: "url('/grain-bg-lg.png')" }} />
       <div className="relative mb-7">
         <div className="w-24 h-24 bg-gray-100 dark:bg-white/8 rounded-full flex items-center justify-center">
           <MessageCircleQuestion className="w-12 h-12 text-gray-400 dark:text-gray-600" />
         </div>
-        <div className="absolute -top-1 -right-1 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
-          <Sparkles className="w-4 h-4 text-gray-900" />
-        </div>
       </div>
 
-      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No active consultation</h2>
-      <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mb-8">
+      <h2 className="relative text-xl font-bold text-gray-900 dark:text-white mb-2">No active consultation</h2>
+      <p className="relative text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mb-8">
         You don't have an active question thread yet. Start by asking a question or pick up a previous conversation.
       </p>
 
-      <div className="flex flex-col gap-3 w-full max-w-xs">
+      <div className="relative flex flex-col gap-3 w-full max-w-xs">
         <button
           onClick={onStart}
           className="w-full bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold py-3 rounded-xl transition-colors"
@@ -169,7 +167,7 @@ function EmptyState({ onStart, onAI }: { onStart: () => void; onAI: () => void }
           onClick={onAI}
           className="w-full flex items-center justify-center gap-2 bg-secondary/15 hover:bg-secondary/25 text-primary dark:text-secondary text-sm font-semibold py-3 rounded-xl transition-colors border border-secondary/30"
         >
-          <Sparkles className="w-4 h-4" /> Try AI Assistant
+          Try AI Assistant
         </button>
         <Link
           href="/bookings"
@@ -222,7 +220,7 @@ export default function QuestionAnswerPage() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Question Answer" icon={<MessageSquare className="w-5 h-5 text-gray-700 dark:text-gray-400" />} />
 
-        <div className="flex-1 overflow-hidden flex gap-5 p-6">
+        <div className="flex-1 overflow-hidden flex gap-5 p-4 md:p-6 pb-20 md:pb-6">
 
           {/* ── Empty state ── */}
           {view === "empty" && (
@@ -250,19 +248,19 @@ export default function QuestionAnswerPage() {
 
               {/* Consultant header */}
               {mode === "consultant" && (
-                <div className="flex items-center gap-4 px-6 py-3 border-b border-gray-50 dark:border-white/5">
-                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="Davis" className="w-11 h-11 rounded-full object-cover flex-shrink-0" />
+                <div className="flex items-center gap-3 px-4 md:px-6 py-3 border-b border-gray-50 dark:border-white/5 flex-wrap">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="Davis" className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-gray-400 dark:text-gray-600 font-medium leading-none mb-0.5">Consult</p>
-                    <p className="text-base font-bold text-gray-900 dark:text-white leading-tight">Davis Calzoni</p>
+                    <p className="text-sm md:text-base font-bold text-gray-900 dark:text-white leading-tight">Davis Calzoni</p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right hidden sm:block">
                     <p className="text-sm font-bold text-gray-900 dark:text-white">Architect</p>
                     <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 justify-end">
                       <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />4.9 (12 Reviews)
                     </p>
                   </div>
-                  <button className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors px-2">View Profile</button>
+                  <button className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors hidden md:block">View Profile</button>
                   <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
                     <span className="text-sm font-semibold text-red-500">Live</span>
