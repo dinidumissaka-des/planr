@@ -285,8 +285,8 @@ function Stepper({ step }: { step: number }) {
 
 // ─── Architect Summary Bar ─────────────────────────────────
 
-function ArchitectBar({ architect, dateLabel, timeLabel, leftLabel, rightLabel }: {
-  architect: typeof architects[0]; dateLabel: string; timeLabel: string; leftLabel: string; rightLabel: string
+function ArchitectBar({ architect, dateLabel, timeLabel, leftLabel, rightLabel, onViewProfile }: {
+  architect: typeof architects[0]; dateLabel: string; timeLabel: string; leftLabel: string; rightLabel: string; onViewProfile: () => void
 }) {
   return (
     <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl p-4 mb-5">
@@ -300,7 +300,7 @@ function ArchitectBar({ architect, dateLabel, timeLabel, leftLabel, rightLabel }
             <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />{architect.rating} ({architect.reviewCount} Reviews)
           </p>
         </div>
-        <button onClick={() => setProfileDrawer(architects.find(a => a.id === architect.id) ?? null)} className="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">View Profile</button>
+        <button onClick={onViewProfile} className="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">View Profile</button>
       </div>
       {/* Row 2: date + time badges */}
       <div className="flex items-center gap-4">
@@ -613,6 +613,7 @@ export default function BookingsPage() {
                 architect={activeArchitect}
                 dateLabel="19th February" timeLabel="9AM – 9PM"
                 leftLabel="Available from:" rightLabel="Working hours:"
+                onViewProfile={() => setProfileDrawer(architects.find(a => a.id === activeArchitect.id) ?? null)}
               />
 
               <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
@@ -689,6 +690,7 @@ export default function BookingsPage() {
                 architect={activeArchitect}
                 dateLabel={selectedDate ? `Feb ${selectedDate}` : "—"} timeLabel={selectedSlotLabel}
                 leftLabel="Date:" rightLabel="Time:"
+                onViewProfile={() => setProfileDrawer(architects.find(a => a.id === activeArchitect.id) ?? null)}
               />
 
               <div className="space-y-5">
