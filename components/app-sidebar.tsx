@@ -2,7 +2,38 @@
 
 import { LayoutDashboard, MessageSquare, CalendarDays, CreditCard, LogOut } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+import { useState } from "react"
+
+function SignOutModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
+  return (
+    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-end md:items-center justify-center z-50 px-4">
+      <div className="bg-white dark:bg-[#0D1B2E] w-full md:max-w-xs rounded-t-3xl md:rounded-2xl p-7 shadow-2xl">
+        <div className="flex justify-center mb-5">
+          <div className="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
+            <LogOut className="w-6 h-6 text-red-500" />
+          </div>
+        </div>
+        <h2 className="text-base font-bold text-gray-900 dark:text-white text-center mb-2">Sign out?</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 text-center leading-relaxed mb-6">
+          You'll need to sign back in to access your account.
+        </p>
+        <button
+          onClick={onConfirm}
+          className="w-full h-11 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-xl mb-2.5 transition-colors"
+        >
+          Yes, sign out
+        </button>
+        <button
+          onClick={onCancel}
+          className="w-full h-11 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-semibold rounded-xl transition-colors"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  )
+}
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard",       href: "/dashboard" },
@@ -13,6 +44,8 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+  const [showSignOut, setShowSignOut] = useState(false)
 
   return (
     <>
@@ -40,13 +73,13 @@ export function AppSidebar() {
             )
           })}
         </nav>
-        <Link
-          href="/login"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+        <button
+          onClick={() => setShowSignOut(true)}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 dark:text-gray-600 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/8 transition-colors"
         >
           <LogOut className="w-4 h-4" />
           Sign out
-        </Link>
+        </button>
       </aside>
 
       {/* ── Mobile bottom navigation ── */}
@@ -68,7 +101,22 @@ export function AppSidebar() {
             </Link>
           )
         })}
+        <button
+          onClick={() => setShowSignOut(true)}
+          className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl text-gray-400 dark:text-gray-600 transition-colors"
+        >
+          <LogOut className="w-5 h-5" />
+          <span className="text-[10px] font-medium">Sign out</span>
+        </button>
       </nav>
+
+      {/* ── Sign out modal ── */}
+      {showSignOut && (
+        <SignOutModal
+          onConfirm={() => router.push("/login")}
+          onCancel={() => setShowSignOut(false)}
+        />
+      )}
     </>
   )
 }
