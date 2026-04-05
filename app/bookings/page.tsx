@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useRef } from "react"
-import { Search, Star, X, BadgeCheck, Check, ChevronLeft, ChevronRight } from "lucide-react"
+import { useState, useRef, useEffect } from "react"
+import { Search, Star, X, BadgeCheck, Check, ChevronLeft, ChevronRight, MapPin, Briefcase, GraduationCap, Award } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -16,11 +16,222 @@ import { CalendarDays } from "lucide-react"
 const categories = ["Architecture", "Interior Design", "Construction", "Urban Design", "Residential Architect", "Landscape Design"]
 
 const architects = [
-  { id: 1, name: "Richard Osei",    role: "Architect",          rating: 4.9, reviews: 28, photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&auto=format&fit=crop&q=80" },
-  { id: 2, name: "Sophie Laurent",  role: "Interior Designer",  rating: 4.6, reviews: 19, photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80" },
-  { id: 3, name: "Amara Diallo",    role: "Interior Designer",  rating: 4.3, reviews: 14, photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80" },
-  { id: 4, name: "Oliver Marsh",    role: "Landscape Designer", rating: 4.8, reviews: 31, photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80" },
+  {
+    id: 1, name: "Richard Osei", role: "Architect", rating: 4.9, reviews: 28,
+    photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&auto=format&fit=crop&q=80",
+    company: "Osei Design Group",
+    location: "Accra, Ghana",
+    available: "10th Feb",
+    hours: "9AM – 6PM",
+    about: "Richard is a seasoned architect with 10+ years delivering innovative, sustainable design solutions across residential and commercial projects. He is passionate about creating functional spaces that reflect the client's vision.",
+    specializations: ["Commercial Spaces", "Sustainable Design", "Residential", "Urban Planning"],
+    experience: [
+      { company: "Osei Design Group", role: "Principal Architect", type: "Full-time", period: "Mar 2019 – Present", description: "Lead architectural design for high-profile commercial and residential projects across West Africa." },
+      { company: "Foster + Partners", role: "Senior Architect", type: "Full-time", period: "Jan 2015 – Feb 2019", description: "Collaborated on large-scale urban development projects in London and Dubai." },
+    ],
+    education: [{ school: "Kwame Nkrumah University", dept: "Bachelor of Architecture", period: "2008 – 2013" }],
+    reviews: [
+      { name: "Michael Brennan", rating: 5, text: "Richard was exceptional — he listened carefully to our needs and delivered a design that exceeded every expectation." },
+      { name: "Priya Nair", rating: 5, text: "Absolutely brilliant. His attention to detail and ability to balance aesthetics with function is unmatched." },
+    ],
+  },
+  {
+    id: 2, name: "Sophie Laurent", role: "Interior Designer", rating: 4.6, reviews: 19,
+    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80",
+    company: "Maison Laurent Studio",
+    location: "Paris, France",
+    available: "10th Feb",
+    hours: "10AM – 7PM",
+    about: "Sophie brings a refined European aesthetic to every project. With a background in fine arts and interior architecture, she creates interiors that feel both luxurious and liveable.",
+    specializations: ["Luxury Residential", "Hospitality", "Space Planning", "FF&E Selection"],
+    experience: [
+      { company: "Maison Laurent Studio", role: "Creative Director", type: "Full-time", period: "Jun 2018 – Present", description: "Founded and leads a boutique studio specialising in high-end residential and boutique hotel interiors." },
+      { company: "Kelly Wearstler", role: "Senior Designer", type: "Full-time", period: "Feb 2014 – May 2018", description: "Contributed to iconic hotel and residential projects across the US and Europe." },
+    ],
+    education: [{ school: "École Nationale Supérieure des Arts Décoratifs", dept: "Interior Architecture", period: "2009 – 2014" }],
+    reviews: [
+      { name: "Claire Dubois", rating: 5, text: "Sophie transformed our apartment into something out of a magazine. Her taste and precision are extraordinary." },
+      { name: "James O'Brien", rating: 4, text: "Great communicator and very talented. The final result was stunning." },
+    ],
+  },
+  {
+    id: 3, name: "Amara Diallo", role: "Interior Designer", rating: 4.3, reviews: 14,
+    photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80",
+    company: "AD Interiors",
+    location: "Nairobi, Kenya",
+    available: "10th Feb",
+    hours: "9AM – 5PM",
+    about: "Amara specialises in blending contemporary African design with modern interiors, creating culturally rich and functional living spaces. She has worked on residential projects across East Africa and Europe.",
+    specializations: ["Contemporary African Design", "Residential", "Material Selection", "Renovation"],
+    experience: [
+      { company: "AD Interiors", role: "Founder & Lead Designer", type: "Full-time", period: "Jan 2020 – Present", description: "Runs an independent studio focused on culturally informed residential design." },
+      { company: "Snøhetta", role: "Junior Designer", type: "Full-time", period: "Jul 2016 – Dec 2019", description: "Assisted on public space and cultural building interiors across Norway and Kenya." },
+    ],
+    education: [{ school: "University of Nairobi", dept: "Architecture & Interior Design", period: "2011 – 2016" }],
+    reviews: [
+      { name: "Fatima Hassan", rating: 5, text: "Amara brought so much warmth and personality to our home. She really understood what we wanted." },
+      { name: "David Kimani", rating: 4, text: "Thoughtful designer with a great eye for detail. Very easy to work with." },
+    ],
+  },
+  {
+    id: 4, name: "Oliver Marsh", role: "Landscape Designer", rating: 4.8, reviews: 31,
+    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80",
+    company: "Marsh Landscape Co.",
+    location: "Melbourne, Australia",
+    available: "10th Feb",
+    hours: "8AM – 5PM",
+    about: "Oliver is an award-winning landscape designer known for creating outdoor environments that seamlessly connect architecture and nature. His work spans private gardens, public parks, and commercial outdoor spaces.",
+    specializations: ["Garden Design", "Sustainable Planting", "Hardscaping", "Public Spaces"],
+    experience: [
+      { company: "Marsh Landscape Co.", role: "Principal Designer", type: "Full-time", period: "Apr 2017 – Present", description: "Leads a team of landscape architects delivering residential and commercial projects across Australia." },
+      { company: "Gustafson Porter + Bowman", role: "Landscape Architect", type: "Full-time", period: "Aug 2012 – Mar 2017", description: "Contributed to high-profile public landscape projects in the UK and Europe." },
+    ],
+    education: [{ school: "University of Melbourne", dept: "Bachelor of Landscape Architecture", period: "2007 – 2012" }],
+    reviews: [
+      { name: "Sarah Thompson", rating: 5, text: "Our garden has been completely transformed. Oliver's design is beautiful and incredibly practical." },
+      { name: "Mark Evans", rating: 5, text: "Professional, creative, and a pleasure to work with. Highly recommend." },
+    ],
+  },
 ]
+
+type Architect = typeof architects[0]
+
+// ─── Profile Drawer ────────────────────────────────────────
+
+function ProfileDrawer({ architect, onClose, onSelect }: { architect: Architect; onClose: () => void; onSelect: () => void }) {
+  useEffect(() => {
+    function handle(e: KeyboardEvent) { if (e.key === "Escape") onClose() }
+    document.addEventListener("keydown", handle)
+    return () => document.removeEventListener("keydown", handle)
+  }, [onClose])
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div className="fixed inset-0 bg-black/40 dark:bg-black/60 z-40" onClick={onClose} />
+
+      {/* Drawer — right side on desktop, bottom on mobile */}
+      <div className="fixed bottom-0 left-0 right-0 md:bottom-0 md:top-0 md:left-auto md:right-0 md:w-[420px] z-50 flex flex-col bg-white dark:bg-[#0D1B2E] rounded-t-3xl md:rounded-none md:rounded-l-3xl shadow-2xl max-h-[90vh] md:max-h-full overflow-hidden">
+
+        {/* Header */}
+        <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-gray-100 dark:border-white/8 flex-shrink-0">
+          <div className="flex items-center gap-4">
+            <img src={architect.photo} alt={architect.name} className="w-16 h-16 rounded-2xl object-cover flex-shrink-0" />
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">{architect.name}</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{architect.role}</p>
+              <div className="flex items-center gap-1.5 mt-1">
+                <div className="flex items-center gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className={`w-3 h-3 ${i < Math.floor(architect.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300 dark:text-gray-600"}`} />
+                  ))}
+                </div>
+                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{architect.rating}</span>
+                <span className="text-xs text-gray-400 dark:text-gray-500">({architect.reviews} reviews)</span>
+              </div>
+            </div>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors p-1 flex-shrink-0">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Meta pills */}
+        <div className="flex items-center gap-2 px-6 py-3 flex-shrink-0 flex-wrap border-b border-gray-100 dark:border-white/8">
+          <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+            <Briefcase className="w-3.5 h-3.5" />{architect.company}
+          </span>
+          <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
+          <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+            <MapPin className="w-3.5 h-3.5" />{architect.location}
+          </span>
+        </div>
+
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+
+          {/* About */}
+          <div>
+            <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-2">About</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{architect.about}</p>
+          </div>
+
+          {/* Specializations */}
+          <div>
+            <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-2.5">Specializations</p>
+            <div className="flex flex-wrap gap-2">
+              {architect.specializations.map(s => (
+                <span key={s} className="text-xs font-medium px-2.5 py-1 rounded-lg bg-secondary/15 dark:bg-secondary/10 text-primary dark:text-secondary">{s}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Experience */}
+          <div>
+            <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <Briefcase className="w-3.5 h-3.5" /> Experience
+            </p>
+            <div className="space-y-4">
+              {architect.experience.map((e, i) => (
+                <div key={i} className="border-l-2 border-secondary/30 pl-4">
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">{e.company}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-0.5">{e.role} · <span className="text-secondary">{e.type}</span></p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mb-1.5">{e.period}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{e.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Education */}
+          <div>
+            <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <GraduationCap className="w-3.5 h-3.5" /> Education
+            </p>
+            {architect.education.map((e, i) => (
+              <div key={i} className="border-l-2 border-gray-200 dark:border-white/10 pl-4">
+                <p className="text-sm font-bold text-gray-900 dark:text-white">{e.school}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{e.dept}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">{e.period}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Reviews */}
+          <div>
+            <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <Award className="w-3.5 h-3.5" /> Client Reviews
+            </p>
+            <div className="space-y-3">
+              {architect.reviews.map((r, i) => (
+                <div key={i} className="bg-gray-50 dark:bg-white/5 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{r.name}</p>
+                    <div className="flex items-center gap-0.5">
+                      {[...Array(r.rating)].map((_, j) => <Star key={j} className="w-3 h-3 fill-yellow-400 text-yellow-400" />)}
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">"{r.text}"</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        {/* Footer CTA */}
+        <div className="px-6 py-4 border-t border-gray-100 dark:border-white/8 flex-shrink-0">
+          <button
+            onClick={() => { onSelect(); onClose() }}
+            className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold rounded-xl transition-colors"
+          >
+            Select {architect.name.split(" ")[0]}
+          </button>
+        </div>
+      </div>
+    </>
+  )
+}
 
 type CalDay = { d: number; out?: boolean; highlight?: boolean }
 const calendarWeeks: CalDay[][] = [
@@ -89,7 +300,7 @@ function ArchitectBar({ architect, dateLabel, timeLabel, leftLabel, rightLabel }
             <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />{architect.rating} ({architect.reviews} Reviews)
           </p>
         </div>
-        <button className="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">View Profile</button>
+        <button onClick={() => setProfileDrawer(architects.find(a => a.id === architect.id) ?? null)} className="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">View Profile</button>
       </div>
       {/* Row 2: date + time badges */}
       <div className="flex items-center gap-4">
@@ -164,6 +375,7 @@ export default function BookingsPage() {
   const selectedSlotLabel = selectedSlot !== null ? timeSlots[selectedSlot] : "—"
   const [architectDot, setArchitectDot] = useState(0)
   const architectScrollRef = useRef<HTMLDivElement>(null)
+  const [profileDrawer, setProfileDrawer] = useState<Architect | null>(null)
 
   function toggleCategory(cat: string) {
     setSelectedCategories(prev => prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat])
@@ -324,7 +536,7 @@ export default function BookingsPage() {
                         </div>
                       </div>
                       <div className="border-t border-[#07111E]/10 pt-2.5 text-center">
-                        <span className="text-xs font-medium text-[#07111E]/60">View Profile</span>
+                        <button onClick={e => { e.stopPropagation(); setProfileDrawer(a) }} className="text-xs font-medium text-[#07111E]/60 hover:text-[#07111E] transition-colors">View Profile</button>
                       </div>
                     </button>
                   ))}
@@ -379,7 +591,7 @@ export default function BookingsPage() {
                       </div>
                     </div>
                     <div className="border-t border-[#07111E]/10 pt-2.5 text-center">
-                      <span className="text-xs font-medium text-[#07111E]/60">View Profile</span>
+                      <button onClick={e => { e.stopPropagation(); setProfileDrawer(a) }} className="text-xs font-medium text-[#07111E]/60 hover:text-[#07111E] transition-colors">View Profile</button>
                     </div>
                   </button>
                 ))}
@@ -637,6 +849,14 @@ export default function BookingsPage() {
       </div>
 
       {confirmed && <SuccessModal onClose={() => { setConfirmed(false); window.location.href = "/dashboard" }} />}
+
+      {profileDrawer && (
+        <ProfileDrawer
+          architect={profileDrawer}
+          onClose={() => setProfileDrawer(null)}
+          onSelect={() => setSelectedArchitect(profileDrawer.id)}
+        />
+      )}
     </div>
   )
 }
