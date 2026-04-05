@@ -59,19 +59,6 @@ export default function LoginPage() {
             <p className="text-sm text-gray-500 dark:text-gray-400">Sign in to your Planr account to continue.</p>
           </div>
 
-          {/* Demo credentials banner */}
-          <button
-            onClick={fillDemo}
-            className="w-full mb-5 flex items-center justify-between px-4 py-3 rounded-xl border border-secondary/40 bg-secondary/8 dark:bg-secondary/10 hover:bg-secondary/15 dark:hover:bg-secondary/15 transition-colors group"
-          >
-            <div className="text-left">
-              <p className="text-xs font-bold text-primary dark:text-secondary mb-0.5">Try the demo</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 font-mono">{DEMO_EMAIL} · {DEMO_PASSWORD}</p>
-            </div>
-            <span className="text-xs font-semibold text-secondary bg-secondary/15 px-2.5 py-1 rounded-lg group-hover:bg-secondary/25 transition-colors whitespace-nowrap">
-              Fill in →
-            </span>
-          </button>
 
           <div className="space-y-3 mb-4">
             <Input
