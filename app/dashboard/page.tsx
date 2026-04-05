@@ -12,7 +12,7 @@ import { AppHeader } from "@/components/app-header"
 // ─── Data ─────────────────────────────────────────────────
 
 const ongoingConsultations = [
-  { name: "Sarah Mitchell", initials: "SM", type: "Architecture", date: "Oct 04, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&auto=format&fit=crop&q=80" },
+  { name: "Sarah Mitchell", initials: "SM", type: "Architecture", date: "Oct 04, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=80&auto=format&fit=crop&q=80" },
   { name: "Marcus Webb",    initials: "MW", type: "Urban Design", date: "Oct 06, 2022", color: "bg-secondary/20 text-primary dark:text-secondary" },
   { name: "Lauren Chen",    initials: "LC", type: "Construction", date: "Oct 13, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=80&auto=format&fit=crop&q=80" },
 ]
@@ -30,7 +30,7 @@ const recentQuestions = [
     initials: "JT",
     role: "Architect",
     time: "14 minutes ago",
-    photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80",
+    photo: "https://images.unsplash.com/photo-1556157382-97eda2f9e2bf?w=80&auto=format&fit=crop&q=80",
   },
   {
     question: "How long does a typical residential project take?",
