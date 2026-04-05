@@ -186,9 +186,9 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
               className="flex items-center gap-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               <div className="w-8 h-8 rounded-full bg-secondary/25 dark:bg-secondary/20 flex items-center justify-center text-xs font-bold text-primary dark:text-secondary">
-                SF
+                DM
               </div>
-              <span className="hidden sm:inline">Sahan Fernando</span>
+              <span className="hidden sm:inline">Dinidu Missaka</span>
               <ChevronDown className={`w-3.5 h-3.5 text-gray-400 hidden sm:block transition-transform ${userOpen ? "rotate-180" : ""}`} />
             </button>
 
@@ -199,11 +199,11 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
                 <div className="px-4 py-3.5 border-b border-gray-100 dark:border-gray-800">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-secondary/25 dark:bg-secondary/20 flex items-center justify-center text-xs font-bold text-primary dark:text-secondary flex-shrink-0">
-                      SF
+                      DM
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">Sahan Fernando</p>
-                      <p className="text-xs text-gray-400 dark:text-gray-500 truncate">sahan@planr.app</p>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">Dinidu Missaka</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 truncate">dinidu@planr.app</p>
                       <span className="text-[10px] font-semibold text-secondary bg-secondary/15 px-1.5 py-0.5 rounded-md">Customer</span>
                     </div>
                   </div>

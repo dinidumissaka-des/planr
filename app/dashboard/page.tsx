@@ -92,7 +92,7 @@ export default function DashboardPage() {
               >
                 <div className="relative z-10">
                   <p className="text-white/50 text-sm font-medium mb-1">Good morning</p>
-                  <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Sahan Fernando</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Dinidu Missaka</h2>
                   <p className="text-white/60 text-sm">You have <span className="text-secondary font-semibold">2 ongoing</span> and <span className="text-white font-semibold">1 upcoming</span> consultation</p>
                 </div>
                 <div className="relative z-10">
