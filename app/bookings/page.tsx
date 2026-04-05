@@ -16,10 +16,10 @@ import { CalendarDays } from "lucide-react"
 const categories = ["Architecture", "Interior Design", "Construction", "Urban Design", "Residential Architect", "Landscape Design"]
 
 const architects = [
-  { id: 1, name: "Kaiya Rosser",     role: "Architect",          rating: 4.9, reviews: 12, photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&auto=format&fit=crop&q=80" },
-  { id: 2, name: "Hanna Aminoff",    role: "Interior Designer",  rating: 3.2, reviews: 12, photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80" },
-  { id: 3, name: "Kierra Vetrovs",   role: "Interior Designer",  rating: 4.3, reviews: 12, photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80" },
-  { id: 4, name: "James Harrington", role: "Landscape Designer", rating: 4.9, reviews: 12, photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80" },
+  { id: 1, name: "Richard Osei",    role: "Architect",          rating: 4.9, reviews: 28, photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&auto=format&fit=crop&q=80" },
+  { id: 2, name: "Sophie Laurent",  role: "Interior Designer",  rating: 4.6, reviews: 19, photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80" },
+  { id: 3, name: "Amara Diallo",    role: "Interior Designer",  rating: 4.3, reviews: 14, photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80" },
+  { id: 4, name: "Oliver Marsh",    role: "Landscape Designer", rating: 4.8, reviews: 31, photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80" },
 ]
 
 type CalDay = { d: number; out?: boolean; highlight?: boolean }

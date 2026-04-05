@@ -15,8 +15,8 @@ const initialConsultMessages: Message[] = [
 ]
 
 const previousConsultations = [
-  { name: "Cooper Philips", date: "2022/01/18", photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80" },
-  { name: "Davis Calzoni",  date: "2022/01/18", photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" },
+  { name: "Alex Rivera",    date: "2022/01/18", photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&auto=format&fit=crop&q=80" },
+  { name: "James Thornton", date: "2022/01/18", photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" },
 ]
 
 const aiResponses: Record<string, string> = {
@@ -249,10 +249,10 @@ export default function QuestionAnswerPage() {
               {/* Consultant header */}
               {mode === "consultant" && (
                 <div className="flex items-center gap-3 px-4 md:px-6 py-3 border-b border-gray-50 dark:border-white/5 flex-wrap">
-                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="Davis" className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80" alt="James" className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-gray-400 dark:text-gray-600 font-medium leading-none mb-0.5">Consult</p>
-                    <p className="text-sm md:text-base font-bold text-gray-900 dark:text-white leading-tight">Davis Calzoni</p>
+                    <p className="text-sm md:text-base font-bold text-gray-900 dark:text-white leading-tight">James Thornton</p>
                   </div>
                   <div className="text-right hidden sm:block">
                     <p className="text-sm font-bold text-gray-900 dark:text-white">Architect</p>

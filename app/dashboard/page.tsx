@@ -12,22 +12,22 @@ import { AppHeader } from "@/components/app-header"
 // ─── Data ─────────────────────────────────────────────────
 
 const ongoingConsultations = [
-  { name: "Judith Lowe",    initials: "JL", type: "Architecture",  date: "Oct 04, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&auto=format&fit=crop&q=80" },
-  { name: "Conrad Harber",  initials: "CH", type: "Urban Design",  date: "Oct 06, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80" },
-  { name: "Erica Jones",    initials: "EJ", type: "Construction",  date: "Oct 13, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=80" },
+  { name: "Sarah Mitchell",  initials: "SM", type: "Architecture",  date: "Oct 04, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&auto=format&fit=crop&q=80" },
+  { name: "Marcus Webb",     initials: "MW", type: "Urban Design",  date: "Oct 06, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80" },
+  { name: "Lauren Chen",     initials: "LC", type: "Construction",  date: "Oct 13, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=80" },
 ]
 
 const upcomingConsultations = [
-  { name: "Beth Fisher",        initials: "BF", type: "Interior Design",      date: "Oct 14, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80" },
-  { name: "Priscilla Larkin",   initials: "PL", type: "Residential Architect", date: "Oct 15, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80" },
-  { name: "Johanna Wintheiser", initials: "JW", type: "Urban Design",          date: "Oct 16, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=80&auto=format&fit=crop&q=80" },
+  { name: "Priya Sharma",    initials: "PS", type: "Interior Design",       date: "Oct 14, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80" },
+  { name: "Tom Hargreaves",  initials: "TH", type: "Residential Architect", date: "Oct 15, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&auto=format&fit=crop&q=80" },
+  { name: "Nina Okafor",     initials: "NO", type: "Urban Design",          date: "Oct 16, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=80&auto=format&fit=crop&q=80" },
 ]
 
 const recentQuestions = [
   {
     question: "What's your fee structure and what can I expect in costs?",
     answer: "Architects use different fee structures. On your end, be open about your budget — cost limitations are extremely critical since quality work can be very expensive.",
-    consultant: "Davis Calzoni",
+    consultant: "James Thornton",
     role: "Architect",
     time: "14 minutes ago",
     rating: 4.9,
@@ -36,11 +36,11 @@ const recentQuestions = [
   {
     question: "How long does a typical residential project take?",
     answer: "A full residential build typically takes 12–24 months from design to completion. Permitting alone can take 2–3 months depending on your jurisdiction.",
-    consultant: "Cooper Philips",
+    consultant: "Alex Rivera",
     role: "Residential Architect",
     time: "2 days ago",
     rating: 4.7,
-    photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80",
+    photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&auto=format&fit=crop&q=80",
   },
 ]
 
