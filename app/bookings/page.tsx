@@ -536,7 +536,7 @@ export default function BookingsPage() {
                         </div>
                       </div>
                       <div className="border-t border-[#07111E]/10 pt-2.5 text-center">
-                        <button onClick={e => { e.stopPropagation(); setProfileDrawer(a) }} className="text-xs font-medium text-[#07111E]/60 hover:text-[#07111E] transition-colors">View Profile</button>
+                        <span onClick={e => { e.stopPropagation(); setProfileDrawer(a) }} className="text-xs font-medium text-[#07111E]/60 hover:text-[#07111E] transition-colors cursor-pointer">View Profile</span>
                       </div>
                     </button>
                   ))}
@@ -591,7 +591,7 @@ export default function BookingsPage() {
                       </div>
                     </div>
                     <div className="border-t border-[#07111E]/10 pt-2.5 text-center">
-                      <button onClick={e => { e.stopPropagation(); setProfileDrawer(a) }} className="text-xs font-medium text-[#07111E]/60 hover:text-[#07111E] transition-colors">View Profile</button>
+                      <span onClick={e => { e.stopPropagation(); setProfileDrawer(a) }} className="text-xs font-medium text-[#07111E]/60 hover:text-[#07111E] transition-colors cursor-pointer">View Profile</span>
                     </div>
                   </button>
                 ))}
