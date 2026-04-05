@@ -78,8 +78,7 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
       <header className="h-14 md:h-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-4 md:px-8 flex-shrink-0 relative z-30">
         {/* Mobile: logo; Desktop: page title */}
         <img src="/planr-logo.svg" alt="Planr" className="h-6 md:hidden dark:invert" />
-        <h1 className="hidden md:flex text-2xl font-bold text-gray-900 dark:text-white items-center gap-2">
-          {icon}
+        <h1 className="hidden md:flex text-2xl font-bold text-gray-900 dark:text-white">
           {title}
         </h1>
 
