@@ -3,8 +3,9 @@
 import { Bell, ChevronDown, CheckCircle2, Info, X, ArrowUpRight, Sun, Moon, Command, User, Settings, LogOut } from "lucide-react"
 import Link from "next/link"
 import { useState, useRef, useEffect } from "react"
-import { useTheme } from "@/hooks/use-theme"
 import { useRouter } from "next/navigation"
+import { useTheme } from "@/hooks/use-theme"
+import { createClient } from "@/lib/supabase"
 
 const initialNotifications = [
   { id: 1, type: "success", title: "Good news, everyone",  body: "Nothing to worry about, everything is going great!" },
@@ -53,9 +54,36 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
   const [userOpen, setUserOpen] = useState(false)
   const [showSignOut, setShowSignOut] = useState(false)
   const [notifications, setNotifications] = useState(initialNotifications)
+  const [userEmail, setUserEmail] = useState("")
+  const [userName, setUserName] = useState("")
   const notifRef = useRef<HTMLDivElement>(null)
   const userRef = useRef<HTMLDivElement>(null)
   const { theme, toggleTheme } = useTheme()
+
+  useEffect(() => {
+    async function loadUser() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        setUserEmail(user.email ?? "")
+        const first = user.user_metadata?.first_name ?? ""
+        const last = user.user_metadata?.last_name ?? ""
+        setUserName(first && last ? `${first} ${last}` : (user.email ?? ""))
+      }
+    }
+    loadUser()
+  }, [])
+
+  const initials = userName
+    ? userName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2)
+    : userEmail.slice(0, 2).toUpperCase()
+
+  async function handleSignOut() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push("/login")
+    router.refresh()
+  }
 
   useEffect(() => {
     function handle(e: MouseEvent) {
@@ -77,7 +105,7 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
     <>
       <header className="h-14 md:h-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-4 md:px-8 flex-shrink-0 relative z-30">
         {/* Mobile: logo; Desktop: page title */}
-        <img src="/planr-logo.svg" alt="Planr" className="h-6 md:hidden dark:invert" />
+        <img src="/planr-logo.svg" alt="Planr" className="h-6 md:hidden dark:hidden" />
         <h1 className="hidden md:flex text-2xl font-bold text-gray-900 dark:text-white">
           {title}
         </h1>
@@ -105,7 +133,7 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
             {theme === "dark" ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
           </button>
 
-          {/* Bell with dropdown */}
+          {/* Bell */}
           <div ref={notifRef} className="relative">
             <button
               onClick={() => setNotifOpen(o => !o)}
@@ -119,8 +147,9 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
               )}
             </button>
 
+            {/* Desktop dropdown */}
             {notifOpen && (
-              <div className="absolute right-0 top-10 w-80 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+              <div className="hidden md:block absolute right-0 top-10 w-80 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                   <p className="text-sm font-bold text-gray-900 dark:text-white">Notifications</p>
                   <Link
@@ -131,7 +160,6 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
                     View all <ArrowUpRight className="w-3 h-3" />
                   </Link>
                 </div>
-
                 <div className="divide-y divide-gray-50 dark:divide-gray-800 max-h-72 overflow-y-auto">
                   {notifications.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-10 text-gray-400">
@@ -151,17 +179,13 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
                           <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 mb-0.5">{n.title}</p>
                           <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{n.body}</p>
                         </div>
-                        <button
-                          onClick={(e) => dismiss(n.id, e)}
-                          className="text-gray-300 hover:text-gray-600 transition-colors flex-shrink-0 mt-0.5"
-                        >
+                        <button onClick={(e) => dismiss(n.id, e)} className="text-gray-300 hover:text-gray-600 transition-colors flex-shrink-0 mt-0.5">
                           <X className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     ))
                   )}
                 </div>
-
                 {notifications.length > 0 && (
                   <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-800">
                     <Link
@@ -179,48 +203,43 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
 
           <div className="w-px h-5 bg-gray-200 dark:bg-gray-700" />
 
-          {/* User dropdown */}
+          {/* User button */}
           <div ref={userRef} className="relative">
             <button
               onClick={() => setUserOpen(o => !o)}
               className="flex items-center gap-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               <div className="w-8 h-8 rounded-full bg-secondary/25 dark:bg-secondary/20 flex items-center justify-center text-xs font-bold text-primary dark:text-secondary">
-                AM
+                {initials}
               </div>
-              <span className="hidden sm:inline">Alina Moss</span>
+              <span className="hidden sm:inline">{userName || userEmail}</span>
               <ChevronDown className={`w-3.5 h-3.5 text-gray-400 hidden sm:block transition-transform ${userOpen ? "rotate-180" : ""}`} />
             </button>
 
+            {/* Desktop dropdown */}
             {userOpen && (
-              <div className="absolute right-0 top-11 w-56 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
-
-                {/* Profile block */}
+              <div className="hidden md:block absolute right-0 top-11 w-56 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
                 <div className="px-4 py-3.5 border-b border-gray-100 dark:border-gray-800">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-secondary/25 dark:bg-secondary/20 flex items-center justify-center text-xs font-bold text-primary dark:text-secondary flex-shrink-0">
-                      AM
+                      {initials}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">Alina Moss</p>
-                      <p className="text-xs text-gray-400 dark:text-gray-500 truncate">alina@planr.app</p>
-                      <span className="text-[10px] font-semibold text-secondary bg-secondary/15 px-1.5 py-0.5 rounded-md">Customer</span>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{userName || userEmail}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 truncate">{userEmail}</p>
                     </div>
                   </div>
                 </div>
-
-                {/* Menu items */}
                 <div className="py-1.5">
-                  <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
+                  <Link href="/profile" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
                     <User className="w-4 h-4" />
                     My Profile
-                  </button>
-                  <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
+                  </Link>
+                  <Link href="/settings" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
                     <Settings className="w-4 h-4" />
                     Account Settings
-                  </button>
+                  </Link>
                 </div>
-
                 <div className="border-t border-gray-100 dark:border-gray-800 py-1.5">
                   <button
                     onClick={() => { setUserOpen(false); setShowSignOut(true) }}
@@ -237,9 +256,95 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
         </div>
       </header>
 
+      {/* Mobile full-screen notifications */}
+      {notifOpen && (
+        <div className="fixed inset-0 bg-white dark:bg-[#07111E] z-50 flex flex-col md:hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+            <p className="text-base font-bold text-gray-900 dark:text-white">Notifications</p>
+            <button onClick={() => setNotifOpen(false)} className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800">
+            {notifications.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-gray-400 pb-20">
+                <Bell className="w-10 h-10 mb-3 opacity-30" />
+                <p className="text-sm font-medium">No notifications</p>
+              </div>
+            ) : (
+              notifications.map(n => (
+                <div key={n.id} className="flex items-start gap-3 px-5 py-4">
+                  <div className="flex-shrink-0 mt-0.5">
+                    {n.type === "success"
+                      ? <CheckCircle2 className="w-5 h-5 text-emerald-500" fill="#10b981" color="white" />
+                      : <Info className="w-5 h-5 text-secondary" fill="#81B9E9" color="white" />
+                    }
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-0.5">{n.title}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{n.body}</p>
+                  </div>
+                  <button onClick={(e) => dismiss(n.id, e)} className="text-gray-300 hover:text-gray-500 transition-colors flex-shrink-0 mt-0.5">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+          {notifications.length > 0 && (
+            <div className="px-5 py-4 border-t border-gray-100 dark:border-gray-800">
+              <Link
+                href="/notifications"
+                onClick={() => setNotifOpen(false)}
+                className="block w-full text-center text-sm font-semibold text-gray-600 dark:text-gray-300 py-3 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors"
+              >
+                See all notifications
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Mobile full-screen profile */}
+      {userOpen && (
+        <div className="fixed inset-0 bg-white dark:bg-[#07111E] z-50 flex flex-col md:hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+            <p className="text-base font-bold text-gray-900 dark:text-white">Account</p>
+            <button onClick={() => setUserOpen(false)} className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            {/* Profile block */}
+            <div className="px-5 py-6 border-b border-gray-100 dark:border-gray-800">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-full bg-secondary/25 dark:bg-secondary/20 flex items-center justify-center text-lg font-bold text-primary dark:text-secondary flex-shrink-0">
+                  {initials}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-base font-semibold text-gray-900 dark:text-white truncate">{userName || userEmail}</p>
+                  <p className="text-sm text-gray-400 dark:text-gray-500 truncate">{userEmail}</p>
+                </div>
+              </div>
+            </div>
+            {/* Menu items */}
+            <div className="py-2">
+              <Link href="/profile" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                <User className="w-5 h-5 text-gray-400" />
+                My Profile
+              </Link>
+              <Link href="/settings" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                <Settings className="w-5 h-5 text-gray-400" />
+                Account Settings
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showSignOut && (
         <SignOutModal
-          onConfirm={() => router.push("/login")}
+          onConfirm={handleSignOut}
           onCancel={() => setShowSignOut(false)}
         />
       )}

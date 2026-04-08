@@ -6,8 +6,10 @@ import {
   ChevronRight, Star
 } from "lucide-react"
 import Link from "next/link"
+import { useState, useEffect } from "react"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
+import { createClient } from "@/lib/supabase"
 
 // ─── Data ─────────────────────────────────────────────────
 
@@ -69,6 +71,21 @@ function ConsultationRow({ row }: { row: typeof ongoingConsultations[0] }) {
 // ─── Page ─────────────────────────────────────────────────
 
 export default function DashboardPage() {
+  const [userName, setUserName] = useState("")
+
+  useEffect(() => {
+    async function loadUser() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const first = user.user_metadata?.first_name ?? ""
+        const last = user.user_metadata?.last_name ?? ""
+        setUserName(first && last ? `${first} ${last}` : (user.email ?? ""))
+      }
+    }
+    loadUser()
+  }, [])
+
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
       <AppSidebar />
@@ -92,7 +109,7 @@ export default function DashboardPage() {
               >
                 <div className="relative z-10">
                   <p className="text-white/50 text-sm font-medium mb-1">Good morning</p>
-                  <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Alina Moss</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-white mb-1">{userName}</h2>
                   <p className="text-white/60 text-sm">You have <span className="text-secondary font-semibold">2 ongoing</span> and <span className="text-white font-semibold">1 upcoming</span> consultation</p>
                 </div>
                 <div className="relative z-10">
@@ -114,7 +131,7 @@ export default function DashboardPage() {
                 ].map((stat, i) => (
                   <div
                     key={stat.label}
-                    className="relative rounded-2xl p-5 flex items-start justify-between overflow-hidden"
+                    className="relative rounded-2xl p-5 flex items-start justify-between overflow-hidden shadow-sm"
                     style={{
                       backgroundColor: i === 1 ? '#E1C1A5' : i === 2 ? '#BDC7D9' : '#81B9E9',
                       backgroundImage: `url('${i === 1 ? '/bg-grain-2.png' : i === 2 ? '/bg-grain-1.png' : '/bg-grain-3.png'}')`,
@@ -144,8 +161,9 @@ export default function DashboardPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {recentQuestions.map((q, i) => (
-                    <Link key={i} href="/question-answer" className="group border border-gray-200 dark:border-white/12 hover:border-secondary/40 rounded-xl p-4 transition-all block" style={{ backgroundImage: "url('/grain-bg-lg.svg')", backgroundSize: "cover", backgroundPosition: "center" }}>
-                      <div className="flex items-start gap-3">
+                    <Link key={i} href="/question-answer" className="group relative border border-gray-200 dark:border-white/12 hover:border-secondary/40 rounded-xl p-4 transition-all block shadow-sm hover:shadow-md overflow-hidden" style={{ backgroundImage: "url('/grain-bg-lg.svg')", backgroundSize: "cover", backgroundPosition: "center" }}>
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/55 to-white/35 dark:from-[#0D1B2E]/80 dark:to-[#0D1B2E]/60 pointer-events-none rounded-xl" />
+                      <div className="relative flex items-start gap-3">
                         <div className="mt-0.5"><Avatar photo={q.photo} initials={q.initials} /></div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">{q.consultant}

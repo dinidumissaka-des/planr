@@ -8,19 +8,31 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-
-const DEMO_EMAIL = "demo@planr.app"
-const DEMO_PASSWORD = "demo1234"
+import { createClient } from "@/lib/supabase"
 
 export default function LoginPage() {
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  function fillDemo() {
-    setEmail(DEMO_EMAIL)
-    setPassword(DEMO_PASSWORD)
+  async function handleSignIn() {
+    if (!email && !password) { setError("Please enter your email and password"); return }
+    if (!email) { setError("Please enter your email address"); return }
+    if (!password) { setError("Please enter your password"); return }
+    setError("")
+    setLoading(true)
+    const supabase = createClient()
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    setLoading(false)
+    if (error) {
+      setError(error.message)
+    } else {
+      router.push("/dashboard")
+      router.refresh()
+    }
   }
 
   return (
@@ -91,14 +103,19 @@ export default function LoginPage() {
               <Checkbox id="remember" />
               <Label htmlFor="remember" className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer">Remember me</Label>
             </div>
-            <Link href="#" className="text-sm text-secondary font-medium hover:underline">Forgot password?</Link>
+            <Link href="/forgot-password" className="text-sm text-secondary font-medium hover:underline">Forgot password?</Link>
           </div>
+
+          {error && (
+            <p className="text-sm text-red-500 mb-3">{error}</p>
+          )}
 
           <Button
             className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold rounded-xl mb-4"
-            onClick={() => router.push("/dashboard")}
+            onClick={handleSignIn}
+            disabled={loading}
           >
-            Sign In
+            {loading ? "Signing in…" : "Sign In"}
           </Button>
 
           <div className="relative flex items-center gap-3 mb-4">

@@ -8,13 +8,45 @@ import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-
+import { createClient } from "@/lib/supabase"
 
 export default function SignupPage() {
   const router = useRouter()
-  const [tab, setTab] = useState<"customer" | "architect">("customer")
+  const tab = "customer"
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirm, setConfirm] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  async function handleSignUp() {
+    if (!firstName || !lastName) { setError("Please enter your first and last name"); return }
+    if (!email) { setError("Please enter your email address"); return }
+    if (!password) { setError("Please enter a password"); return }
+    if (!confirm) { setError("Please confirm your password"); return }
+    if (password !== confirm) { setError("Passwords do not match"); return }
+    setError("")
+    setLoading(true)
+    const supabase = createClient()
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { first_name: firstName, last_name: lastName, phone, role: tab },
+      },
+    })
+    setLoading(false)
+    if (error) {
+      setError(error.message)
+    } else {
+      router.push(`/signup/verify?email=${encodeURIComponent(email)}`)
+    }
+  }
 
   return (
     <div className="flex h-screen w-screen overflow-hidden">
@@ -58,35 +90,20 @@ export default function SignupPage() {
             <p className="text-sm text-gray-500 dark:text-gray-400">Get started with Planr — it only takes a minute.</p>
           </div>
 
-          {/* Tabs */}
-          <div className="flex mb-6 bg-gray-100 dark:bg-white/5 rounded-xl p-1">
-            {(["customer", "architect"] as const).map((t) => (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all capitalize ${
-                  tab === t
-                    ? "bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm"
-                    : "text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400"
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-
           {/* Form fields */}
           <div className="space-y-3 mb-4">
             <div className="flex gap-3">
-              <Input placeholder="First name" className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl" />
-              <Input placeholder="Last name" className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl" />
+              <Input placeholder="First name" value={firstName} onChange={e => setFirstName(e.target.value)} className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl" />
+              <Input placeholder="Last name" value={lastName} onChange={e => setLastName(e.target.value)} className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl" />
             </div>
-            <Input type="email" placeholder="Email address" className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl" />
-            <Input type="tel" placeholder="Mobile number" className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl" />
+            <Input type="email" placeholder="Email address" value={email} onChange={e => setEmail(e.target.value)} className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl" />
+            <Input type="tel" placeholder="Mobile number" value={phone} onChange={e => setPhone(e.target.value)} className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl" />
             <div className="relative">
               <Input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
                 className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl pr-11"
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)}
@@ -98,6 +115,8 @@ export default function SignupPage() {
               <Input
                 type={showConfirm ? "text" : "password"}
                 placeholder="Confirm password"
+                value={confirm}
+                onChange={e => setConfirm(e.target.value)}
                 className="h-12 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl pr-11"
               />
               <button type="button" onClick={() => setShowConfirm(!showConfirm)}
@@ -117,11 +136,16 @@ export default function SignupPage() {
             </Label>
           </div>
 
+          {error && (
+            <p className="text-sm text-red-500 mb-3">{error}</p>
+          )}
+
           <Button
             className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold rounded-xl mb-4"
-            onClick={() => router.push("/ask")}
+            onClick={handleSignUp}
+            disabled={loading}
           >
-            Create Account
+            {loading ? "Creating account…" : "Create Account"}
           </Button>
 
           <div className="relative flex items-center gap-3 mb-4">

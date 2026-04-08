@@ -223,7 +223,7 @@ export default function QuestionAnswerPage() {
   }
 
   function openAI() { setMode("ai"); setView("chat") }
-  function openChat() { setMode("consultant"); setView("chat") }
+  function openChat() { setConsultChat([]); setMode("consultant"); setView("chat") }
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
@@ -242,16 +242,16 @@ export default function QuestionAnswerPage() {
           {view === "chat" && (
             <div className="flex-1 bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 flex flex-col overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] min-w-0">
               {/* Tabs */}
-              <div className="flex items-center gap-2 px-5 pt-5 pb-4 border-b border-gray-100 dark:border-white/8">
+              <div className="flex items-end gap-4 px-5 pt-5 pb-0 border-b border-gray-100 dark:border-white/8">
                 <button
                   onClick={() => setMode("consultant")}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${mode === "consultant" ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]" : "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/8"}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold transition-all border-b-2 ${mode === "consultant" ? "border-gray-900 dark:border-white text-gray-900 dark:text-white" : "border-transparent text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"}`}
                 >
                   <User className="w-3.5 h-3.5" /> Consultant Chat
                 </button>
                 <button
                   onClick={() => setMode("ai")}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${mode === "ai" ? "bg-primary dark:bg-secondary/20 text-white dark:text-secondary shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]" : "text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-white/8"}`}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold transition-all border-b-2 ${mode === "ai" ? "border-primary dark:border-secondary text-primary dark:text-secondary" : "border-transparent text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"}`}
                 >
                   <Sparkles className="w-3.5 h-3.5" /> AI Assistant
                 </button>

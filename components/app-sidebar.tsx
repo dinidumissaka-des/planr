@@ -4,6 +4,7 @@ import { LayoutDashboard, MessageSquare, CalendarDays, CreditCard, LogOut } from
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
+import { createClient } from "@/lib/supabase"
 
 function SignOutModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
   return (
@@ -47,12 +48,20 @@ export function AppSidebar() {
   const router = useRouter()
   const [showSignOut, setShowSignOut] = useState(false)
 
+  async function handleSignOut() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push("/login")
+    router.refresh()
+  }
+
   return (
     <>
       {/* ── Desktop sidebar ── */}
       <aside className="hidden md:flex w-[220px] flex-shrink-0 bg-white dark:bg-[#0A1525] border-r border-gray-100 dark:border-white/8 flex-col py-6 px-4">
         <Link href="/" className="flex items-center gap-2.5 px-2 mb-8">
-          <img src="/planr-logo.svg" alt="Planr" className="h-7 dark:invert" />
+          <img src="/planr-logo.svg" alt="Planr" className="h-7 dark:hidden" />
+          <img src="/planr-logo-light.svg" alt="Planr" className="h-7 hidden dark:block" />
         </Link>
         <nav className="flex flex-col gap-1 flex-1">
           {navItems.map(({ icon: Icon, label, href }) => {
@@ -101,19 +110,12 @@ export function AppSidebar() {
             </Link>
           )
         })}
-        <button
-          onClick={() => setShowSignOut(true)}
-          className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl text-gray-400 dark:text-gray-600 transition-colors"
-        >
-          <LogOut className="w-5 h-5" />
-          <span className="text-[10px] font-medium">Sign out</span>
-        </button>
       </nav>
 
       {/* ── Sign out modal ── */}
       {showSignOut && (
         <SignOutModal
-          onConfirm={() => router.push("/login")}
+          onConfirm={handleSignOut}
           onCancel={() => setShowSignOut(false)}
         />
       )}
