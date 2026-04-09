@@ -13,15 +13,15 @@ import { createClient } from "@/lib/supabase"
 // ─── Data ─────────────────────────────────────────────────
 
 const ongoingConsultations = [
-  { id: 1, name: "Roshan Perera",     initials: "RP", type: "Architecture",    date: "Mar 12, 2024", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&auto=format&fit=crop&q=80" },
-  { id: 6, name: "Thamali Kumarasinghe", initials: "TK", type: "Urban Design", date: "Mar 14, 2024", color: "bg-secondary/20 text-primary dark:text-secondary" },
-  { id: 2, name: "Dilani Wijesinghe", initials: "DW", type: "Interior Design", date: "Mar 18, 2024", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=80" },
+  { id: 1, name: "Roshan Perera",        initials: "RP", type: "Architecture",    date: "Mar 12, 2024", color: "bg-secondary/20 text-primary dark:text-secondary" },
+  { id: 6, name: "Thamali Kumarasinghe", initials: "TK", type: "Urban Design",    date: "Mar 14, 2024", color: "bg-secondary/20 text-primary dark:text-secondary" },
+  { id: 2, name: "Dilani Wijesinghe",    initials: "DW", type: "Interior Design", date: "Mar 18, 2024", color: "bg-secondary/20 text-primary dark:text-secondary" },
 ]
 
 const upcomingConsultations = [
-  { id: 5, name: "Nishantha Gunasekara", initials: "NG", type: "Coastal Architecture", date: "Mar 22, 2024", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80" },
-  { id: 3, name: "Kavinda Rajapaksa",    initials: "KR", type: "Landscape Design",     date: "Mar 25, 2024", color: "bg-secondary/20 text-primary dark:text-secondary" },
-  { id: 7, name: "Pradeep Liyanage",    initials: "PL", type: "Structural Engineering", date: "Mar 28, 2024", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80" },
+  { id: 5, name: "Nishantha Gunasekara", initials: "NG", type: "Coastal Architecture",  date: "Mar 22, 2024", color: "bg-secondary/20 text-primary dark:text-secondary" },
+  { id: 3, name: "Kavinda Rajapaksa",    initials: "KR", type: "Landscape Design",      date: "Mar 25, 2024", color: "bg-secondary/20 text-primary dark:text-secondary" },
+  { id: 7, name: "Pradeep Liyanage",    initials: "PL", type: "Structural Engineering", date: "Mar 28, 2024", color: "bg-secondary/20 text-primary dark:text-secondary" },
 ]
 
 const recentQuestions = [
@@ -31,7 +31,6 @@ const recentQuestions = [
     initials: "RP",
     role: "Architect",
     time: "22 minutes ago",
-    photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&auto=format&fit=crop&q=80",
   },
   {
     question: "How do I design for monsoon-season drainage on a hillside plot?",
@@ -44,11 +43,26 @@ const recentQuestions = [
 
 // ─── Sub-components ───────────────────────────────────────
 
-function Avatar({ photo, initials, size = "w-8 h-8", textSize = "text-[10px]" }: { photo?: string; initials: string; size?: string; textSize?: string }) {
-  if (photo) return <img src={photo} alt={initials} className={`${size} rounded-full object-cover flex-shrink-0`} />
+const avatarPalette = [
+  { bg: "bg-violet-100 dark:bg-violet-900/40", text: "text-violet-700 dark:text-violet-300" },
+  { bg: "bg-emerald-100 dark:bg-emerald-900/40", text: "text-emerald-700 dark:text-emerald-300" },
+  { bg: "bg-amber-100 dark:bg-amber-900/40", text: "text-amber-700 dark:text-amber-300" },
+  { bg: "bg-rose-100 dark:bg-rose-900/40", text: "text-rose-700 dark:text-rose-300" },
+  { bg: "bg-sky-100 dark:bg-sky-900/40", text: "text-sky-700 dark:text-sky-300" },
+  { bg: "bg-teal-100 dark:bg-teal-900/40", text: "text-teal-700 dark:text-teal-300" },
+  { bg: "bg-orange-100 dark:bg-orange-900/40", text: "text-orange-700 dark:text-orange-300" },
+]
+
+function getAvatarColor(initials: string) {
+  const index = initials.charCodeAt(0) % avatarPalette.length
+  return avatarPalette[index]
+}
+
+function Avatar({ initials, size = "w-8 h-8", textSize = "text-[10px]" }: { initials: string; size?: string; textSize?: string }) {
+  const { bg, text } = getAvatarColor(initials)
   return (
-    <div className={`${size} rounded-full bg-secondary/25 dark:bg-secondary/20 flex items-center justify-center flex-shrink-0`}>
-      <span className={`${textSize} font-bold text-primary dark:text-secondary`}>{initials}</span>
+    <div className={`${size} ${bg} rounded-full flex items-center justify-center flex-shrink-0`}>
+      <span className={`${textSize} font-bold ${text}`}>{initials}</span>
     </div>
   )
 }
@@ -56,7 +70,7 @@ function Avatar({ photo, initials, size = "w-8 h-8", textSize = "text-[10px]" }:
 function ConsultationRow({ row }: { row: typeof ongoingConsultations[0] }) {
   const inner = (
     <div className="flex items-center gap-3 py-3 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/60 dark:hover:bg-white/4 rounded-lg px-2 -mx-2 transition-colors">
-      <Avatar photo={row.photo} initials={row.initials} />
+      <Avatar initials={row.initials} />
       <span className="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{row.name}</span>
       <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${row.color} hidden sm:inline-flex`}>{row.type}</span>
       <span className="text-xs text-gray-400 dark:text-gray-500 w-24 text-right hidden md:block">{row.date}</span>
@@ -172,7 +186,7 @@ export default function DashboardPage() {
                     <Link key={i} href="/question-answer" className="group relative border border-gray-200 dark:border-white/12 hover:border-secondary/40 rounded-xl p-4 transition-all block shadow-sm hover:shadow-md overflow-hidden" style={{ backgroundImage: "url('/grain-bg-lg.svg')", backgroundSize: "cover", backgroundPosition: "center" }}>
                       <div className="absolute inset-0 bg-gradient-to-br from-white/55 to-white/35 dark:from-[#0D1B2E]/80 dark:to-[#0D1B2E]/60 pointer-events-none rounded-xl" />
                       <div className="relative flex items-start gap-3">
-                        <div className="mt-0.5"><Avatar photo={q.photo} initials={q.initials} /></div>
+                        <div className="mt-0.5"><Avatar initials={q.initials} /></div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">{q.consultant}
                             <span className="font-normal text-gray-400 dark:text-gray-500"> · {q.role}</span>
@@ -219,7 +233,7 @@ export default function DashboardPage() {
               <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Next consultation</p>
                 <Link href={`/consultants/${upcomingConsultations[0].id}`} className="flex items-center gap-3 mb-3 hover:opacity-80 transition-opacity">
-                  <Avatar photo={upcomingConsultations[0].photo} initials={upcomingConsultations[0].initials} size="w-10 h-10" textSize="text-xs" />
+                  <Avatar initials={upcomingConsultations[0].initials} size="w-10 h-10" textSize="text-xs" />
                   <div>
                     <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{upcomingConsultations[0].name}</p>
                     <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${upcomingConsultations[0].color}`}>{upcomingConsultations[0].type}</span>
@@ -244,7 +258,7 @@ export default function DashboardPage() {
                 </div>
                 {upcomingConsultations.map((row, i) => (
                   <Link key={i} href={`/consultants/${row.id}`} className="flex items-center gap-2.5 py-2.5 border-b border-gray-50 dark:border-white/5 last:border-0 hover:opacity-80 transition-opacity">
-                    <Avatar photo={row.photo} initials={row.initials} />
+                    <Avatar initials={row.initials} />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{row.name}</p>
                       <p className="text-[10px] text-gray-400 dark:text-gray-600">{row.date}</p>
