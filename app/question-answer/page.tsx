@@ -5,6 +5,7 @@ import { Mic, Sparkles, Star, ArrowUpRight, Bot, User, MessageSquare, MessageCir
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import Link from "next/link"
+import { AvatarInitials } from "@/components/ui/avatar-initials"
 
 // ─── Data ─────────────────────────────────────────────────
 
@@ -38,16 +39,8 @@ function getAIResponse(input: string): string {
   return "Great question! For specific professional advice tailored to your project, I recommend booking a consultation with one of our certified architects.\n\nIs there anything else I can help clarify?"
 }
 
-// ─── Avatar ───────────────────────────────────────────────
-
-function Avatar({ photo, initials, size = "w-8 h-8", textSize = "text-[10px]" }: { photo?: string; initials: string; size?: string; textSize?: string }) {
-  if (photo) return <img src={photo} alt={initials} className={`${size} rounded-full object-cover flex-shrink-0`} />
-  return (
-    <div className={`${size} rounded-full bg-secondary/25 dark:bg-secondary/20 flex items-center justify-center flex-shrink-0`}>
-      <span className={`${textSize} font-bold text-primary dark:text-secondary`}>{initials}</span>
-    </div>
-  )
-}
+const Avatar = ({ initials, size = "w-8 h-8", textSize = "text-[10px]" }: { initials: string; size?: string; textSize?: string }) =>
+  <AvatarInitials initials={initials} size={size} textSize={textSize} />
 
 // ─── Types ────────────────────────────────────────────────
 
@@ -117,7 +110,7 @@ function RightSidebar({ onAI, onView }: { onAI: () => void; onView: () => void }
         </div>
         {previousConsultations.map((c, i) => (
           <div key={i} className="grid grid-cols-[auto_1fr_auto_auto] items-center py-3 gap-2.5 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/60 dark:hover:bg-white/4 rounded-lg transition-colors px-1 -mx-1">
-            <Avatar photo={c.photo} initials={c.initials} />
+            <Avatar initials={c.initials} />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">{c.name}</span>
             <span className="text-xs text-gray-400 dark:text-gray-600 whitespace-nowrap">{c.date}</span>
             <button onClick={onView} className="text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">View</button>
@@ -260,7 +253,7 @@ export default function QuestionAnswerPage() {
               {/* Consultant header */}
               {mode === "consultant" && (
                 <div className="flex items-center gap-3 px-4 md:px-6 py-3 border-b border-gray-50 dark:border-white/5 flex-wrap">
-                  <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&auto=format&fit=crop&q=80" alt="James" className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                  <AvatarInitials initials="RP" size="w-10 h-10" textSize="text-xs" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-gray-400 dark:text-gray-600 font-medium leading-none mb-0.5">Consult</p>
                     <p className="text-sm md:text-base font-bold text-gray-900 dark:text-white leading-tight">James Thornton</p>

@@ -1,7 +1,6 @@
 export const architects = [
   {
     id: 1, name: "Roshan Perera", role: "Architect", rating: 4.9, reviewCount: 34,
-    photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&auto=format&fit=crop&q=80",
     company: "Perera & Associates",
     location: "Colombo 03, Sri Lanka",
     available: "10th Feb",
@@ -20,7 +19,6 @@ export const architects = [
   },
   {
     id: 2, name: "Dilani Wijesinghe", role: "Interior Designer", rating: 4.7, reviewCount: 21,
-    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80",
     company: "Studio Dilani",
     location: "Colombo 07, Sri Lanka",
     available: "12th Feb",
@@ -39,7 +37,6 @@ export const architects = [
   },
   {
     id: 3, name: "Kavinda Rajapaksa", role: "Landscape Architect", rating: 4.5, reviewCount: 16,
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80",
     company: "Greenlane Lanka",
     location: "Kandy, Sri Lanka",
     available: "14th Feb",
@@ -58,7 +55,6 @@ export const architects = [
   },
   {
     id: 4, name: "Amali Senanayake", role: "Interior Designer", rating: 4.4, reviewCount: 13,
-    photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80",
     company: "Amali Design Co.",
     location: "Galle, Sri Lanka",
     available: "15th Feb",
@@ -77,7 +73,6 @@ export const architects = [
   },
   {
     id: 5, name: "Nishantha Gunasekara", role: "Architect", rating: 4.8, reviewCount: 27,
-    photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80",
     company: "Gunasekara Architects",
     location: "Negombo, Sri Lanka",
     available: "16th Feb",
@@ -96,7 +91,6 @@ export const architects = [
   },
   {
     id: 6, name: "Thamali Kumarasinghe", role: "Urban Designer", rating: 4.6, reviewCount: 18,
-    photo: "",
     company: "UrbanForms Lanka",
     location: "Colombo 02, Sri Lanka",
     available: "17th Feb",
@@ -115,7 +109,6 @@ export const architects = [
   },
   {
     id: 7, name: "Pradeep Liyanage", role: "Structural Engineer", rating: 4.3, reviewCount: 12,
-    photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80",
     company: "Liyanage Structural Consultants",
     location: "Kandy, Sri Lanka",
     available: "18th Feb",

@@ -11,6 +11,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import { CalendarDays } from "lucide-react"
 import { architects, type Architect } from "@/lib/architects"
+import { AvatarInitials } from "@/components/ui/avatar-initials"
 
 // ─── Data ─────────────────────────────────────────────────
 
@@ -36,7 +37,7 @@ function ProfileDrawer({ architect, onClose, onSelect }: { architect: Architect;
         {/* Header */}
         <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-gray-100 dark:border-white/8 flex-shrink-0">
           <div className="flex items-center gap-4">
-            <img src={architect.photo} alt={architect.name} className="w-16 h-16 rounded-2xl object-cover flex-shrink-0" />
+            <AvatarInitials initials={architect.name.split(" ").map(n => n[0]).join("")} size="w-16 h-16" textSize="text-lg" rounded="rounded-2xl" />
             <div>
               <h2 className="text-lg font-bold text-gray-900 dark:text-white">{architect.name}</h2>
               <p className="text-sm text-gray-500 dark:text-gray-400">{architect.role}</p>
@@ -212,7 +213,7 @@ function ArchitectBar({ architect, dateLabel, timeLabel, leftLabel, rightLabel, 
     <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl p-4 mb-5">
       {/* Row 1: avatar + name + view profile */}
       <div className="flex items-center gap-3 mb-4">
-        <img src={architect.photo} alt={architect.name} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+        <AvatarInitials initials={architect.name.split(" ").map(n => n[0]).join("")} size="w-10 h-10" textSize="text-xs" />
         <div className="flex-1 min-w-0 space-y-1">
           <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{architect.name}</p>
           <p className="text-sm font-bold text-gray-900 dark:text-white">{architect.role}</p>
@@ -435,7 +436,7 @@ export default function BookingsPage() {
                       }}
                     >
                       <div className="flex items-start justify-between mb-3">
-                        <img src={a.photo} alt={a.name} className="w-12 h-12 rounded-full object-cover ring-2 ring-white/60" />
+                        <AvatarInitials initials={a.name.split(" ").map(n => n[0]).join("")} size="w-12 h-12" textSize="text-sm" rounded="rounded-full" />
                         <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex items-center justify-center flex-shrink-0 ${selectedArchitect === a.id ? "border-[#07111E]" : "border-[#07111E]/30"}`}>
                           {selectedArchitect === a.id && <div className="w-2 h-2 bg-[#07111E] rounded-full" />}
                         </div>
@@ -722,7 +723,7 @@ export default function BookingsPage() {
                 <p className="text-sm font-bold text-gray-800 dark:text-white mb-4">Booking Summary</p>
 
                 <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100 dark:border-white/8">
-                  <img src={activeArchitect.photo} alt={activeArchitect.name} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                  <AvatarInitials initials={activeArchitect.name.split(" ").map(n => n[0]).join("")} size="w-10 h-10" textSize="text-xs" />
                   <div>
                     <p className="text-sm font-semibold text-gray-800 dark:text-white">{activeArchitect.name}</p>
                     <p className="text-xs text-gray-400 dark:text-gray-500">{activeArchitect.role}</p>

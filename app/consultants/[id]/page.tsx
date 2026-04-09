@@ -7,6 +7,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import { architects } from "@/lib/architects"
 import Link from "next/link"
+import { AvatarInitials } from "@/components/ui/avatar-initials"
 
 export default function ConsultantPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -33,15 +34,12 @@ export default function ConsultantPage({ params }: { params: Promise<{ id: strin
 
             {/* ── Hero card ── */}
             <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6 flex flex-col sm:flex-row items-start gap-5">
-              {architect.photo ? (
-                <img src={architect.photo} alt={architect.name} className="w-20 h-20 rounded-2xl object-cover flex-shrink-0" />
-              ) : (
-                <div className="w-20 h-20 rounded-2xl bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-xl font-bold text-primary dark:text-secondary">
-                    {architect.name.split(" ").map(n => n[0]).join("")}
-                  </span>
-                </div>
-              )}
+              <AvatarInitials
+                initials={architect.name.split(" ").map(n => n[0]).join("")}
+                size="w-20 h-20"
+                textSize="text-xl"
+                rounded="rounded-2xl"
+              />
 
               <div className="flex-1 min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
