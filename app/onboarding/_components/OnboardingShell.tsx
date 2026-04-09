@@ -92,31 +92,39 @@ export default function OnboardingShell() {
       </div>
 
       {/* Right Panel */}
-      <div className="flex-1 bg-white dark:bg-[#07111E] flex flex-col px-6 md:px-14 py-8 md:py-10 overflow-y-auto">
-        <div className="flex-1 flex flex-col justify-center max-w-sm w-full mx-auto py-8">
-          <OnboardingProgress currentStep={step} totalSteps={TOTAL_STEPS} />
+      <div className="flex-1 bg-white dark:bg-[#07111E] flex flex-col overflow-hidden">
 
-          <div className="mb-2 text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+        {/* Progress — pinned to top on mobile */}
+        <div className="px-6 md:px-14 pt-8 md:pt-10 max-w-sm w-full mx-auto w-full">
+          <OnboardingProgress currentStep={step} totalSteps={TOTAL_STEPS} />
+          <div className="mt-2 mb-0 text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">
             Step {step} of {TOTAL_STEPS}
           </div>
+        </div>
 
-          {step === 1 && (
-            <StepProjectType value={answers.project_type} onChange={v => setAnswer("project_type", v)} />
-          )}
-          {step === 2 && (
-            <StepBudget value={answers.budget_range} onChange={v => setAnswer("budget_range", v)} />
-          )}
-          {step === 3 && (
-            <StepTimeline value={answers.timeline} onChange={v => setAnswer("timeline", v)} />
-          )}
-          {step === 4 && (
-            <StepLocation value={answers.location} onChange={v => setAnswer("location", v)} />
-          )}
+        {/* Content — scrollable middle */}
+        <div className="flex-1 overflow-y-auto px-6 md:px-14 py-6 flex flex-col justify-center">
+          <div className="max-w-sm w-full mx-auto">
+            {step === 1 && (
+              <StepProjectType value={answers.project_type} onChange={v => setAnswer("project_type", v)} />
+            )}
+            {step === 2 && (
+              <StepBudget value={answers.budget_range} onChange={v => setAnswer("budget_range", v)} />
+            )}
+            {step === 3 && (
+              <StepTimeline value={answers.timeline} onChange={v => setAnswer("timeline", v)} />
+            )}
+            {step === 4 && (
+              <StepLocation value={answers.location} onChange={v => setAnswer("location", v)} />
+            )}
+            {error && (
+              <p className="text-sm text-red-500 mt-4">{error}</p>
+            )}
+          </div>
+        </div>
 
-          {error && (
-            <p className="text-sm text-red-500 mt-4">{error}</p>
-          )}
-
+        {/* Actions — pinned to bottom on mobile */}
+        <div className="px-6 md:px-14 pb-8 md:pb-10 max-w-sm w-full mx-auto w-full">
           <OnboardingActions
             step={step}
             totalSteps={TOTAL_STEPS}
@@ -127,6 +135,7 @@ export default function OnboardingShell() {
             onFinish={handleFinish}
           />
         </div>
+
       </div>
     </div>
   )
