@@ -1,9 +1,8 @@
 "use client"
 
 import {
-  MoreHorizontal, ArrowUpRight, MessageCircleQuestion, MessageCircle,
+  MoreHorizontal, ArrowUpRight, MessageCircle,
   CalendarCheck, Sparkles, TrendingUp, Clock, CheckCircle2,
-  ChevronRight, Star
 } from "lucide-react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
@@ -14,32 +13,32 @@ import { createClient } from "@/lib/supabase"
 // ─── Data ─────────────────────────────────────────────────
 
 const ongoingConsultations = [
-  { id: null, name: "Sarah Mitchell", initials: "SM", type: "Architecture", date: "Oct 04, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=80&auto=format&fit=crop&q=80" },
-  { id: null, name: "Marcus Webb",    initials: "MW", type: "Urban Design", date: "Oct 06, 2022", color: "bg-secondary/20 text-primary dark:text-secondary" },
-  { id: null, name: "Lauren Chen",    initials: "LC", type: "Construction", date: "Oct 13, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=80&auto=format&fit=crop&q=80" },
+  { id: 1, name: "Roshan Perera",     initials: "RP", type: "Architecture",    date: "Mar 12, 2024", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&auto=format&fit=crop&q=80" },
+  { id: 6, name: "Thamali Kumarasinghe", initials: "TK", type: "Urban Design", date: "Mar 14, 2024", color: "bg-secondary/20 text-primary dark:text-secondary" },
+  { id: 2, name: "Dilani Wijesinghe", initials: "DW", type: "Interior Design", date: "Mar 18, 2024", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=80" },
 ]
 
 const upcomingConsultations = [
-  { id: 5, name: "Priya Sharma",   initials: "PS", type: "Interior Design",       date: "Oct 14, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80" },
-  { id: 6, name: "Tom Hargreaves", initials: "TH", type: "Residential Architect", date: "Oct 15, 2022", color: "bg-secondary/20 text-primary dark:text-secondary" },
-  { id: 7, name: "Nina Okafor",    initials: "NO", type: "Urban Design",          date: "Oct 16, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80" },
+  { id: 5, name: "Nishantha Gunasekara", initials: "NG", type: "Coastal Architecture", date: "Mar 22, 2024", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80" },
+  { id: 3, name: "Kavinda Rajapaksa",    initials: "KR", type: "Landscape Design",     date: "Mar 25, 2024", color: "bg-secondary/20 text-primary dark:text-secondary" },
+  { id: 7, name: "Pradeep Liyanage",    initials: "PL", type: "Structural Engineering", date: "Mar 28, 2024", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80" },
 ]
 
 const recentQuestions = [
   {
-    question: "What's your fee structure and what can I expect in costs?",
-    consultant: "James Thornton",
-    initials: "JT",
+    question: "What permits do I need for a new residential build in Colombo?",
+    consultant: "Roshan Perera",
+    initials: "RP",
     role: "Architect",
-    time: "14 minutes ago",
+    time: "22 minutes ago",
     photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&auto=format&fit=crop&q=80",
   },
   {
-    question: "How long does a typical residential project take?",
-    consultant: "Alex Rivera",
-    initials: "AR",
-    role: "Residential Architect",
-    time: "2 days ago",
+    question: "How do I design for monsoon-season drainage on a hillside plot?",
+    consultant: "Pradeep Liyanage",
+    initials: "PL",
+    role: "Structural Engineer",
+    time: "1 day ago",
   },
 ]
 
