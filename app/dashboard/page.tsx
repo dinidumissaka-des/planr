@@ -70,6 +70,13 @@ function ConsultationRow({ row }: { row: typeof ongoingConsultations[0] }) {
 
 // ─── Page ─────────────────────────────────────────────────
 
+function getGreeting() {
+  const hour = new Date().getHours()
+  if (hour < 12) return "Good morning"
+  if (hour < 17) return "Good afternoon"
+  return "Good evening"
+}
+
 export default function DashboardPage() {
   const [userName, setUserName] = useState("")
 
@@ -108,7 +115,7 @@ export default function DashboardPage() {
                 }}
               >
                 <div className="relative z-10">
-                  <p className="text-white/50 text-sm font-medium mb-1">Good morning</p>
+                  <p className="text-white/50 text-sm font-medium mb-1">{getGreeting()}</p>
                   <h2 className="text-xl md:text-2xl font-bold text-white mb-1">{userName}</h2>
                   <p className="text-white/60 text-sm">You have <span className="text-secondary font-semibold">2 ongoing</span> and <span className="text-white font-semibold">1 upcoming</span> consultation</p>
                 </div>
