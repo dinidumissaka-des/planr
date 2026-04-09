@@ -29,7 +29,6 @@ export default function StepBudget({ value, onChange }: Props) {
             }`}
           >
             <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${image}')` }} />
-            <div className="absolute inset-0 bg-cover bg-center mix-blend-screen opacity-50" style={{ backgroundImage: "url('/bg-grain-1.png')" }} />
             <div className={`absolute inset-0 transition-all ${value === v ? "bg-white/40 dark:bg-gray-900/50" : "bg-white/60 dark:bg-gray-900/60"}`} />
             <div className="relative p-4">
               <Icon className="w-5 h-5 mb-2 text-gray-900 dark:text-white drop-shadow" />

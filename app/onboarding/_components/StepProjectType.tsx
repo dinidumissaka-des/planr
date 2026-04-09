@@ -29,9 +29,10 @@ export default function StepProjectType({ value, onChange }: Props) {
             }`}
           >
             {/* Background image */}
-            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${image}')` }} />
-            {/* Grain */}
-            <div className="absolute inset-0 bg-cover bg-center mix-blend-screen opacity-50" style={{ backgroundImage: "url('/bg-grain-1.png')" }} />
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url('${image}')` }}
+            />
             {/* Overlay */}
             <div className={`absolute inset-0 transition-all ${
               value === v
