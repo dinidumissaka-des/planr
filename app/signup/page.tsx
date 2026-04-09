@@ -58,7 +58,7 @@ export default function SignupPage() {
         }}
       >
         {/* Pattern overlay */}
-        <div className="absolute inset-0 bg-cover bg-center mix-blend-screen opacity-60" style={{ backgroundImage: "url('/pattern-portrait-2.png')" }} />
+        <div className="absolute inset-0 bg-cover bg-center mix-blend-screen" style={{ backgroundImage: "url('/pattern-portrait-2.png')" }} />
 
         {/* Logo */}
         <div className="relative z-10">

@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
         }}
       >
         {/* Pattern overlay */}
-        <div className="absolute inset-0 bg-cover bg-center mix-blend-screen opacity-60" style={{ backgroundImage: "url('/pattern-portrait-1.png')" }} />
+        <div className="absolute inset-0 bg-cover bg-center mix-blend-screen" style={{ backgroundImage: "url('/pattern-portrait-1.png')" }} />
 
         <div className="relative z-10">
           <img src="/planr-logo-light.svg" alt="Planr" className="h-7" />
