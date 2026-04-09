@@ -29,13 +29,12 @@ function SentContent() {
       {/* ── Left Panel ── */}
       <div className="relative hidden md:flex w-[30%] h-full overflow-hidden flex-col justify-between p-8"
         style={{
-          backgroundColor: '#1A3050',
-          backgroundImage: "url('/pattern-portrait-1.png'), linear-gradient(to bottom right, #1A3050 0%, #81B9E9 100%)",
-          backgroundBlendMode: "screen, normal",
-          backgroundSize: "cover, cover",
-          backgroundPosition: "center",
+          background: 'linear-gradient(to bottom right, #1A3050 0%, #81B9E9 100%)',
         }}
       >
+        {/* Pattern overlay */}
+        <div className="absolute inset-0 bg-cover bg-center mix-blend-screen opacity-60" style={{ backgroundImage: "url('/pattern-portrait-1.png')" }} />
+
         <div className="relative z-10">
           <img src="/planr-logo-light.svg" alt="Planr" className="h-7" />
         </div>
