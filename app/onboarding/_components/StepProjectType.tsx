@@ -36,14 +36,14 @@ export default function StepProjectType({ value, onChange }: Props) {
             {/* Overlay */}
             <div className={`absolute inset-0 transition-all ${
               value === v
-                ? "bg-white/40 dark:bg-gray-900/50"
-                : "bg-white/60 dark:bg-gray-900/60"
+                ? "bg-white/10"
+                : "bg-white/30"
             }`} />
             {/* Content */}
             <div className="relative p-4">
-              <Icon className="w-5 h-5 mb-2 text-gray-900 dark:text-white drop-shadow" />
-              <p className="text-sm font-semibold text-gray-900 dark:text-white drop-shadow">{label}</p>
-              <p className="text-xs text-gray-700 dark:text-gray-200 mt-0.5 drop-shadow">{description}</p>
+              <Icon className="w-5 h-5 mb-2 text-gray-900" />
+              <p className="text-sm font-semibold text-gray-900">{label}</p>
+              <p className="text-xs text-gray-700 mt-0.5">{description}</p>
             </div>
           </button>
         ))}
