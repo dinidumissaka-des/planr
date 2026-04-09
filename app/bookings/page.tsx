@@ -10,91 +10,11 @@ import { Switch } from "@/components/ui/switch"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import { CalendarDays } from "lucide-react"
+import { architects, type Architect } from "@/lib/architects"
 
 // ─── Data ─────────────────────────────────────────────────
 
 const categories = ["Architecture", "Interior Design", "Construction", "Urban Design", "Residential Architect", "Landscape Design"]
-
-const architects = [
-  {
-    id: 1, name: "Richard Osei", role: "Architect", rating: 4.9, reviewCount: 28,
-    photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&auto=format&fit=crop&q=80",
-    company: "Osei Design Group",
-    location: "Accra, Ghana",
-    available: "10th Feb",
-    hours: "9AM – 6PM",
-    about: "Richard is a seasoned architect with 10+ years delivering innovative, sustainable design solutions across residential and commercial projects. He is passionate about creating functional spaces that reflect the client's vision.",
-    specializations: ["Commercial Spaces", "Sustainable Design", "Residential", "Urban Planning"],
-    experience: [
-      { company: "Osei Design Group", role: "Principal Architect", type: "Full-time", period: "Mar 2019 – Present", description: "Lead architectural design for high-profile commercial and residential projects across West Africa." },
-      { company: "Foster + Partners", role: "Senior Architect", type: "Full-time", period: "Jan 2015 – Feb 2019", description: "Collaborated on large-scale urban development projects in London and Dubai." },
-    ],
-    education: [{ school: "Kwame Nkrumah University", dept: "Bachelor of Architecture", period: "2008 – 2013" }],
-    reviews: [
-      { name: "Michael Brennan", rating: 5, text: "Richard was exceptional — he listened carefully to our needs and delivered a design that exceeded every expectation." },
-      { name: "Priya Nair", rating: 5, text: "Absolutely brilliant. His attention to detail and ability to balance aesthetics with function is unmatched." },
-    ],
-  },
-  {
-    id: 2, name: "Sophie Laurent", role: "Interior Designer", rating: 4.6, reviewCount: 19,
-    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80",
-    company: "Maison Laurent Studio",
-    location: "Paris, France",
-    available: "10th Feb",
-    hours: "10AM – 7PM",
-    about: "Sophie brings a refined European aesthetic to every project. With a background in fine arts and interior architecture, she creates interiors that feel both luxurious and liveable.",
-    specializations: ["Luxury Residential", "Hospitality", "Space Planning", "FF&E Selection"],
-    experience: [
-      { company: "Maison Laurent Studio", role: "Creative Director", type: "Full-time", period: "Jun 2018 – Present", description: "Founded and leads a boutique studio specialising in high-end residential and boutique hotel interiors." },
-      { company: "Kelly Wearstler", role: "Senior Designer", type: "Full-time", period: "Feb 2014 – May 2018", description: "Contributed to iconic hotel and residential projects across the US and Europe." },
-    ],
-    education: [{ school: "École Nationale Supérieure des Arts Décoratifs", dept: "Interior Architecture", period: "2009 – 2014" }],
-    reviews: [
-      { name: "Claire Dubois", rating: 5, text: "Sophie transformed our apartment into something out of a magazine. Her taste and precision are extraordinary." },
-      { name: "James O'Brien", rating: 4, text: "Great communicator and very talented. The final result was stunning." },
-    ],
-  },
-  {
-    id: 3, name: "Amara Diallo", role: "Interior Designer", rating: 4.3, reviewCount: 14,
-    photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80",
-    company: "AD Interiors",
-    location: "Nairobi, Kenya",
-    available: "10th Feb",
-    hours: "9AM – 5PM",
-    about: "Amara specialises in blending contemporary African design with modern interiors, creating culturally rich and functional living spaces. She has worked on residential projects across East Africa and Europe.",
-    specializations: ["Contemporary African Design", "Residential", "Material Selection", "Renovation"],
-    experience: [
-      { company: "AD Interiors", role: "Founder & Lead Designer", type: "Full-time", period: "Jan 2020 – Present", description: "Runs an independent studio focused on culturally informed residential design." },
-      { company: "Snøhetta", role: "Junior Designer", type: "Full-time", period: "Jul 2016 – Dec 2019", description: "Assisted on public space and cultural building interiors across Norway and Kenya." },
-    ],
-    education: [{ school: "University of Nairobi", dept: "Architecture & Interior Design", period: "2011 – 2016" }],
-    reviews: [
-      { name: "Fatima Hassan", rating: 5, text: "Amara brought so much warmth and personality to our home. She really understood what we wanted." },
-      { name: "David Kimani", rating: 4, text: "Thoughtful designer with a great eye for detail. Very easy to work with." },
-    ],
-  },
-  {
-    id: 4, name: "Oliver Marsh", role: "Landscape Designer", rating: 4.8, reviewCount: 31,
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80",
-    company: "Marsh Landscape Co.",
-    location: "Melbourne, Australia",
-    available: "10th Feb",
-    hours: "8AM – 5PM",
-    about: "Oliver is an award-winning landscape designer known for creating outdoor environments that seamlessly connect architecture and nature. His work spans private gardens, public parks, and commercial outdoor spaces.",
-    specializations: ["Garden Design", "Sustainable Planting", "Hardscaping", "Public Spaces"],
-    experience: [
-      { company: "Marsh Landscape Co.", role: "Principal Designer", type: "Full-time", period: "Apr 2017 – Present", description: "Leads a team of landscape architects delivering residential and commercial projects across Australia." },
-      { company: "Gustafson Porter + Bowman", role: "Landscape Architect", type: "Full-time", period: "Aug 2012 – Mar 2017", description: "Contributed to high-profile public landscape projects in the UK and Europe." },
-    ],
-    education: [{ school: "University of Melbourne", dept: "Bachelor of Landscape Architecture", period: "2007 – 2012" }],
-    reviews: [
-      { name: "Sarah Thompson", rating: 5, text: "Our garden has been completely transformed. Oliver's design is beautiful and incredibly practical." },
-      { name: "Mark Evans", rating: 5, text: "Professional, creative, and a pleasure to work with. Highly recommend." },
-    ],
-  },
-]
-
-type Architect = typeof architects[0]
 
 // ─── Profile Drawer ────────────────────────────────────────
 

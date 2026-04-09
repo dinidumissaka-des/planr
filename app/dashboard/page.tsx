@@ -14,15 +14,15 @@ import { createClient } from "@/lib/supabase"
 // ─── Data ─────────────────────────────────────────────────
 
 const ongoingConsultations = [
-  { name: "Sarah Mitchell", initials: "SM", type: "Architecture", date: "Oct 04, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=80&auto=format&fit=crop&q=80" },
-  { name: "Marcus Webb",    initials: "MW", type: "Urban Design", date: "Oct 06, 2022", color: "bg-secondary/20 text-primary dark:text-secondary" },
-  { name: "Lauren Chen",    initials: "LC", type: "Construction", date: "Oct 13, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=80&auto=format&fit=crop&q=80" },
+  { id: null, name: "Sarah Mitchell", initials: "SM", type: "Architecture", date: "Oct 04, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=80&auto=format&fit=crop&q=80" },
+  { id: null, name: "Marcus Webb",    initials: "MW", type: "Urban Design", date: "Oct 06, 2022", color: "bg-secondary/20 text-primary dark:text-secondary" },
+  { id: null, name: "Lauren Chen",    initials: "LC", type: "Construction", date: "Oct 13, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=80&auto=format&fit=crop&q=80" },
 ]
 
 const upcomingConsultations = [
-  { name: "Priya Sharma",   initials: "PS", type: "Interior Design",       date: "Oct 14, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80" },
-  { name: "Tom Hargreaves", initials: "TH", type: "Residential Architect", date: "Oct 15, 2022", color: "bg-secondary/20 text-primary dark:text-secondary" },
-  { name: "Nina Okafor",    initials: "NO", type: "Urban Design",          date: "Oct 16, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80" },
+  { id: 5, name: "Priya Sharma",   initials: "PS", type: "Interior Design",       date: "Oct 14, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&auto=format&fit=crop&q=80" },
+  { id: 6, name: "Tom Hargreaves", initials: "TH", type: "Residential Architect", date: "Oct 15, 2022", color: "bg-secondary/20 text-primary dark:text-secondary" },
+  { id: 7, name: "Nina Okafor",    initials: "NO", type: "Urban Design",          date: "Oct 16, 2022", color: "bg-secondary/20 text-primary dark:text-secondary", photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=80" },
 ]
 
 const recentQuestions = [
@@ -55,17 +55,19 @@ function Avatar({ photo, initials, size = "w-8 h-8", textSize = "text-[10px]" }:
 }
 
 function ConsultationRow({ row }: { row: typeof ongoingConsultations[0] }) {
-  return (
+  const inner = (
     <div className="flex items-center gap-3 py-3 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/60 dark:hover:bg-white/4 rounded-lg px-2 -mx-2 transition-colors">
       <Avatar photo={row.photo} initials={row.initials} />
       <span className="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{row.name}</span>
       <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${row.color} hidden sm:inline-flex`}>{row.type}</span>
       <span className="text-xs text-gray-400 dark:text-gray-500 w-24 text-right hidden md:block">{row.date}</span>
-      <button className="text-gray-300 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 transition-colors ml-1">
+      <span className="text-gray-300 dark:text-gray-600 ml-1">
         <MoreHorizontal className="w-4 h-4" />
-      </button>
+      </span>
     </div>
   )
+  if (row.id) return <Link href={`/consultants/${row.id}`}>{inner}</Link>
+  return inner
 }
 
 // ─── Page ─────────────────────────────────────────────────
@@ -217,13 +219,13 @@ export default function DashboardPage() {
               {/* Next upcoming */}
               <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Next consultation</p>
-                <div className="flex items-center gap-3 mb-3">
+                <Link href={`/consultants/${upcomingConsultations[0].id}`} className="flex items-center gap-3 mb-3 hover:opacity-80 transition-opacity">
                   <Avatar photo={upcomingConsultations[0].photo} initials={upcomingConsultations[0].initials} size="w-10 h-10" textSize="text-xs" />
                   <div>
                     <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{upcomingConsultations[0].name}</p>
                     <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${upcomingConsultations[0].color}`}>{upcomingConsultations[0].type}</span>
                   </div>
-                </div>
+                </Link>
                 <div className="flex items-center justify-between bg-gray-50 dark:bg-white/5 rounded-xl px-3 py-2.5 mb-3">
                   <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">📅 {upcomingConsultations[0].date}</span>
                   <span className="text-xs text-gray-400 dark:text-gray-500">10AM – 9PM</span>
@@ -242,14 +244,14 @@ export default function DashboardPage() {
                   </button>
                 </div>
                 {upcomingConsultations.map((row, i) => (
-                  <div key={i} className="flex items-center gap-2.5 py-2.5 border-b border-gray-50 dark:border-white/5 last:border-0">
+                  <Link key={i} href={`/consultants/${row.id}`} className="flex items-center gap-2.5 py-2.5 border-b border-gray-50 dark:border-white/5 last:border-0 hover:opacity-80 transition-opacity">
                     <Avatar photo={row.photo} initials={row.initials} />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{row.name}</p>
                       <p className="text-[10px] text-gray-400 dark:text-gray-600">{row.date}</p>
                     </div>
                     <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${row.color} whitespace-nowrap`}>{row.type}</span>
-                  </div>
+                  </Link>
                 ))}
               </div>
 
