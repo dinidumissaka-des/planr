@@ -491,7 +491,7 @@ export default function BookingsPage() {
                     }}
                   >
                     <div className="flex items-start justify-between mb-3">
-                      <img src={a.photo} alt={a.name} className="w-12 h-12 rounded-full object-cover ring-2 ring-white/60" />
+                      <AvatarInitials initials={a.name.split(" ").map(n => n[0]).join("")} size="w-12 h-12" textSize="text-sm" />
                       <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex items-center justify-center flex-shrink-0 ${selectedArchitect === a.id ? "border-[#07111E]" : "border-[#07111E]/30"}`}>
                         {selectedArchitect === a.id && <div className="w-2 h-2 bg-[#07111E] rounded-full" />}
                       </div>
