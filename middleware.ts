@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (user) {
-    const onboardingDone = user.user_metadata?.onboarding_completed === true || !!user.user_metadata?.first_name
+    const onboardingDone = user.user_metadata?.onboarding_completed === true
     const isOnboardingRoute = pathname.startsWith("/onboarding")
 
     if (isAuthRoute) {
