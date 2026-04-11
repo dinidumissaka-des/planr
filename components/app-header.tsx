@@ -30,31 +30,46 @@ function playNotificationSound() {
   }
 }
 
-function SignOutModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
+function SignOutModal({ onConfirm, onCancel }: { onConfirm: () => Promise<void>; onCancel: () => void }) {
+  const [loading, setLoading] = useState(false)
+
+  async function handleConfirm() {
+    setLoading(true)
+    await onConfirm()
+  }
+
   return (
     <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-end md:items-center justify-center z-50 px-4">
       <div className="bg-white dark:bg-[#0D1B2E] w-full md:max-w-xs rounded-t-3xl md:rounded-2xl p-7 shadow-2xl">
         <div className="flex justify-center mb-5">
-          <div className="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
-            <LogOut className="w-6 h-6 text-red-500" />
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${loading ? "bg-gray-100 dark:bg-white/8" : "bg-red-50 dark:bg-red-500/10"}`}>
+            {loading
+              ? <div className="w-6 h-6 rounded-full border-2 border-gray-200 border-t-gray-600 dark:border-white/20 dark:border-t-white animate-spin" />
+              : <LogOut className="w-6 h-6 text-red-500" />
+            }
           </div>
         </div>
-        <h2 className="text-base font-bold text-gray-900 dark:text-white text-center mb-2">Sign out?</h2>
+        <h2 className="text-base font-bold text-gray-900 dark:text-white text-center mb-2">
+          {loading ? "Signing out…" : "Sign out?"}
+        </h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 text-center leading-relaxed mb-6">
-          You'll need to sign back in to access your account.
+          {loading ? "Please wait a moment." : "You'll need to sign back in to access your account."}
         </p>
         <button
-          onClick={onConfirm}
-          className="w-full h-11 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-xl mb-2.5 transition-colors"
+          onClick={handleConfirm}
+          disabled={loading}
+          className="w-full h-11 bg-red-500 hover:bg-red-600 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl mb-2.5 transition-colors"
         >
-          Yes, sign out
+          {loading ? "Signing out…" : "Yes, sign out"}
         </button>
-        <button
-          onClick={onCancel}
-          className="w-full h-11 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-semibold rounded-xl transition-colors"
-        >
-          Cancel
-        </button>
+        {!loading && (
+          <button
+            onClick={onCancel}
+            className="w-full h-11 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-semibold rounded-xl transition-colors"
+          >
+            Cancel
+          </button>
+        )}
       </div>
     </div>
   )
@@ -62,10 +77,9 @@ function SignOutModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel
 
 interface AppHeaderProps {
   title: string
-  icon?: React.ReactNode
 }
 
-export function AppHeader({ title, icon }: AppHeaderProps) {
+export function AppHeader({ title }: AppHeaderProps) {
   const router = useRouter()
   const [notifOpen, setNotifOpen] = useState(false)
   const [userOpen, setUserOpen] = useState(false)
@@ -79,11 +93,12 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
 
   useEffect(() => {
     const supabase = createClient()
+    let active = true
     let channel: ReturnType<typeof supabase.channel> | null = null
 
     async function loadUser() {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
+      if (!user || !active) return
 
       setUserEmail(user.email ?? "")
       const first = user.user_metadata?.first_name ?? ""
@@ -91,32 +106,43 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
       setUserName(first && last ? `${first} ${last}` : (user.email ?? ""))
 
       const notifs = await fetchNotifications(user.id)
+      if (!active) return
       setNotifications(notifs)
 
-      // Play sound once on load if there are unread notifications (once per session)
       if (notifs.length > 0 && !sessionStorage.getItem("planr_notif_sound")) {
         playNotificationSound()
         sessionStorage.setItem("planr_notif_sound", "1")
       }
 
-      // Realtime: play sound + prepend when a new notification row is inserted
-      channel = supabase
-        .channel(`notifications:${user.id}`)
-        .on(
-          "postgres_changes",
-          { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
-          (payload) => {
-            setNotifications(prev => [payload.new as Notification, ...prev])
-            playNotificationSound()
-            // Reset session flag so next load plays again
-            sessionStorage.removeItem("planr_notif_sound")
-          }
-        )
-        .subscribe()
+      // Realtime: prepend new notifications and play sound
+      // Wrapped in try/catch — fails gracefully if the table isn't in the
+      // Supabase realtime publication yet (run docs/notifications.sql first)
+      try {
+        channel = supabase
+          .channel(`hdr-notif-${user.id}`)
+          .on(
+            "postgres_changes",
+            { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
+            (payload) => {
+              if (!active) return
+              setNotifications(prev => [payload.new as Notification, ...prev])
+              playNotificationSound()
+              sessionStorage.removeItem("planr_notif_sound")
+            }
+          )
+          .subscribe((_status, err) => {
+            if (err) console.warn("[Planr] Notifications realtime unavailable:", err.message)
+          })
+      } catch {
+        // Realtime not configured — silent fallback, fetch-on-load still works
+      }
     }
 
     loadUser()
-    return () => { channel && supabase.removeChannel(channel) }
+    return () => {
+      active = false
+      if (channel) { supabase.removeChannel(channel); channel = null }
+    }
   }, [])
 
   const initials = userName
@@ -149,9 +175,11 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
 
   return (
     <>
-      <header className="h-14 md:h-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-4 md:px-8 flex-shrink-0 relative z-30">
-        {/* Mobile: logo; Desktop: page title */}
+      <header className="md:h-16 bg-white dark:bg-[#0A1525] border-b border-gray-100 dark:border-white/8 flex flex-col justify-end px-4 md:px-8 flex-shrink-0 relative z-30 safe-t md:pt-0">
+        <div className="h-14 flex items-center justify-between w-full">
+          {/* Mobile: logo; Desktop: page title */}
         <img src="/planr-logo.svg" alt="Planr" className="h-6 md:hidden dark:hidden" />
+        <img src="/planr-logo-light.svg" alt="Planr" className="h-6 md:hidden hidden dark:block" />
         <h1 className="hidden md:flex text-2xl font-bold text-gray-900 dark:text-white">
           {title}
         </h1>
@@ -164,7 +192,7 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
               const e = new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true })
               document.dispatchEvent(e)
             }}
-            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 text-xs text-gray-400 dark:text-gray-500 hover:border-gray-300 hover:text-gray-600 transition-colors"
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 text-xs text-gray-400 dark:text-gray-500 hover:border-gray-300 hover:text-gray-600 transition-colors"
           >
             <Command className="w-3 h-3" />
             <span>K</span>
@@ -173,7 +201,7 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
           {/* Dark mode toggle */}
           <button
             onClick={toggleTheme}
-            className="p-1.5 text-gray-400 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="p-1.5 text-gray-400 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-white/8"
             aria-label="Toggle dark mode"
           >
             {theme === "dark" ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
@@ -195,8 +223,8 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
 
             {/* Desktop dropdown */}
             {notifOpen && (
-              <div className="hidden md:block absolute right-0 top-10 w-80 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
-                <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+              <div className="hidden md:block absolute right-0 top-10 w-80 bg-white dark:bg-[#0D1B2E] rounded-2xl shadow-xl border border-gray-100 dark:border-white/8 overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-white/8">
                   <p className="text-sm font-bold text-gray-900 dark:text-white">Notifications</p>
                   <Link
                     href="/notifications"
@@ -206,7 +234,7 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
                     View all <ArrowUpRight className="w-3 h-3" />
                   </Link>
                 </div>
-                <div className="divide-y divide-gray-50 dark:divide-gray-800 max-h-72 overflow-y-auto">
+                <div className="divide-y divide-gray-50 dark:divide-white/8 max-h-72 overflow-y-auto">
                   {notifications.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-10 text-gray-400">
                       <Bell className="w-8 h-8 mb-2 opacity-30" />
@@ -214,7 +242,7 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
                     </div>
                   ) : (
                     notifications.map(n => (
-                      <div key={n.id} className="flex items-start gap-3 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                      <div key={n.id} className="flex items-start gap-3 px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                         <div className="flex-shrink-0 mt-0.5">
                           {n.type === "success"
                             ? <CheckCircle2 className="w-5 h-5 text-emerald-500" fill="#10b981" color="white" />
@@ -233,11 +261,11 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
                   )}
                 </div>
                 {notifications.length > 0 && (
-                  <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-800">
+                  <div className="px-4 py-3 border-t border-gray-100 dark:border-white/8">
                     <Link
                       href="/notifications"
                       onClick={() => setNotifOpen(false)}
-                      className="block w-full text-center text-xs font-semibold text-gray-600 hover:text-gray-900 transition-colors py-1.5 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300 rounded-lg"
+                      className="block w-full text-center text-xs font-semibold text-gray-600 hover:text-gray-900 transition-colors py-1.5 bg-gray-50 hover:bg-gray-100 dark:bg-white/5 dark:hover:bg-white/10 dark:text-gray-300 rounded-lg"
                     >
                       See all notifications
                     </Link>
@@ -247,7 +275,7 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
             )}
           </div>
 
-          <div className="w-px h-5 bg-gray-200 dark:bg-gray-700" />
+          <div className="w-px h-5 bg-gray-200 dark:bg-white/10" />
 
           {/* User button */}
           <div ref={userRef} className="relative">
@@ -264,8 +292,8 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
 
             {/* Desktop dropdown */}
             {userOpen && (
-              <div className="hidden md:block absolute right-0 top-11 w-56 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
-                <div className="px-4 py-3.5 border-b border-gray-100 dark:border-gray-800">
+              <div className="hidden md:block absolute right-0 top-11 w-56 bg-white dark:bg-[#0D1B2E] rounded-2xl shadow-xl border border-gray-100 dark:border-white/8 overflow-hidden">
+                <div className="px-4 py-3.5 border-b border-gray-100 dark:border-white/8">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-secondary/25 dark:bg-secondary/20 flex items-center justify-center text-xs font-bold text-primary dark:text-secondary flex-shrink-0">
                       {initials}
@@ -286,7 +314,7 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
                     Account Settings
                   </Link>
                 </div>
-                <div className="border-t border-gray-100 dark:border-gray-800 py-1.5">
+                <div className="border-t border-gray-100 dark:border-white/8 py-1.5">
                   <button
                     onClick={() => { setUserOpen(false); setShowSignOut(true) }}
                     className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/8 transition-colors"
@@ -300,18 +328,19 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
           </div>
 
         </div>
+        </div>
       </header>
 
       {/* Mobile full-screen notifications */}
       {notifOpen && (
         <div className="fixed inset-0 bg-white dark:bg-[#07111E] z-50 flex flex-col md:hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/8">
             <p className="text-base font-bold text-gray-900 dark:text-white">Notifications</p>
             <button onClick={() => setNotifOpen(false)} className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
               <X className="w-5 h-5" />
             </button>
           </div>
-          <div className="flex-1 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800">
+          <div className="flex-1 overflow-y-auto divide-y divide-gray-100 dark:divide-white/8">
             {notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-gray-400 pb-20">
                 <Bell className="w-10 h-10 mb-3 opacity-30" />
@@ -338,7 +367,7 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
             )}
           </div>
           {notifications.length > 0 && (
-            <div className="px-5 py-4 border-t border-gray-100 dark:border-gray-800">
+            <div className="px-5 py-4 border-t border-gray-100 dark:border-white/8">
               <Link
                 href="/notifications"
                 onClick={() => setNotifOpen(false)}
@@ -354,7 +383,7 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
       {/* Mobile full-screen profile */}
       {userOpen && (
         <div className="fixed inset-0 bg-white dark:bg-[#07111E] z-50 flex flex-col md:hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/8">
             <p className="text-base font-bold text-gray-900 dark:text-white">Account</p>
             <button onClick={() => setUserOpen(false)} className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
               <X className="w-5 h-5" />
@@ -362,7 +391,7 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
           </div>
           <div className="flex-1 overflow-y-auto">
             {/* Profile block */}
-            <div className="px-5 py-6 border-b border-gray-100 dark:border-gray-800">
+            <div className="px-5 py-6 border-b border-gray-100 dark:border-white/8">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-secondary/25 dark:bg-secondary/20 flex items-center justify-center text-lg font-bold text-primary dark:text-secondary flex-shrink-0">
                   {initials}

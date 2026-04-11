@@ -7,18 +7,24 @@ type Theme = "light" | "dark"
 export function useTheme() {
   const [theme, setTheme] = useState<Theme>("light")
 
+  function applyTheme(t: Theme) {
+    document.documentElement.classList.toggle("dark", t === "dark")
+    const meta = document.querySelector('meta[name="theme-color"]')
+    if (meta) meta.setAttribute("content", t === "dark" ? "#0A1525" : "#ffffff")
+  }
+
   useEffect(() => {
     const stored = localStorage.getItem("theme") as Theme | null
     const system = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
     const resolved = stored ?? system
     setTheme(resolved)
-    document.documentElement.classList.toggle("dark", resolved === "dark")
+    applyTheme(resolved)
   }, [])
 
   function toggleTheme() {
     const next: Theme = theme === "light" ? "dark" : "light"
     setTheme(next)
-    document.documentElement.classList.toggle("dark", next === "dark")
+    applyTheme(next)
     localStorage.setItem("theme", next)
   }
 

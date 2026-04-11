@@ -6,31 +6,46 @@ import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
 import { createClient } from "@/lib/supabase"
 
-function SignOutModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
+function SignOutModal({ onConfirm, onCancel }: { onConfirm: () => Promise<void>; onCancel: () => void }) {
+  const [loading, setLoading] = useState(false)
+
+  async function handleConfirm() {
+    setLoading(true)
+    await onConfirm()
+  }
+
   return (
     <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-end md:items-center justify-center z-50 px-4">
       <div className="bg-white dark:bg-[#0D1B2E] w-full md:max-w-xs rounded-t-3xl md:rounded-2xl p-7 shadow-2xl">
         <div className="flex justify-center mb-5">
-          <div className="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
-            <LogOut className="w-6 h-6 text-red-500" />
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${loading ? "bg-gray-100 dark:bg-white/8" : "bg-red-50 dark:bg-red-500/10"}`}>
+            {loading
+              ? <div className="w-6 h-6 rounded-full border-2 border-gray-200 border-t-gray-600 dark:border-white/20 dark:border-t-white animate-spin" />
+              : <LogOut className="w-6 h-6 text-red-500" />
+            }
           </div>
         </div>
-        <h2 className="text-base font-bold text-gray-900 dark:text-white text-center mb-2">Sign out?</h2>
+        <h2 className="text-base font-bold text-gray-900 dark:text-white text-center mb-2">
+          {loading ? "Signing out…" : "Sign out?"}
+        </h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 text-center leading-relaxed mb-6">
-          You'll need to sign back in to access your account.
+          {loading ? "Please wait a moment." : "You'll need to sign back in to access your account."}
         </p>
         <button
-          onClick={onConfirm}
-          className="w-full h-11 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold rounded-xl mb-2.5 transition-colors"
+          onClick={handleConfirm}
+          disabled={loading}
+          className="w-full h-11 bg-red-500 hover:bg-red-600 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl mb-2.5 transition-colors"
         >
-          Yes, sign out
+          {loading ? "Signing out…" : "Yes, sign out"}
         </button>
-        <button
-          onClick={onCancel}
-          className="w-full h-11 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-semibold rounded-xl transition-colors"
-        >
-          Cancel
-        </button>
+        {!loading && (
+          <button
+            onClick={onCancel}
+            className="w-full h-11 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-semibold rounded-xl transition-colors"
+          >
+            Cancel
+          </button>
+        )}
       </div>
     </div>
   )
@@ -101,8 +116,8 @@ export function AppSidebar() {
               href={href}
               className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-colors ${
                 active
-                  ? "text-primary dark:text-secondary"
-                  : "text-gray-400 dark:text-gray-600"
+                  ? "bg-secondary/40 text-primary dark:bg-secondary/20 dark:text-white"
+                  : "text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-400"
               }`}
             >
               <Icon className="w-5 h-5" />

@@ -2,7 +2,7 @@
 
 import {
   MoreHorizontal, ArrowUpRight, MessageCircle,
-  CalendarCheck, Sparkles, TrendingUp, Clock, CheckCircle2,
+  CalendarCheck, Sparkles, Clock,
 } from "lucide-react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
@@ -243,7 +243,7 @@ export default function DashboardPage() {
             <div className="w-full lg:w-[300px] flex-shrink-0 flex flex-col gap-4">
 
               {/* Next upcoming */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] flex flex-col">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Next consultation</p>
                 {nextUpcoming ? (
                   <>
@@ -257,16 +257,16 @@ export default function DashboardPage() {
                     <div className="flex items-center justify-between bg-gray-50 dark:bg-white/5 rounded-xl px-3 py-2.5 mb-3">
                       <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">📅 {formatScheduledDate(nextUpcoming.scheduled_at)}</span>
                     </div>
-                    <Link href="/bookings" className="block w-full text-center border border-gray-900 dark:border-white/20 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-bold py-2.5 rounded-xl transition-colors">
+                    <Link href="/bookings" className="block w-full text-center border border-gray-900 dark:border-white/20 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-bold py-2.5 rounded-xl transition-colors mt-auto">
                       Join Session
                     </Link>
                   </>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-6 text-center">
+                  <div className="flex flex-col items-center justify-center flex-1 text-center">
                     <CalendarCheck className="w-8 h-8 text-gray-300 dark:text-gray-700 mb-3" />
                     <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Nothing scheduled</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-600 mt-1 mb-4">You have no upcoming consultations booked.</p>
-                    <Link href="/bookings" className="block w-full text-center border border-gray-900 dark:border-white/20 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-bold py-2.5 rounded-xl transition-colors">
+                    <p className="text-xs text-gray-400 dark:text-gray-600 mt-1">You have no upcoming consultations booked.</p>
+                    <Link href="/bookings" className="block w-full text-center border border-gray-900 dark:border-white/20 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-bold py-2.5 rounded-xl transition-colors mt-auto">
                       Book a consultation
                     </Link>
                   </div>

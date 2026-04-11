@@ -262,7 +262,7 @@ export default function QuestionAnswerPage() {
     <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <AppHeader title="Question Answer" icon={<MessageSquare className="w-5 h-5 text-gray-700 dark:text-gray-400" />} />
+        <AppHeader title="Question Answer" />
 
         <div className="flex-1 overflow-hidden flex gap-5 p-4 md:p-6 pb-20 md:pb-6">
 

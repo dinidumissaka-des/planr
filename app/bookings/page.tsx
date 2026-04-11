@@ -405,58 +405,96 @@ export default function BookingsPage() {
     4: "Please complete your payment details and agree to the terms.",
   }
 
-  const footerContent = (onBack: (() => void) | undefined, onNext: () => void, nextLabel: string) => (
+  // Proactive hint shown near the Next button before the user clicks
+  function getStepHint(): string | null {
+    switch (step) {
+      case 1:
+        if (step1Valid()) return null
+        return "Select a consultant to continue"
+      case 2:
+        if (step2Valid()) return null
+        if (!selectedDate && selectedSlot === null) return "Pick a date and time slot"
+        if (!selectedDate) return "Pick a date to continue"
+        return "Pick a time slot to continue"
+      case 3:
+        if (step3Valid()) return null
+        if (!firstName.trim() || !lastName.trim()) return "Enter your full name to continue"
+        if (!email.trim() || !emailRegex.test(email)) return "Enter a valid email address"
+        if (!mobile.trim()) return "Enter your mobile number"
+        return "Agree to the Terms of Use to continue"
+      case 4:
+        if (step4Valid()) return null
+        if (!cardNumber.trim()) return "Enter your card number"
+        if (!expiry.trim() || !cvv.trim()) return "Enter your card expiry and CVV"
+        if (!zip.trim()) return "Enter your ZIP / postal code"
+        return "Agree to the Terms of Use to continue"
+      default:
+        return null
+    }
+  }
+
+  const footerContent = (onBack: (() => void) | undefined, onNext: () => void, nextLabel: string, hint: string | null) => (
     <>
       <div>
         {onBack && (
           <Button variant="outline" onClick={onBack} className="px-6 h-11 border-gray-200 dark:border-white/15 text-gray-700 dark:text-gray-300 dark:bg-transparent dark:hover:bg-white/5">Go back</Button>
         )}
       </div>
-      <div className="flex items-center gap-4">
-        <div className="flex gap-1.5">
-          {[1,2,3,4].map(n => (
-            <div key={n} className={`rounded-full transition-all ${step === n ? "w-4 h-2 bg-gray-900 dark:bg-white" : "w-2 h-2 bg-gray-300 dark:bg-white/20"}`} />
-          ))}
+      <div className="flex flex-col items-end gap-1.5">
+        {hint && (
+          <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
+            <AlertCircle className="w-3 h-3 flex-shrink-0" />{hint}
+          </p>
+        )}
+        <div className="flex items-center gap-4">
+          <div className="flex gap-1.5">
+            {[1,2,3,4].map(n => (
+              <div key={n} className={`rounded-full transition-all ${step === n ? "w-4 h-2 bg-gray-900 dark:bg-white" : "w-2 h-2 bg-gray-300 dark:bg-white/20"}`} />
+            ))}
+          </div>
+          <Button
+            className="px-8 h-11 rounded-xl text-sm font-semibold bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900"
+            onClick={onNext}
+          >
+            {nextLabel}
+          </Button>
         </div>
-        <Button
-          className="px-8 h-11 rounded-xl text-sm font-semibold bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900"
-          onClick={onNext}
-        >
-          {nextLabel}
-        </Button>
       </div>
     </>
   )
 
   const StepFooter = ({ onBack, onNext, nextLabel = "Next" }: {
     onBack?: () => void; onNext: () => void; nextLabel?: string
-  }) => (
-    <>
-      {/* Validation hint banner */}
-      {triedNext && (
-        <div className="flex items-center gap-2 mt-5 px-4 py-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl">
-          <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
-          <p className="text-sm text-red-600 dark:text-red-400">{stepHints[step]}</p>
+  }) => {
+    const hint = getStepHint()
+    return (
+      <>
+        {/* Validation banner — shown only after the user has clicked Next once */}
+        {triedNext && (
+          <div className="flex items-center gap-2 mt-5 px-4 py-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl">
+            <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+            <p className="text-sm text-red-600 dark:text-red-400">{stepHints[step]}</p>
+          </div>
+        )}
+        {/* Desktop: inline footer */}
+        <div className="hidden md:flex items-center justify-between mt-5 pt-5 border-t border-gray-100 dark:border-white/8">
+          {footerContent(onBack, onNext, nextLabel, hint)}
         </div>
-      )}
-      {/* Desktop: inline footer */}
-      <div className="hidden md:flex items-center justify-between mt-5 pt-5 border-t border-gray-100 dark:border-white/8">
-        {footerContent(onBack, onNext, nextLabel)}
-      </div>
-      {/* Mobile: sticky footer above bottom nav */}
-      <div className="md:hidden fixed bottom-16 left-0 right-0 z-40 bg-white dark:bg-[#0D1B2E] border-t border-gray-100 dark:border-white/8 px-4 py-3 flex items-center justify-between">
-        {footerContent(onBack, onNext, nextLabel)}
-      </div>
-      {/* Spacer so content isn't hidden under sticky footer on mobile */}
-      <div className="h-20 md:hidden" />
-    </>
-  )
+        {/* Mobile: sticky footer above bottom nav */}
+        <div className="md:hidden fixed bottom-16 left-0 right-0 z-40 bg-white dark:bg-[#0D1B2E] border-t border-gray-100 dark:border-white/8 px-4 py-3 flex items-center justify-between">
+          {footerContent(onBack, onNext, nextLabel, hint)}
+        </div>
+        {/* Spacer so content isn't hidden under sticky footer on mobile */}
+        <div className="h-20 md:hidden" />
+      </>
+    )
+  }
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <AppHeader title="Booking Consultation" icon={<CalendarDays className="w-6 h-6 text-gray-700 dark:text-gray-400" />} />
+        <AppHeader title="Booking Consultation" />
 
         <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-20 md:pb-8">
           <Stepper step={step} />
@@ -764,11 +802,12 @@ export default function BookingsPage() {
               <div className="space-y-5">
                 <div className="flex flex-col md:flex-row items-start gap-4 md:gap-8">
                   <div className="w-full md:w-64 flex-shrink-0">
-                    <p className="text-sm font-bold text-gray-800 dark:text-white mb-0.5">Additional notes</p>
+                    <label htmlFor="notes" className="text-sm font-bold text-gray-800 dark:text-white mb-0.5 block">Additional notes</label>
                     <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Provide any additional details that would help the consultant understand your requirements better.</p>
                   </div>
                   <Textarea
-                    placeholder="Additional notes"
+                    id="notes"
+                    placeholder="e.g. I need advice on extending my kitchen into the garden"
                     value={notes}
                     onChange={e => setNotes(e.target.value)}
                     className="w-full md:flex-1 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 resize-none min-h-[130px] text-sm"
@@ -782,8 +821,10 @@ export default function BookingsPage() {
                   </div>
                   <div className="w-full md:flex-1 grid grid-cols-2 gap-3">
                     <div>
+                      <label htmlFor="firstName" className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 block">First name</label>
                       <Input
-                        placeholder="First name"
+                        id="firstName"
+                        placeholder="Jane"
                         value={firstName}
                         onChange={e => setFirstName(e.target.value)}
                         onBlur={() => touch("firstName")}
@@ -792,8 +833,10 @@ export default function BookingsPage() {
                       <FieldError msg={errors.firstName} />
                     </div>
                     <div>
+                      <label htmlFor="lastName" className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 block">Last name</label>
                       <Input
-                        placeholder="Last name"
+                        id="lastName"
+                        placeholder="Smith"
                         value={lastName}
                         onChange={e => setLastName(e.target.value)}
                         onBlur={() => touch("lastName")}
@@ -806,12 +849,13 @@ export default function BookingsPage() {
 
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8">
                   <div className="w-full md:w-64 flex-shrink-0">
-                    <p className="text-sm font-bold text-gray-800 dark:text-white mb-0.5">Email</p>
+                    <label htmlFor="email" className="text-sm font-bold text-gray-800 dark:text-white mb-0.5 block">Email</label>
                     <p className="text-xs text-gray-500 dark:text-gray-400">We'll send confirmation and updates to this email.</p>
                   </div>
                   <div className="w-full md:flex-1">
                     <Input
-                      placeholder="Email"
+                      id="email"
+                      placeholder="jane@example.com"
                       type="email"
                       value={email}
                       onChange={e => setEmail(e.target.value)}
@@ -824,12 +868,13 @@ export default function BookingsPage() {
 
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8">
                   <div className="w-full md:w-64 flex-shrink-0">
-                    <p className="text-sm font-bold text-gray-800 dark:text-white mb-0.5">Mobile Number</p>
+                    <label htmlFor="mobile" className="text-sm font-bold text-gray-800 dark:text-white mb-0.5 block">Mobile Number</label>
                     <p className="text-xs text-gray-500 dark:text-gray-400">Provide your number for urgent updates or contact.</p>
                   </div>
                   <div className="w-full md:flex-1">
                     <Input
-                      placeholder="Mobile Number"
+                      id="mobile"
+                      placeholder="+1 (555) 000-0000"
                       value={mobile}
                       onChange={e => setMobile(e.target.value)}
                       onBlur={() => touch("mobile")}
@@ -870,8 +915,9 @@ export default function BookingsPage() {
 
                 <div className="space-y-4">
                   <div>
-                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Card number</p>
+                    <label htmlFor="cardNumber" className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 block">Card number</label>
                     <Input
+                      id="cardNumber"
                       placeholder="0000 0000 0000 0000"
                       value={cardNumber}
                       onChange={e => setCardNumber(e.target.value)}
@@ -883,8 +929,9 @@ export default function BookingsPage() {
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Expiration</p>
+                      <label htmlFor="expiry" className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 block">Expiration</label>
                       <Input
+                        id="expiry"
                         placeholder="MM / YY"
                         value={expiry}
                         onChange={e => setExpiry(e.target.value)}
@@ -894,8 +941,9 @@ export default function BookingsPage() {
                       <FieldError msg={errors.expiry} />
                     </div>
                     <div>
-                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">CVV</p>
+                      <label htmlFor="cvv" className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 block">CVV</label>
                       <Input
+                        id="cvv"
                         placeholder="000"
                         value={cvv}
                         onChange={e => setCvv(e.target.value)}
@@ -907,8 +955,9 @@ export default function BookingsPage() {
                   </div>
 
                   <div>
-                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">ZIP / Postal code</p>
+                    <label htmlFor="zip" className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 block">ZIP / Postal code</label>
                     <Input
+                      id="zip"
                       placeholder="00000"
                       value={zip}
                       onChange={e => setZip(e.target.value)}
@@ -959,7 +1008,7 @@ export default function BookingsPage() {
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500 dark:text-gray-400">Date</span>
-                    <span className="font-semibold text-gray-800 dark:text-white">{selectedDate ? `Feb ${selectedDate}, 2020` : "—"}</span>
+                    <span className="font-semibold text-gray-800 dark:text-white">{selectedDate ? `${MONTHS[calMonth]} ${selectedDate}, ${calYear}` : "—"}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500 dark:text-gray-400">Time</span>

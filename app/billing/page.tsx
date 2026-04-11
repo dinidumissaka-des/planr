@@ -25,7 +25,7 @@ export default function BillingPage() {
     <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <AppHeader title="Billing" icon={<CreditCard className="w-5 h-5 text-gray-700 dark:text-gray-400" />} />
+        <AppHeader title="Billing" />
         <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 md:py-10 pb-24 md:pb-10">
       <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-24 items-start">
 
