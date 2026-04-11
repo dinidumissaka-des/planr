@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Search, Star, X, BadgeCheck, Check, ChevronLeft, ChevronRight, MapPin, Briefcase, GraduationCap, Award } from "lucide-react"
+import { Search, Star, X, BadgeCheck, Check, ChevronLeft, ChevronRight, MapPin, Briefcase, GraduationCap, Award, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -16,6 +16,17 @@ import { AvatarInitials } from "@/components/ui/avatar-initials"
 // ─── Data ─────────────────────────────────────────────────
 
 const categories = ["Architecture", "Interior Design", "Construction", "Urban Design", "Residential Architect", "Landscape Design"]
+
+// ─── Field Error ──────────────────────────────────────────
+
+function FieldError({ msg }: { msg: string | undefined }) {
+  if (!msg) return null
+  return (
+    <p className="flex items-center gap-1 text-xs text-red-500 mt-1">
+      <AlertCircle className="w-3 h-3 flex-shrink-0" />{msg}
+    </p>
+  )
+}
 
 // ─── Profile Drawer ────────────────────────────────────────
 
@@ -154,15 +165,43 @@ function ProfileDrawer({ architect, onClose, onSelect }: { architect: Architect;
   )
 }
 
-type CalDay = { d: number; out?: boolean; highlight?: boolean }
-const calendarWeeks: CalDay[][] = [
-  [{ d: 26, out: true }, { d: 27, out: true }, { d: 28, out: true }, { d: 29, out: true }, { d: 30, out: true }, { d: 31, out: true }, { d: 1 }],
-  [{ d: 2 }, { d: 3 }, { d: 4 }, { d: 5 }, { d: 6 }, { d: 7 }, { d: 8 }],
-  [{ d: 9 }, { d: 10 }, { d: 11 }, { d: 12 }, { d: 13, highlight: true }, { d: 14 }, { d: 15 }],
-  [{ d: 16 }, { d: 17 }, { d: 18 }, { d: 19 }, { d: 20 }, { d: 21 }, { d: 22 }],
-  [{ d: 23 }, { d: 24 }, { d: 25 }, { d: 26 }, { d: 27 }, { d: 28 }, { d: 29 }],
-  [{ d: 1, out: true }, { d: 2, out: true }, { d: 3, out: true }, { d: 4, out: true }, { d: 5, out: true }, { d: 6, out: true }, { d: 7, out: true }],
-]
+type CalDay = { d: number; out?: boolean; past?: boolean; today?: boolean }
+
+function buildCalendarWeeks(year: number, month: number): CalDay[][] {
+  const now = new Date()
+  const todayY = now.getFullYear(), todayM = now.getMonth(), todayD = now.getDate()
+  const firstDow = new Date(year, month, 1).getDay()
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const daysInPrev = new Date(year, month, 0).getDate()
+  const weeks: CalDay[][] = []
+  let week: CalDay[] = []
+  // leading days from prev month
+  for (let i = 0; i < firstDow; i++) {
+    week.push({ d: daysInPrev - firstDow + 1 + i, out: true })
+  }
+  // current month
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isPast = year < todayY || (year === todayY && month < todayM) || (year === todayY && month === todayM && d < todayD)
+    const isToday = year === todayY && month === todayM && d === todayD
+    week.push({ d, past: isPast, today: isToday })
+    if (week.length === 7) { weeks.push(week); week = [] }
+  }
+  // trailing days from next month
+  if (week.length > 0) {
+    let nd = 1
+    while (week.length < 7) week.push({ d: nd++, out: true })
+    weeks.push(week)
+  }
+  return weeks
+}
+
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+
+function ordinal(n: number) {
+  const v = n % 100
+  return n + (["th","st","nd","rd"][(v - 20) % 10] || ["th","st","nd","rd"][v] || "th")
+}
+
 const calDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
 const timeSlots = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"]
 
@@ -275,7 +314,10 @@ export default function BookingsPage() {
   const [selectedArchitect, setSelectedArchitect] = useState<number | null>(null)
   const [autoChoose, setAutoChoose] = useState(false)
   const [search, setSearch] = useState("")
-  const [selectedDate, setSelectedDate] = useState<number | null>(19)
+  const [selectedDate, setSelectedDate] = useState<number | null>(null)
+  const todayNow = new Date()
+  const [calYear, setCalYear] = useState(todayNow.getFullYear())
+  const [calMonth, setCalMonth] = useState(todayNow.getMonth())
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null)
   const [notes, setNotes] = useState("")
   const [firstName, setFirstName] = useState("")
@@ -291,12 +333,63 @@ export default function BookingsPage() {
   const [saveCard, setSaveCard] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
 
+  // ── Validation state ──────────────────────────────────────
+  // triedNext: user clicked Next while disabled — show a banner
+  const [triedNext, setTriedNext] = useState(false)
+  // touched: fields the user has blurred at least once
+  const [touched, setTouched] = useState<Record<string, boolean>>({})
+
+  function touch(field: string) {
+    setTouched(prev => ({ ...prev, [field]: true }))
+  }
+
+  // Per-step validity (used by footers and to decide whether to advance)
+  function step1Valid() { return selectedArchitect !== null || autoChoose }
+  function step2Valid() { return selectedSlot !== null }
+  function step3Valid() { return !!firstName.trim() && !!lastName.trim() && !!email.trim() && !!mobile.trim() && agreedConsult }
+  function step4Valid() { return !!cardNumber.trim() && !!expiry.trim() && !!cvv.trim() && !!zip.trim() && agreedPayment }
+
+  // Per-field error messages (only shown after the field is touched or triedNext)
+  function err(field: string, condition: boolean, msg: string) {
+    return (touched[field] || triedNext) && condition ? msg : undefined
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+  const errors = {
+    firstName:  err("firstName",  !firstName.trim(),                       "First name is required"),
+    lastName:   err("lastName",   !lastName.trim(),                        "Last name is required"),
+    email:      err("email",      !email.trim() ? true : !emailRegex.test(email), !email.trim() ? "Email is required" : "Enter a valid email address"),
+    mobile:     err("mobile",     !mobile.trim(),                          "Mobile number is required"),
+    cardNumber: err("cardNumber", !cardNumber.trim(),                      "Card number is required"),
+    expiry:     err("expiry",     !expiry.trim(),                          "Expiration date is required"),
+    cvv:        err("cvv",        !cvv.trim(),                             "CVV is required"),
+    zip:        err("zip",        !zip.trim(),                             "ZIP code is required"),
+  }
+
+  function tryAdvance(isValid: () => boolean, onNext: () => void) {
+    if (isValid()) {
+      setTriedNext(false)
+      setTouched({})
+      onNext()
+    } else {
+      setTriedNext(true)
+    }
+  }
+
   const activeArchitect = architects.find(a => a.id === selectedArchitect) ?? architects[0]
   const filtered = architects.filter(a => a.name.toLowerCase().includes(search.toLowerCase()) || a.role.toLowerCase().includes(search.toLowerCase()))
   const selectedSlotLabel = selectedSlot !== null ? timeSlots[selectedSlot] : "—"
   const [architectDot, setArchitectDot] = useState(0)
   const architectScrollRef = useRef<HTMLDivElement>(null)
   const [profileDrawer, setProfileDrawer] = useState<Architect | null>(null)
+  const [profileLoading, setProfileLoading] = useState(false)
+
+  function openProfile(a: Architect | null | undefined) {
+    if (!a) return
+    setProfileLoading(true)
+    setTimeout(() => { setProfileLoading(false); setProfileDrawer(a) }, 80)
+  }
 
   function toggleCategory(cat: string) {
     setSelectedCategories(prev => prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat])
@@ -304,7 +397,15 @@ export default function BookingsPage() {
 
   const cardBase = "bg-white dark:bg-[#0D1B2E] border border-secondary/15 dark:border-white/8 rounded-2xl p-5 md:p-7 max-w-5xl"
 
-  const footerContent = (onBack: (() => void) | undefined, onNext: () => void, nextLabel: string, nextDisabled: boolean) => (
+  // Step-level hint messages shown in the banner when the user clicks Next while invalid
+  const stepHints: Record<number, string> = {
+    1: "Please select a consultant to continue.",
+    2: "Please choose a date and time slot to continue.",
+    3: "Please fill in all required fields and agree to the terms.",
+    4: "Please complete your payment details and agree to the terms.",
+  }
+
+  const footerContent = (onBack: (() => void) | undefined, onNext: () => void, nextLabel: string) => (
     <>
       <div>
         {onBack && (
@@ -318,8 +419,8 @@ export default function BookingsPage() {
           ))}
         </div>
         <Button
-          className={`px-8 h-11 rounded-xl text-sm font-semibold ${nextDisabled ? "bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-gray-600 cursor-not-allowed" : "bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900"}`}
-          onClick={nextDisabled ? undefined : onNext}
+          className="px-8 h-11 rounded-xl text-sm font-semibold bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900"
+          onClick={onNext}
         >
           {nextLabel}
         </Button>
@@ -327,17 +428,24 @@ export default function BookingsPage() {
     </>
   )
 
-  const StepFooter = ({ onBack, onNext, nextLabel = "Next", nextDisabled = false }: {
-    onBack?: () => void; onNext: () => void; nextLabel?: string; nextDisabled?: boolean
+  const StepFooter = ({ onBack, onNext, nextLabel = "Next" }: {
+    onBack?: () => void; onNext: () => void; nextLabel?: string
   }) => (
     <>
+      {/* Validation hint banner */}
+      {triedNext && (
+        <div className="flex items-center gap-2 mt-5 px-4 py-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl">
+          <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+          <p className="text-sm text-red-600 dark:text-red-400">{stepHints[step]}</p>
+        </div>
+      )}
       {/* Desktop: inline footer */}
-      <div className="hidden md:flex items-center justify-between mt-7 pt-5 border-t border-gray-100 dark:border-white/8">
-        {footerContent(onBack, onNext, nextLabel, nextDisabled)}
+      <div className="hidden md:flex items-center justify-between mt-5 pt-5 border-t border-gray-100 dark:border-white/8">
+        {footerContent(onBack, onNext, nextLabel)}
       </div>
       {/* Mobile: sticky footer above bottom nav */}
       <div className="md:hidden fixed bottom-16 left-0 right-0 z-40 bg-white dark:bg-[#0D1B2E] border-t border-gray-100 dark:border-white/8 px-4 py-3 flex items-center justify-between">
-        {footerContent(onBack, onNext, nextLabel, nextDisabled)}
+        {footerContent(onBack, onNext, nextLabel)}
       </div>
       {/* Spacer so content isn't hidden under sticky footer on mobile */}
       <div className="h-20 md:hidden" />
@@ -409,6 +517,14 @@ export default function BookingsPage() {
 
               {/* Mobile: horizontal scroll with dots */}
               <div className="md:hidden mb-5">
+                {filtered.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-10 text-center rounded-xl border border-dashed border-gray-200 dark:border-white/10">
+                    <Search className="w-8 h-8 text-gray-300 dark:text-gray-600 mb-3" />
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">No consultants found</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-600 mt-1">Try a different name or role.</p>
+                  </div>
+                ) : (
+                <>
                 <div
                   ref={architectScrollRef}
                   className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-1 scrollbar-hide"
@@ -457,7 +573,7 @@ export default function BookingsPage() {
                         </div>
                       </div>
                       <div className="border-t border-[#07111E]/10 pt-2.5 text-center">
-                        <span onClick={e => { e.stopPropagation(); setProfileDrawer(a) }} className="text-xs font-medium text-[#07111E]/60 hover:text-[#07111E] transition-colors cursor-pointer">View Profile</span>
+                        <span onClick={e => { e.stopPropagation(); openProfile(a) }} className="text-xs font-medium text-[#07111E]/60 hover:text-[#07111E] transition-colors cursor-pointer">View Profile</span>
                       </div>
                     </button>
                   ))}
@@ -467,9 +583,18 @@ export default function BookingsPage() {
                     <div key={i} className={`rounded-full transition-all ${architectDot === i ? 'w-4 h-1.5 bg-gray-900 dark:bg-white' : 'w-1.5 h-1.5 bg-gray-300 dark:bg-white/20'}`} />
                   ))}
                 </div>
+                </>
+                )}
               </div>
 
               {/* Desktop: grid */}
+              {filtered.length === 0 ? (
+                <div className="hidden md:flex flex-col items-center justify-center py-12 text-center rounded-xl border border-dashed border-gray-200 dark:border-white/10 mb-5">
+                  <Search className="w-8 h-8 text-gray-300 dark:text-gray-600 mb-3" />
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">No consultants found</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-600 mt-1">Try a different name or role.</p>
+                </div>
+              ) : (
               <div className="hidden md:grid grid-cols-4 gap-3 mb-5">
                 {filtered.map(a => (
                   <button
@@ -512,18 +637,19 @@ export default function BookingsPage() {
                       </div>
                     </div>
                     <div className="border-t border-[#07111E]/10 pt-2.5 text-center">
-                      <span onClick={e => { e.stopPropagation(); setProfileDrawer(a) }} className="text-xs font-medium text-[#07111E]/60 hover:text-[#07111E] transition-colors cursor-pointer">View Profile</span>
+                      <span onClick={e => { e.stopPropagation(); openProfile(a) }} className="text-xs font-medium text-[#07111E]/60 hover:text-[#07111E] transition-colors cursor-pointer">View Profile</span>
                     </div>
                   </button>
                 ))}
               </div>
+              )}
 
               <label className="flex items-center gap-2 cursor-pointer">
                 <Checkbox checked={autoChoose} onCheckedChange={v => setAutoChoose(!!v)} />
                 <span className="text-sm text-gray-600 dark:text-gray-400">Please choose what suits me the best</span>
               </label>
 
-              <StepFooter onNext={() => setStep(2)} nextDisabled={selectedArchitect === null && !autoChoose} />
+              <StepFooter onNext={() => tryAdvance(step1Valid, () => setStep(2))} />
             </div>
           )}
 
@@ -532,9 +658,10 @@ export default function BookingsPage() {
             <div className={cardBase}>
               <ArchitectBar
                 architect={activeArchitect}
-                dateLabel="19th February" timeLabel="9AM – 9PM"
-                leftLabel="Available from:" rightLabel="Working hours:"
-                onViewProfile={() => setProfileDrawer(architects.find(a => a.id === activeArchitect.id) ?? null)}
+                dateLabel={selectedDate ? `${ordinal(selectedDate)} ${MONTHS[calMonth]}` : "Not selected"}
+                timeLabel={selectedSlotLabel}
+                leftLabel="Selected date:" rightLabel="Selected time:"
+                onViewProfile={() => openProfile(architects.find(a => a.id === activeArchitect.id))}
               />
 
               <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
@@ -542,23 +669,43 @@ export default function BookingsPage() {
                 <div className="bg-white dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/10 p-4 w-full md:w-72 flex-shrink-0">
                   <p className="text-sm font-semibold text-gray-800 dark:text-white mb-3">Select a date</p>
                   <div className="flex items-center justify-between mb-3">
-                    <button className="text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
-                    <span className="text-sm font-bold text-gray-800 dark:text-white">February 2020</span>
-                    <button className="text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"><ChevronRight className="w-4 h-4" /></button>
+                    <button
+                      onClick={() => {
+                        const d = new Date(calYear, calMonth - 1, 1)
+                        const now = new Date()
+                        if (d >= new Date(now.getFullYear(), now.getMonth(), 1)) {
+                          setCalYear(d.getFullYear()); setCalMonth(d.getMonth()); setSelectedDate(null); setSelectedSlot(null)
+                        }
+                      }}
+                      className="text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 transition-colors disabled:opacity-30"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <span className="text-sm font-bold text-gray-800 dark:text-white">{MONTHS[calMonth]} {calYear}</span>
+                    <button
+                      onClick={() => {
+                        const d = new Date(calYear, calMonth + 1, 1)
+                        setCalYear(d.getFullYear()); setCalMonth(d.getMonth()); setSelectedDate(null); setSelectedSlot(null)
+                      }}
+                      className="text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
                   </div>
                   <div className="grid grid-cols-7 mb-1">
                     {calDays.map(d => <div key={d} className="text-center text-[10px] font-semibold text-gray-400 dark:text-gray-600 py-1">{d}</div>)}
                   </div>
-                  {calendarWeeks.map((week, wi) => (
+                  {buildCalendarWeeks(calYear, calMonth).map((week, wi) => (
                     <div key={wi} className="grid grid-cols-7">
                       {week.map((cell, ci) => (
                         <button
                           key={ci}
-                          onClick={() => { if (!cell.out) { setSelectedDate(cell.d); setSelectedSlot(null) } }}
+                          disabled={!!cell.out || !!cell.past}
+                          onClick={() => { setSelectedDate(cell.d); setSelectedSlot(null) }}
                           className={`text-center text-xs py-1.5 rounded-lg transition-colors font-medium ${
-                            cell.out ? "text-gray-300 dark:text-gray-700 cursor-default" :
+                            cell.out || cell.past ? "text-gray-300 dark:text-gray-700 cursor-default" :
                             selectedDate === cell.d ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900" :
-                            cell.highlight ? "text-blue-600 font-semibold" :
+                            cell.today ? "ring-1 ring-gray-900 dark:ring-white text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/8" :
                             "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/8"
                           }`}
                         >
@@ -575,7 +722,7 @@ export default function BookingsPage() {
                     Available times
                   </p>
                   <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">
-                    {selectedDate ? `February ${selectedDate}, 2020` : "Select a date first"}
+                    {selectedDate ? `${MONTHS[calMonth]} ${selectedDate}, ${calYear}` : "Select a date first"}
                   </p>
                   <div className="grid grid-cols-2 gap-2">
                     {timeSlots.map((slot, i) => (
@@ -600,7 +747,7 @@ export default function BookingsPage() {
                 <a href="#" className="text-orange-500 hover:underline font-medium">Call us or schedule a callback</a>
               </p>
 
-              <StepFooter onBack={() => setStep(1)} onNext={() => setStep(3)} nextDisabled={selectedSlot === null} />
+              <StepFooter onBack={() => { setTriedNext(false); setStep(1) }} onNext={() => tryAdvance(step2Valid, () => setStep(3))} />
             </div>
           )}
 
@@ -609,9 +756,9 @@ export default function BookingsPage() {
             <div className={cardBase}>
               <ArchitectBar
                 architect={activeArchitect}
-                dateLabel={selectedDate ? `Feb ${selectedDate}` : "—"} timeLabel={selectedSlotLabel}
+                dateLabel={selectedDate ? `${ordinal(selectedDate)} ${MONTHS[calMonth]}` : "—"} timeLabel={selectedSlotLabel}
                 leftLabel="Date:" rightLabel="Time:"
-                onViewProfile={() => setProfileDrawer(architects.find(a => a.id === activeArchitect.id) ?? null)}
+                onViewProfile={() => openProfile(architects.find(a => a.id === activeArchitect.id))}
               />
 
               <div className="space-y-5">
@@ -634,8 +781,26 @@ export default function BookingsPage() {
                     <p className="text-xs text-gray-500 dark:text-gray-400">Enter your full name for identification.</p>
                   </div>
                   <div className="w-full md:flex-1 grid grid-cols-2 gap-3">
-                    <Input placeholder="First name" value={firstName} onChange={e => setFirstName(e.target.value)} className="bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm" />
-                    <Input placeholder="Last name" value={lastName} onChange={e => setLastName(e.target.value)} className="bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm" />
+                    <div>
+                      <Input
+                        placeholder="First name"
+                        value={firstName}
+                        onChange={e => setFirstName(e.target.value)}
+                        onBlur={() => touch("firstName")}
+                        className={`bg-white dark:bg-white/5 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm ${errors.firstName ? "border-red-400 dark:border-red-500 focus-visible:ring-red-400" : "border-gray-200 dark:border-white/10"}`}
+                      />
+                      <FieldError msg={errors.firstName} />
+                    </div>
+                    <div>
+                      <Input
+                        placeholder="Last name"
+                        value={lastName}
+                        onChange={e => setLastName(e.target.value)}
+                        onBlur={() => touch("lastName")}
+                        className={`bg-white dark:bg-white/5 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm ${errors.lastName ? "border-red-400 dark:border-red-500 focus-visible:ring-red-400" : "border-gray-200 dark:border-white/10"}`}
+                      />
+                      <FieldError msg={errors.lastName} />
+                    </div>
                   </div>
                 </div>
 
@@ -644,7 +809,17 @@ export default function BookingsPage() {
                     <p className="text-sm font-bold text-gray-800 dark:text-white mb-0.5">Email</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">We'll send confirmation and updates to this email.</p>
                   </div>
-                  <Input placeholder="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full md:flex-1 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm" />
+                  <div className="w-full md:flex-1">
+                    <Input
+                      placeholder="Email"
+                      type="email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      onBlur={() => touch("email")}
+                      className={`w-full bg-white dark:bg-white/5 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm ${errors.email ? "border-red-400 dark:border-red-500 focus-visible:ring-red-400" : "border-gray-200 dark:border-white/10"}`}
+                    />
+                    <FieldError msg={errors.email} />
+                  </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8">
@@ -652,20 +827,36 @@ export default function BookingsPage() {
                     <p className="text-sm font-bold text-gray-800 dark:text-white mb-0.5">Mobile Number</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">Provide your number for urgent updates or contact.</p>
                   </div>
-                  <Input placeholder="Mobile Number" value={mobile} onChange={e => setMobile(e.target.value)} className="w-full md:flex-1 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm" />
+                  <div className="w-full md:flex-1">
+                    <Input
+                      placeholder="Mobile Number"
+                      value={mobile}
+                      onChange={e => setMobile(e.target.value)}
+                      onBlur={() => touch("mobile")}
+                      className={`w-full bg-white dark:bg-white/5 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm ${errors.mobile ? "border-red-400 dark:border-red-500 focus-visible:ring-red-400" : "border-gray-200 dark:border-white/10"}`}
+                    />
+                    <FieldError msg={errors.mobile} />
+                  </div>
                 </div>
 
-                <label className="flex items-center gap-2 cursor-pointer pt-1">
-                  <Checkbox checked={agreedConsult} onCheckedChange={v => setAgreedConsult(!!v)} />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    I agree to Planr{" "}
-                    <a href="#" className="text-orange-500 hover:underline font-medium">Terms of Use</a>
-                    {" "}and to receive electronic communication from Planr
-                  </span>
-                </label>
+                <div className="pt-1">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <Checkbox checked={agreedConsult} onCheckedChange={v => setAgreedConsult(!!v)} />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      I agree to Planr{" "}
+                      <a href="#" className="text-orange-500 hover:underline font-medium">Terms of Use</a>
+                      {" "}and to receive electronic communication from Planr
+                    </span>
+                  </label>
+                  {triedNext && !agreedConsult && (
+                    <p className="flex items-center gap-1 text-xs text-red-500 mt-1.5 ml-6">
+                      <AlertCircle className="w-3 h-3 flex-shrink-0" />You must agree to the Terms of Use to continue
+                    </p>
+                  )}
+                </div>
               </div>
 
-              <StepFooter onBack={() => setStep(2)} onNext={() => setStep(4)} nextDisabled={!agreedConsult} />
+              <StepFooter onBack={() => { setTriedNext(false); setTouched({}); setStep(2) }} onNext={() => tryAdvance(step3Valid, () => setStep(4))} />
             </div>
           )}
 
@@ -680,23 +871,51 @@ export default function BookingsPage() {
                 <div className="space-y-4">
                   <div>
                     <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Card number</p>
-                    <Input placeholder="0000 0000 0000 0000" value={cardNumber} onChange={e => setCardNumber(e.target.value)} className="bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm font-mono" />
+                    <Input
+                      placeholder="0000 0000 0000 0000"
+                      value={cardNumber}
+                      onChange={e => setCardNumber(e.target.value)}
+                      onBlur={() => touch("cardNumber")}
+                      className={`bg-white dark:bg-white/5 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm font-mono ${errors.cardNumber ? "border-red-400 dark:border-red-500 focus-visible:ring-red-400" : "border-gray-200 dark:border-white/10"}`}
+                    />
+                    <FieldError msg={errors.cardNumber} />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Expiration</p>
-                      <Input placeholder="MM / YY" value={expiry} onChange={e => setExpiry(e.target.value)} className="bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm" />
+                      <Input
+                        placeholder="MM / YY"
+                        value={expiry}
+                        onChange={e => setExpiry(e.target.value)}
+                        onBlur={() => touch("expiry")}
+                        className={`bg-white dark:bg-white/5 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm ${errors.expiry ? "border-red-400 dark:border-red-500 focus-visible:ring-red-400" : "border-gray-200 dark:border-white/10"}`}
+                      />
+                      <FieldError msg={errors.expiry} />
                     </div>
                     <div>
                       <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">CVV</p>
-                      <Input placeholder="000" value={cvv} onChange={e => setCvv(e.target.value)} className="bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm" />
+                      <Input
+                        placeholder="000"
+                        value={cvv}
+                        onChange={e => setCvv(e.target.value)}
+                        onBlur={() => touch("cvv")}
+                        className={`bg-white dark:bg-white/5 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm ${errors.cvv ? "border-red-400 dark:border-red-500 focus-visible:ring-red-400" : "border-gray-200 dark:border-white/10"}`}
+                      />
+                      <FieldError msg={errors.cvv} />
                     </div>
                   </div>
 
                   <div>
                     <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">ZIP / Postal code</p>
-                    <Input placeholder="00000" value={zip} onChange={e => setZip(e.target.value)} className="w-40 bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm" />
+                    <Input
+                      placeholder="00000"
+                      value={zip}
+                      onChange={e => setZip(e.target.value)}
+                      onBlur={() => touch("zip")}
+                      className={`w-40 bg-white dark:bg-white/5 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm ${errors.zip ? "border-red-400 dark:border-red-500 focus-visible:ring-red-400" : "border-gray-200 dark:border-white/10"}`}
+                    />
+                    <FieldError msg={errors.zip} />
                   </div>
                 </div>
 
@@ -705,17 +924,24 @@ export default function BookingsPage() {
                     <Checkbox checked={saveCard} onCheckedChange={v => setSaveCard(!!v)} />
                     <span className="text-sm text-gray-600 dark:text-gray-400">Save card for future bookings</span>
                   </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <Checkbox checked={agreedPayment} onCheckedChange={v => setAgreedPayment(!!v)} />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      I agree to Planr{" "}
-                      <a href="#" className="text-orange-500 hover:underline font-medium">Terms of Use</a>
-                      {" "}and to receive electronic communication from Planr
-                    </span>
-                  </label>
+                  <div>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox checked={agreedPayment} onCheckedChange={v => setAgreedPayment(!!v)} />
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                        I agree to Planr{" "}
+                        <a href="#" className="text-orange-500 hover:underline font-medium">Terms of Use</a>
+                        {" "}and to receive electronic communication from Planr
+                      </span>
+                    </label>
+                    {triedNext && !agreedPayment && (
+                      <p className="flex items-center gap-1 text-xs text-red-500 mt-1.5 ml-6">
+                        <AlertCircle className="w-3 h-3 flex-shrink-0" />You must agree to the Terms of Use to continue
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <StepFooter onBack={() => setStep(3)} onNext={() => setConfirmed(true)} nextLabel="Confirm & Pay" nextDisabled={!agreedPayment} />
+                <StepFooter onBack={() => { setTriedNext(false); setTouched({}); setStep(3) }} onNext={() => tryAdvance(step4Valid, () => setConfirmed(true))} nextLabel="Confirm & Pay" />
               </div>
 
               {/* Booking summary */}
@@ -772,6 +998,12 @@ export default function BookingsPage() {
       </div>
 
       {confirmed && <SuccessModal onClose={() => { setConfirmed(false); window.location.href = "/dashboard" }} />}
+
+      {profileLoading && (
+        <div className="fixed inset-0 bg-black/40 dark:bg-black/60 z-40 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+        </div>
+      )}
 
       {profileDrawer && (
         <ProfileDrawer

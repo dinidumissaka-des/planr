@@ -12,22 +12,24 @@ const palette = [
 ]
 
 function getColor(initials: string) {
-  const index = (initials.charCodeAt(0) + (initials.charCodeAt(1) || 0)) % palette.length
+  const safe = initials || "?"
+  const index = (safe.charCodeAt(0) + (safe.charCodeAt(1) || 0)) % palette.length
   return palette[index]
 }
 
 interface AvatarProps {
-  initials: string
+  initials?: string | null
   size?: string
   textSize?: string
   rounded?: string
 }
 
 export function AvatarInitials({ initials, size = "w-8 h-8", textSize = "text-[10px]", rounded = "rounded-full" }: AvatarProps) {
-  const { bg, text } = getColor(initials)
+  const display = initials?.trim() || "?"
+  const { bg, text } = getColor(display)
   return (
     <div className={`${size} ${bg} ${rounded} flex items-center justify-center flex-shrink-0`}>
-      <span className={`${textSize} font-bold ${text}`}>{initials}</span>
+      <span className={`${textSize} font-bold ${text}`}>{display}</span>
     </div>
   )
 }

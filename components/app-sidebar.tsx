@@ -37,10 +37,10 @@ function SignOutModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel
 }
 
 const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard",       href: "/dashboard" },
-  { icon: MessageSquare,   label: "Question Answer", href: "/question-answer" },
-  { icon: CalendarDays,    label: "Bookings",        href: "/bookings" },
-  { icon: CreditCard,      label: "Billing",         href: "/billing" },
+  { icon: LayoutDashboard, label: "Dashboard",       shortLabel: "Dashboard", href: "/dashboard" },
+  { icon: MessageSquare,   label: "Question Answer", shortLabel: "Q&A",       href: "/question-answer" },
+  { icon: CalendarDays,    label: "Bookings",        shortLabel: "Bookings",  href: "/bookings" },
+  { icon: CreditCard,      label: "Billing",         shortLabel: "Billing",   href: "/billing" },
 ]
 
 export function AppSidebar() {
@@ -93,7 +93,7 @@ export function AppSidebar() {
 
       {/* ── Mobile bottom navigation ── */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-[#0A1525] border-t border-gray-100 dark:border-white/8 flex items-center justify-around px-2 py-2 safe-b">
-        {navItems.map(({ icon: Icon, label, href }) => {
+        {navItems.map(({ icon: Icon, label, shortLabel, href }) => {
           const active = pathname === href
           return (
             <Link
@@ -106,7 +106,7 @@ export function AppSidebar() {
               }`}
             >
               <Icon className="w-5 h-5" />
-              <span className="text-[10px] font-medium">{label.split(" ")[0]}</span>
+              <span className="text-xs font-medium">{shortLabel}</span>
             </Link>
           )
         })}

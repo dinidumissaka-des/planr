@@ -6,19 +6,8 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import Link from "next/link"
 import { AvatarInitials } from "@/components/ui/avatar-initials"
-
-// ─── Data ─────────────────────────────────────────────────
-
-const initialConsultMessages: Message[] = [
-  { role: "user",       text: "What's your fee structure and what can I expect in costs?", time: "10 minutes ago" },
-  { role: "consultant", text: `Architects use different fee structures to charge for their services, and any reputable firm will be able to lay this out right away. On your end, "Be open about your budget," suggests Geyer. "Cost limitations are extremely critical, since quality work can be very expensive."\n\nYou also want to make sure your architect is open with you about the additional costs that may not be spelled out in your contract. "These are often additional construction administration hours or amendments to the drawings due to changes during construction," says Safyan. "If the client anticipates these costs, then it doesn't come as a surprise later, so it helps to ask the question and get a detailed response from the architect of these potential scenarios."`, time: "14 seconds ago" },
-  { role: "user",       text: "Thank you! This is really helpful", time: "10 minutes ago" },
-]
-
-const previousConsultations = [
-  { name: "Alex Rivera",    initials: "AR", date: "2022/01/18" },
-  { name: "James Thornton", initials: "JT", date: "2022/01/18", photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&auto=format&fit=crop&q=80" },
-]
+import { createClient } from "@/lib/supabase"
+import { fetchConsultations, formatScheduledDate, type Consultation } from "@/lib/data"
 
 const aiResponses: Record<string, string> = {
   default:   "Hi! I'm the Planr AI. I can answer questions about architecture, construction, permits, interior design, and more. What would you like to know?",
@@ -95,27 +84,54 @@ function TypingDots() {
 
 // ─── Right sidebar (shared) ───────────────────────────────
 
-function RightSidebar({ onAI, onView }: { onAI: () => void; onView: () => void }) {
+function RightSidebar({ onAI, onView, previousConsultations, loadingPrev }: {
+  onAI: () => void
+  onView: (c: Consultation) => void
+  previousConsultations: Consultation[]
+  loadingPrev: boolean
+}) {
   return (
     <div className="hidden lg:flex w-72 flex-col gap-4 flex-shrink-0">
       <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
         <div className="flex items-center justify-between mb-3">
           <p className="text-sm font-bold text-gray-900 dark:text-white">Previous consultations</p>
-          <button className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-0.5 transition-colors">
-            View all <ArrowUpRight className="w-3 h-3" />
-          </button>
+          {previousConsultations.length > 0 && (
+            <button className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-0.5 transition-colors">
+              View all <ArrowUpRight className="w-3 h-3" />
+            </button>
+          )}
         </div>
-        <div className="grid grid-cols-[1fr_auto_auto] text-xs text-gray-400 dark:text-gray-600 font-medium pb-2 border-b border-gray-100 dark:border-white/8 gap-3">
-          <span>Consult</span><span>Date</span><span />
-        </div>
-        {previousConsultations.map((c, i) => (
-          <div key={i} className="grid grid-cols-[auto_1fr_auto_auto] items-center py-3 gap-2.5 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/60 dark:hover:bg-white/4 rounded-lg transition-colors px-1 -mx-1">
-            <Avatar initials={c.initials} />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">{c.name}</span>
-            <span className="text-xs text-gray-400 dark:text-gray-600 whitespace-nowrap">{c.date}</span>
-            <button onClick={onView} className="text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">View</button>
+        {loadingPrev ? (
+          <div className="space-y-3 py-1">
+            {[0, 1].map(i => (
+              <div key={i} className="flex items-center gap-2.5 py-2 animate-pulse">
+                <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-white/10 flex-shrink-0" />
+                <div className="flex-1 h-3 rounded bg-gray-200 dark:bg-white/10" />
+                <div className="w-16 h-3 rounded bg-gray-200 dark:bg-white/10" />
+              </div>
+            ))}
           </div>
-        ))}
+        ) : previousConsultations.length > 0 ? (
+          <>
+            <div className="grid grid-cols-[1fr_auto_auto] text-xs text-gray-400 dark:text-gray-600 font-medium pb-2 border-b border-gray-100 dark:border-white/8 gap-3">
+              <span>Consult</span><span>Date</span><span />
+            </div>
+            {previousConsultations.map((c) => (
+              <div key={c.id} className="grid grid-cols-[auto_1fr_auto_auto] items-center py-3 gap-2.5 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/60 dark:hover:bg-white/4 rounded-lg transition-colors px-1 -mx-1">
+                <Avatar initials={c.architect_initials} />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">{c.architect_name}</span>
+                <span className="text-xs text-gray-400 dark:text-gray-600 whitespace-nowrap">{formatScheduledDate(c.scheduled_at)}</span>
+                <button onClick={() => onView(c)} className="text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">View</button>
+              </div>
+            ))}
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-6 text-center">
+            <MessageSquare className="w-7 h-7 text-gray-300 dark:text-gray-700 mb-2.5" />
+            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">No previous consultations</p>
+            <p className="text-xs text-gray-400 dark:text-gray-600 mt-1">Past sessions will appear here.</p>
+          </div>
+        )}
       </div>
 
       <div
@@ -189,11 +205,30 @@ function EmptyState({ onStart, onAI }: { onStart: () => void; onAI: () => void }
 export default function QuestionAnswerPage() {
   const [view, setView]   = useState<View>("empty")
   const [mode, setMode]   = useState<Mode>("consultant")
-  const [consultChat, setConsultChat] = useState<Message[]>(initialConsultMessages)
+  const [consultChat, setConsultChat] = useState<Message[]>([])
   const [aiChat, setAiChat]           = useState<Message[]>([{ role: "ai", text: aiResponses.default, time: "just now" }])
   const [input, setInput] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+
+  const [allConsultations, setAllConsultations] = useState<Consultation[]>([])
+  const [loadingPrev, setLoadingPrev] = useState(true)
+  const [activeConsultation, setActiveConsultation] = useState<Consultation | null>(null)
+
+  useEffect(() => {
+    async function loadConsultations() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setLoadingPrev(false); return }
+      const all = await fetchConsultations(user.id)
+      setAllConsultations(all)
+      setLoadingPrev(false)
+    }
+    loadConsultations()
+  }, [])
+
+  const previousConsultations = allConsultations.filter(c => c.status === "completed")
+  const ongoingConsultation   = allConsultations.find(c => c.status === "ongoing") ?? null
 
   const messages = mode === "consultant" ? consultChat : aiChat
 
@@ -216,7 +251,12 @@ export default function QuestionAnswerPage() {
   }
 
   function openAI() { setMode("ai"); setView("chat") }
-  function openChat() { setConsultChat([]); setMode("consultant"); setView("chat") }
+  function openChat(consultation?: Consultation) {
+    setActiveConsultation(consultation ?? ongoingConsultation)
+    setConsultChat([])
+    setMode("consultant")
+    setView("chat")
+  }
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
@@ -253,22 +293,36 @@ export default function QuestionAnswerPage() {
               {/* Consultant header */}
               {mode === "consultant" && (
                 <div className="flex items-center gap-3 px-4 md:px-6 py-3 border-b border-gray-50 dark:border-white/5 flex-wrap">
-                  <AvatarInitials initials="RP" size="w-10 h-10" textSize="text-xs" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-400 dark:text-gray-600 font-medium leading-none mb-0.5">Consult</p>
-                    <p className="text-sm md:text-base font-bold text-gray-900 dark:text-white leading-tight">James Thornton</p>
-                  </div>
-                  <div className="text-right hidden sm:block">
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">Architect</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 justify-end">
-                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />4.9 (12 Reviews)
-                    </p>
-                  </div>
-                  <button className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors hidden md:block">View Profile</button>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                    <span className="text-sm font-semibold text-red-500">Live</span>
-                  </div>
+                  {activeConsultation?.architect_name ? (
+                    <>
+                      <AvatarInitials initials={activeConsultation.architect_initials} size="w-10 h-10" textSize="text-xs" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-400 dark:text-gray-600 font-medium leading-none mb-0.5">Consult</p>
+                        <p className="text-sm md:text-base font-bold text-gray-900 dark:text-white leading-tight">{activeConsultation.architect_name}</p>
+                      </div>
+                      <div className="text-right hidden sm:block">
+                        <p className="text-sm font-bold text-gray-900 dark:text-white">{activeConsultation.consultation_type}</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500">{formatScheduledDate(activeConsultation.scheduled_at)}</p>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                        <span className="text-sm font-semibold text-red-500">Live</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/8 flex items-center justify-center flex-shrink-0">
+                        <User className="w-5 h-5 text-gray-400 dark:text-gray-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-400 dark:text-gray-600 font-medium leading-none mb-0.5">Consult</p>
+                        <p className="text-sm font-bold text-gray-500 dark:text-gray-400 leading-tight">No active consultant</p>
+                      </div>
+                      <Link href="/bookings" className="flex items-center gap-1.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors whitespace-nowrap flex-shrink-0">
+                        Book a session
+                      </Link>
+                    </>
+                  )}
                 </div>
               )}
 
@@ -317,7 +371,12 @@ export default function QuestionAnswerPage() {
           )}
 
           {/* ── Right sidebar ── */}
-          <RightSidebar onAI={openAI} onView={openChat} />
+          <RightSidebar
+            onAI={openAI}
+            onView={(c) => openChat(c)}
+            previousConsultations={previousConsultations}
+            loadingPrev={loadingPrev}
+          />
         </div>
       </div>
     </div>

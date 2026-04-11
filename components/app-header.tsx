@@ -6,12 +6,29 @@ import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useTheme } from "@/hooks/use-theme"
 import { createClient } from "@/lib/supabase"
+import { fetchNotifications, dismissNotification, type Notification } from "@/lib/data"
 
-const initialNotifications = [
-  { id: 1, type: "success", title: "Good news, everyone",  body: "Nothing to worry about, everything is going great!" },
-  { id: 2, type: "success", title: "Good news, everyone",  body: "Nothing to worry about, everything is going great!" },
-  { id: 3, type: "info",    title: "Hey, did you know...", body: "This alert needs your attention, but its not super important." },
-]
+function playNotificationSound() {
+  try {
+    const ctx = new AudioContext()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+    // Two-tone "ding": high note fades into a lower harmonic
+    osc.type = "sine"
+    osc.frequency.setValueAtTime(1046, ctx.currentTime)          // C6
+    osc.frequency.setValueAtTime(784, ctx.currentTime + 0.12)    // G5
+    gain.gain.setValueAtTime(0, ctx.currentTime)
+    gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.02)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.55)
+    osc.start(ctx.currentTime)
+    osc.stop(ctx.currentTime + 0.55)
+    osc.onended = () => ctx.close()
+  } catch {
+    // AudioContext blocked (e.g. no user gesture yet) — silently skip
+  }
+}
 
 function SignOutModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
   return (
@@ -53,7 +70,7 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
   const [notifOpen, setNotifOpen] = useState(false)
   const [userOpen, setUserOpen] = useState(false)
   const [showSignOut, setShowSignOut] = useState(false)
-  const [notifications, setNotifications] = useState(initialNotifications)
+  const [notifications, setNotifications] = useState<Notification[]>([])
   const [userEmail, setUserEmail] = useState("")
   const [userName, setUserName] = useState("")
   const notifRef = useRef<HTMLDivElement>(null)
@@ -61,17 +78,45 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
   const { theme, toggleTheme } = useTheme()
 
   useEffect(() => {
+    const supabase = createClient()
+    let channel: ReturnType<typeof supabase.channel> | null = null
+
     async function loadUser() {
-      const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        setUserEmail(user.email ?? "")
-        const first = user.user_metadata?.first_name ?? ""
-        const last = user.user_metadata?.last_name ?? ""
-        setUserName(first && last ? `${first} ${last}` : (user.email ?? ""))
+      if (!user) return
+
+      setUserEmail(user.email ?? "")
+      const first = user.user_metadata?.first_name ?? ""
+      const last = user.user_metadata?.last_name ?? ""
+      setUserName(first && last ? `${first} ${last}` : (user.email ?? ""))
+
+      const notifs = await fetchNotifications(user.id)
+      setNotifications(notifs)
+
+      // Play sound once on load if there are unread notifications (once per session)
+      if (notifs.length > 0 && !sessionStorage.getItem("planr_notif_sound")) {
+        playNotificationSound()
+        sessionStorage.setItem("planr_notif_sound", "1")
       }
+
+      // Realtime: play sound + prepend when a new notification row is inserted
+      channel = supabase
+        .channel(`notifications:${user.id}`)
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
+          (payload) => {
+            setNotifications(prev => [payload.new as Notification, ...prev])
+            playNotificationSound()
+            // Reset session flag so next load plays again
+            sessionStorage.removeItem("planr_notif_sound")
+          }
+        )
+        .subscribe()
     }
+
     loadUser()
+    return () => { channel && supabase.removeChannel(channel) }
   }, [])
 
   const initials = userName
@@ -94,9 +139,10 @@ export function AppHeader({ title, icon }: AppHeaderProps) {
     return () => document.removeEventListener("mousedown", handle)
   }, [])
 
-  function dismiss(id: number, e: React.MouseEvent) {
+  function dismiss(id: string, e: React.MouseEvent) {
     e.stopPropagation()
     setNotifications(prev => prev.filter(n => n.id !== id))
+    dismissNotification(id)
   }
 
   const unread = notifications.length
