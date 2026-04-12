@@ -80,8 +80,73 @@
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
+
+  /* Secondary shades — sky blue #81B9E9 */
+  --color-secondary-50:  #EFF8FF;
+  --color-secondary-100: #DBEEFB;
+  --color-secondary-200: #BDE0F7;
+  --color-secondary-300: #93CBF2;
+  --color-secondary-400: #81B9E9;
+  --color-secondary-500: #5BA0D8;
+  --color-secondary-600: #3B83BE;
+  --color-secondary-700: #2A6499;
+  --color-secondary-800: #1D4872;
+  --color-secondary-900: #122E4D;
+  --color-secondary-950: #0B1E35;
+
+  /* Sand — warm beige #E1C1A6 */
+  --color-sand-50:  #FDF8F4;
+  --color-sand-100: #FAF0E6;
+  --color-sand-200: #F3DECB;
+  --color-sand-300: #EACAAB;
+  --color-sand-400: #E1C1A6;
+  --color-sand-500: #D4A882;
+  --color-sand-600: #C08B5E;
+  --color-sand-700: #A06E42;
+  --color-sand-800: #7A522F;
+  --color-sand-900: #563820;
+  --color-sand-950: #3D2815;
+
+  /* Mist — cool blue-gray #A2B2CD */
+  --color-mist-50:  #F5F7FA;
+  --color-mist-100: #E8ECF3;
+  --color-mist-200: #D0D9E8;
+  --color-mist-300: #B8C5D8;
+  --color-mist-400: #A2B2CD;
+  --color-mist-500: #8298BA;
+  --color-mist-600: #637DA3;
+  --color-mist-700: #4C638A;
+  --color-mist-800: #354969;
+  --color-mist-900: #21304A;
+  --color-mist-950: #151F31;
+
+  /* Gold — warm yellow #DBCF63 */
+  --color-gold-50:  #FEFCE8;
+  --color-gold-100: #FDF8C3;
+  --color-gold-200: #FAF098;
+  --color-gold-300: #F0E464;
+  --color-gold-400: #DBCF63;
+  --color-gold-500: #C4B545;
+  --color-gold-600: #A89A30;
+  --color-gold-700: #877B22;
+  --color-gold-800: #656019;
+  --color-gold-900: #454211;
+  --color-gold-950: #2D2C09;
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+
+  /* Primary shades — dark navy #07111E */
+  --color-primary-50:  #F0F4F8;
+  --color-primary-100: #DCE6F0;
+  --color-primary-200: #B9CEE1;
+  --color-primary-300: #88AEC8;
+  --color-primary-400: #5B8CAE;
+  --color-primary-500: #3A6B8A;
+  --color-primary-600: #254F6A;
+  --color-primary-700: #163749;
+  --color-primary-800: #0E2535;
+  --color-primary-900: #07111E;
+  --color-primary-950: #030C16;
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);

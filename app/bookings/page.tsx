@@ -533,11 +533,6 @@ export default function BookingsPage() {
         )}
       </div>
       <div className="flex flex-col items-end gap-1.5">
-        {hint && (
-          <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
-            <AlertCircle className="w-3 h-3 flex-shrink-0" />{hint}
-          </p>
-        )}
         <div className="flex items-center gap-4">
           <div className="flex gap-1.5">
             {[1,2,3,4].map(n => (

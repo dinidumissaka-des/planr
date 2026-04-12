@@ -216,8 +216,8 @@ function EmptyState({ onStart, onAI }: { onStart: () => void; onAI: () => void }
     <div className="relative flex-1 rounded-2xl border border-gray-100 dark:border-white/8 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] flex flex-col items-center justify-center px-8 text-center min-h-0 bg-[#EAF3FB] dark:bg-[#0D1B2E] overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center opacity-60 dark:opacity-20 pointer-events-none" style={{ backgroundImage: "url('/grain-bg-lg.png')" }} />
       <div className="relative mb-7">
-        <div className="w-24 h-24 bg-gray-100 dark:bg-white/8 rounded-full flex items-center justify-center">
-          <MessageCircleQuestion className="w-12 h-12 text-gray-400 dark:text-gray-600" />
+        <div className="w-24 h-24 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(219, 207, 99, 0.18)' }}>
+          <MessageCircleQuestion className="w-12 h-12" style={{ color: '#A89A30' }} />
         </div>
       </div>
 
@@ -233,17 +233,11 @@ function EmptyState({ onStart, onAI }: { onStart: () => void; onAI: () => void }
         >
           Ask a Question
         </button>
-        <button
-          onClick={onAI}
-          className="w-full flex items-center justify-center gap-2 bg-secondary/15 hover:bg-secondary/25 text-primary dark:text-secondary text-sm font-semibold py-3 rounded-xl transition-colors border border-secondary/30"
-        >
-          Try Planr AI
-        </button>
         <Link
           href="/bookings"
-          className="w-full text-center text-sm text-gray-500 dark:text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 py-2 transition-colors"
+          className="w-full flex items-center justify-center gap-2 bg-secondary/15 hover:bg-secondary/25 text-primary dark:text-secondary text-sm font-semibold py-3 rounded-xl transition-colors border border-secondary/30"
         >
-          Or book a consultation →
+          Book a Consultation
         </Link>
       </div>
     </div>
@@ -409,7 +403,7 @@ export default function QuestionAnswerPage() {
     <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <AppHeader title="Question Answer" />
+        <AppHeader title="Ask Planr" />
 
         <div className="flex-1 overflow-hidden flex gap-5 p-4 md:p-6 pb-20 md:pb-6">
 
@@ -502,9 +496,6 @@ export default function QuestionAnswerPage() {
                     Send
                   </button>
                 </div>
-                {mode === "ai" && (
-                  <p className="text-[10px] text-gray-400 dark:text-gray-600 text-center mt-1.5">For professional advice, book a consultation with a certified architect.</p>
-                )}
               </div>
             </div>
           )}

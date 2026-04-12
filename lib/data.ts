@@ -232,7 +232,7 @@ export async function deleteAiChat(userId: string, chatId: string): Promise<void
 
 // ─── Project Board Types ────────────────────────────────────
 
-export type ProjectType = "home" | "restaurant" | "hotel" | "commercial" | "renovation"
+export type ProjectType = "home" | "restaurant" | "hotel" | "commercial" | "renovation" | "other"
 export type ProjectStatus = "planning" | "active" | "on_hold" | "completed"
 export type MilestoneStatus = "pending" | "in_progress" | "completed" | "blocked"
 
@@ -324,6 +324,18 @@ const DEFAULT_MILESTONES: Record<ProjectType, string[]> = {
     "Fixtures & Fittings",
     "Final Cleanup & Handover",
   ],
+  other: [
+    "Planning & Scoping",
+    "Permits & Approvals",
+    "Site Preparation",
+    "Structural Work",
+    "MEP (Mechanical, Electrical, Plumbing)",
+    "Interior Work",
+    "Exterior Work",
+    "Final Inspections",
+    "Cleanup",
+    "Handover",
+  ],
 }
 
 export const PROJECT_TYPE_EMOJI: Record<ProjectType, string> = {
@@ -332,6 +344,7 @@ export const PROJECT_TYPE_EMOJI: Record<ProjectType, string> = {
   hotel: "🏨",
   commercial: "🏢",
   renovation: "🔨",
+  other: "🏗️",
 }
 
 export async function fetchProjects(userId: string): Promise<Project[]> {

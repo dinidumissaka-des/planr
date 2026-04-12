@@ -178,8 +178,7 @@ export function AppHeader({ title }: AppHeaderProps) {
       <header className="md:h-16 bg-white dark:bg-[#0A1525] border-b border-gray-100 dark:border-white/8 flex flex-col justify-end px-4 md:px-8 flex-shrink-0 relative z-30 safe-t md:pt-0">
         <div className="h-14 flex items-center justify-between w-full">
           {/* Mobile: logo; Desktop: page title */}
-        <img src="/planr-logo.svg" alt="Planr" className="h-6 md:hidden dark:hidden" />
-        <img src="/planr-logo-light.svg" alt="Planr" className="h-6 md:hidden hidden dark:block" />
+        <img src="/planr-logo.svg" alt="Planr" className="h-6 md:hidden dark:invert" />
         <h1 className="hidden md:flex text-2xl font-bold text-gray-900 dark:text-white">
           {title}
         </h1>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import {
   Plus, FolderKanban, MapPin, ChevronRight, Loader2, Trash2, X,
   CheckCircle2, Clock, AlertTriangle, TrendingUp,
+  Home, UtensilsCrossed, BedDouble, Building2, Hammer, HardHat, type LucideIcon,
 } from "lucide-react"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
@@ -29,12 +30,13 @@ const STATUS_CONFIG: Record<ProjectStatus, { label: string; className: string }>
   completed: { label: "Completed", className: "bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-400" },
 }
 
-const PROJECT_TYPES: { value: ProjectType; label: string; emoji: string }[] = [
-  { value: "home",        label: "Home Build",  emoji: "🏠" },
-  { value: "restaurant",  label: "Restaurant",  emoji: "🍽️" },
-  { value: "hotel",       label: "Hotel",       emoji: "🏨" },
-  { value: "commercial",  label: "Commercial",  emoji: "🏢" },
-  { value: "renovation",  label: "Renovation",  emoji: "🔨" },
+const PROJECT_TYPES: { value: ProjectType; label: string; icon: LucideIcon; image: string; description: string }[] = [
+  { value: "home",        label: "Home Build",  icon: Home,             image: "/onboarding1.webp", description: "Build from the ground up" },
+  { value: "restaurant",  label: "Restaurant",  icon: UtensilsCrossed,  image: "/onboarding3.webp", description: "Design a dining space" },
+  { value: "hotel",       label: "Hotel",       icon: BedDouble,        image: "/onboarding4.webp", description: "Develop a hospitality venue" },
+  { value: "commercial",  label: "Commercial",  icon: Building2,        image: "/onboarding4.webp", description: "Office or retail build" },
+  { value: "renovation",  label: "Renovation",  icon: Hammer,           image: "/onboarding2.webp", description: "Update an existing space" },
+  { value: "other",       label: "Other",       icon: HardHat,          image: "/onboarding1.webp", description: "Any other project type" },
 ]
 
 // ── New Project Modal ──────────────────────────────────────
@@ -92,19 +94,24 @@ function NewProjectModal({
 
           <div>
             <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Project Type *</label>
-            <div className="grid grid-cols-5 gap-1.5">
-              {PROJECT_TYPES.map(t => (
+            <div className="grid grid-cols-2 gap-2">
+              {PROJECT_TYPES.map((t) => (
                 <button
                   key={t.value}
                   onClick={() => setType(t.value)}
-                  className={`flex flex-col items-center gap-1 py-2.5 rounded-xl border transition-colors ${
+                  className={`relative rounded-xl border text-left transition-all overflow-hidden ${
                     type === t.value
-                      ? "border-secondary bg-secondary/10 dark:bg-secondary/15"
-                      : "border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5"
+                      ? "border-gray-900 dark:border-white ring-2 ring-gray-900 dark:ring-white"
+                      : "border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20"
                   }`}
                 >
-                  <span className="text-lg leading-none">{t.emoji}</span>
-                  <span className={`text-[9px] font-semibold leading-tight text-center ${type === t.value ? "text-secondary" : "text-gray-500 dark:text-gray-400"}`}>{t.label}</span>
+                  <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${t.image}')` }} />
+                  <div className={`absolute inset-0 transition-all ${type === t.value ? "bg-white/15" : "bg-white/40"}`} />
+                  <div className="relative p-3">
+                    <t.icon className="w-5 h-5 mb-2 text-gray-900" />
+                    <p className="text-sm font-semibold text-gray-900">{t.label}</p>
+                    <p className="text-xs text-gray-700 mt-0.5">{t.description}</p>
+                  </div>
                 </button>
               ))}
             </div>
@@ -251,6 +258,41 @@ function ProjectRow({
           <Trash2 className="w-3.5 h-3.5" />
         </button>
         <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-400 dark:group-hover:text-gray-400 transition-colors" />
+      </div>
+    </div>
+  )
+}
+
+// ── Empty State ───────────────────────────────────────────
+
+function EmptyProjectsState({ onNew }: { onNew: () => void }) {
+  return (
+    <div className="relative flex-1 rounded-2xl border border-gray-100 dark:border-white/8 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] flex flex-col items-center justify-center px-8 text-center min-h-0 bg-[#EAF3FB] dark:bg-[#0D1B2E] overflow-hidden">
+      <div className="absolute inset-0 bg-cover bg-center opacity-60 dark:opacity-20 pointer-events-none" style={{ backgroundImage: "url('/grain-bg-lg.png')" }} />
+      <div className="relative mb-7">
+        <div className="w-24 h-24 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(129, 185, 233, 0.18)' }}>
+          <FolderKanban className="w-12 h-12" style={{ color: '#3B83BE' }} />
+        </div>
+      </div>
+
+      <h2 className="relative text-xl font-bold text-gray-900 dark:text-white mb-2">No projects yet</h2>
+      <p className="relative text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mb-8">
+        Create your first project to start tracking milestones from planning to handover.
+      </p>
+
+      <div className="relative flex flex-col gap-3 w-full max-w-xs">
+        <button
+          onClick={onNew}
+          className="w-full bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold py-3 rounded-xl transition-colors"
+        >
+          New Project
+        </button>
+        <Link
+          href="/bookings"
+          className="w-full flex items-center justify-center gap-2 bg-secondary/15 hover:bg-secondary/25 text-primary dark:text-secondary text-sm font-semibold py-3 rounded-xl transition-colors border border-secondary/30"
+        >
+          Book a Consultation
+        </Link>
       </div>
     </div>
   )
@@ -423,57 +465,48 @@ export default function ProjectsPage() {
 
         <div className="flex-1 overflow-hidden flex gap-5 p-4 md:p-6 pb-20 md:pb-6">
 
-          {/* ── Main panel ── */}
-          <div className="flex-1 bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 flex flex-col overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] min-w-0">
+          {/* ── Empty state (no projects) ── */}
+          {!loading && projects.length === 0 ? (
+            <EmptyProjectsState onNew={() => setShowNew(true)} />
+          ) : (
+            /* ── Main panel ── */
+            <div className="flex-1 bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 flex flex-col overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] min-w-0">
 
-            {/* Panel header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/8">
-              <div>
-                <h1 className="text-sm font-bold text-gray-900 dark:text-white">My Projects</h1>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Track your builds from planning to handover</p>
+              {/* Panel header */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/8">
+                <div>
+                  <h1 className="text-sm font-bold text-gray-900 dark:text-white">My Projects</h1>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Track your builds from planning to handover</p>
+                </div>
+                <button
+                  onClick={() => setShowNew(true)}
+                  className="flex items-center gap-1.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-xs font-semibold px-3.5 py-2 rounded-xl transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5" /> New Project
+                </button>
               </div>
-              <button
-                onClick={() => setShowNew(true)}
-                className="flex items-center gap-1.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-xs font-semibold px-3.5 py-2 rounded-xl transition-colors"
-              >
-                <Plus className="w-3.5 h-3.5" /> New Project
-              </button>
-            </div>
 
-            {/* Content */}
-            <div className="flex-1 overflow-y-auto px-5 py-4">
-              {loading ? (
-                <div className="flex justify-center items-center py-20">
-                  <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
-                </div>
-              ) : projects.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-center py-16">
-                  <div className="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-white/5 flex items-center justify-center mb-4">
-                    <FolderKanban className="w-7 h-7 text-gray-300 dark:text-gray-600" />
+              {/* Content */}
+              <div className="flex-1 overflow-y-auto px-5 py-4">
+                {loading ? (
+                  <div className="flex justify-center items-center py-20">
+                    <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
                   </div>
-                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">No projects yet</h3>
-                  <p className="text-sm text-gray-400 dark:text-gray-500 mb-5 max-w-xs">Create your first project to start tracking milestones from planning to handover</p>
-                  <button
-                    onClick={() => setShowNew(true)}
-                    className="flex items-center gap-1.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
-                  >
-                    <Plus className="w-4 h-4" /> New Project
-                  </button>
-                </div>
-              ) : (
-                <div className="divide-y divide-gray-50 dark:divide-white/5">
-                  {projects.map(project => (
-                    <ProjectRow
-                      key={project.id}
-                      project={project}
-                      progress={progress[project.id] ?? { done: 0, total: 0 }}
-                      onDelete={id => setDeleteId(id)}
-                    />
-                  ))}
-                </div>
-              )}
+                ) : (
+                  <div className="divide-y divide-gray-50 dark:divide-white/5">
+                    {projects.map(project => (
+                      <ProjectRow
+                        key={project.id}
+                        project={project}
+                        progress={progress[project.id] ?? { done: 0, total: 0 }}
+                        onDelete={id => setDeleteId(id)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* ── Right sidebar ── */}
           <RightSidebar
