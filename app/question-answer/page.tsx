@@ -1,32 +1,20 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Mic, Sparkles, Star, ArrowUpRight, Bot, User, MessageSquare, MessageCircleQuestion } from "lucide-react"
+import ReactMarkdown from "react-markdown"
+import { Mic, Star, ArrowUpRight, User, MessageSquare, MessageCircleQuestion } from "lucide-react"
+
+function AiIcon({ size = 32 }: { size?: number }) {
+  return <img src="/ai-icon.svg" alt="Planr AI" width={size} height={size} className="rounded-full flex-shrink-0" />
+}
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import Link from "next/link"
 import { AvatarInitials } from "@/components/ui/avatar-initials"
 import { createClient } from "@/lib/supabase"
-import { fetchConsultations, formatScheduledDate, type Consultation } from "@/lib/data"
+import { fetchConsultations, formatScheduledDate, fetchAiChats, upsertAiChat, deleteAiChat, type Consultation, type AiChat, type AiChatMessage } from "@/lib/data"
 
-const aiResponses: Record<string, string> = {
-  default:   "Hi! I'm the Planr AI. I can answer questions about architecture, construction, permits, interior design, and more. What would you like to know?",
-  fee:       "Architect fees typically range from 5–20% of total construction cost:\n\n• **Percentage of construction cost** — most common for residential\n• **Fixed fee** — good for well-defined scopes\n• **Hourly rate** — $150–$400/hr for consultations\n\nAlways ask for a detailed scope of work to avoid surprise costs.",
-  permit:    "Building permits are required for most structural work. The process:\n\n1. Submit drawings to your local building department\n2. Plan review (2–8 weeks)\n3. Permit issuance and fee payment\n4. Inspections during construction\n\nYour architect can manage this entire process, often included in their fee.",
-  interior:  "For interior design, expect discussions on:\n\n• Space planning and layout\n• Material and finish selections\n• Lighting design\n• Furniture specifications\n\nInitial consultations are often free.",
-  timeline:  "Typical project timelines:\n\n• **Small renovation** — 3–6 months\n• **Full remodel** — 6–12 months\n• **New residential build** — 12–24 months\n• **Commercial** — 18–36 months\n\nDesign and permitting alone can take 30–40% of total time.",
-  landscape: "Landscape architecture covers site planning, drainage, planting, and hardscaping:\n\n• Soil and drainage assessment\n• Local climate considerations\n• Integration with the building design\n\nFees typically run 10–15% of landscape construction cost.",
-}
-
-function getAIResponse(input: string): string {
-  const l = input.toLowerCase()
-  if (l.includes("fee") || l.includes("cost") || l.includes("price")) return aiResponses.fee
-  if (l.includes("permit") || l.includes("approval"))                  return aiResponses.permit
-  if (l.includes("interior") || l.includes("decor"))                   return aiResponses.interior
-  if (l.includes("time") || l.includes("long") || l.includes("timeline")) return aiResponses.timeline
-  if (l.includes("landscape") || l.includes("garden"))                 return aiResponses.landscape
-  return "Great question! For specific professional advice tailored to your project, I recommend booking a consultation with one of our certified architects.\n\nIs there anything else I can help clarify?"
-}
+const AI_GREETING = "Hi! I'm the Planr AI. I can answer questions about architecture, construction, permits, interior design, and more. What would you like to know?"
 
 const Avatar = ({ initials, size = "w-8 h-8", textSize = "text-[10px]" }: { initials: string; size?: string; textSize?: string }) =>
   <AvatarInitials initials={initials} size={size} textSize={textSize} />
@@ -35,7 +23,7 @@ const Avatar = ({ initials, size = "w-8 h-8", textSize = "text-[10px]" }: { init
 
 type View = "empty" | "chat"
 type Mode = "consultant" | "ai"
-interface Message { role: "user" | "consultant" | "ai"; text: string; time: string }
+type Message = AiChatMessage | { role: "consultant"; text: string; time: string }
 
 // ─── Chat bubble ──────────────────────────────────────────
 
@@ -48,11 +36,29 @@ function ChatBubble({ msg }: { msg: Message }) {
   )
   if (msg.role === "ai") return (
     <div className="flex items-start gap-3 mb-5">
-      <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-        <Bot className="w-4 h-4 text-primary dark:text-secondary" />
+      <div className="flex-shrink-0 mt-0.5">
+        <AiIcon size={32} />
       </div>
       <div className="flex flex-col gap-1">
-        <div className="bg-white dark:bg-[#0D1B2E] border border-secondary/30 dark:border-secondary/20 rounded-2xl rounded-tl-sm px-4 py-3 max-w-lg text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">{msg.text}</div>
+        <div className="bg-secondary/10 dark:bg-secondary/15 rounded-2xl rounded-tl-sm px-4 py-3 max-w-lg">
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-2 last:mb-0">{children}</p>,
+              h1: ({ children }) => <h1 className="text-base font-bold text-gray-900 dark:text-white mb-2 mt-3 first:mt-0">{children}</h1>,
+              h2: ({ children }) => <h2 className="text-sm font-bold text-gray-900 dark:text-white mb-1.5 mt-3 first:mt-0">{children}</h2>,
+              h3: ({ children }) => <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1 mt-2 first:mt-0">{children}</h3>,
+              ul: ({ children }) => <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc list-outside pl-4 mb-2 space-y-0.5">{children}</ul>,
+              ol: ({ children }) => <ol className="text-sm text-gray-700 dark:text-gray-300 list-decimal list-outside pl-4 mb-2 space-y-0.5">{children}</ol>,
+              li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+              strong: ({ children }) => <strong className="font-semibold text-gray-900 dark:text-white">{children}</strong>,
+              em: ({ children }) => <em className="italic">{children}</em>,
+              code: ({ children }) => <code className="bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-200 px-1 py-0.5 rounded text-xs font-mono">{children}</code>,
+              hr: () => <hr className="border-gray-200 dark:border-white/10 my-2" />,
+            }}
+          >
+            {msg.text}
+          </ReactMarkdown>
+        </div>
         <span className="text-[11px] text-gray-400 dark:text-gray-600">{msg.time}</span>
       </div>
     </div>
@@ -70,10 +76,10 @@ function ChatBubble({ msg }: { msg: Message }) {
 function TypingDots() {
   return (
     <div className="flex items-start gap-3 mb-5">
-      <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
-        <Bot className="w-4 h-4 text-primary dark:text-secondary" />
+      <div className="flex-shrink-0">
+        <AiIcon size={32} />
       </div>
-      <div className="bg-white dark:bg-[#0D1B2E] border border-secondary/30 dark:border-secondary/20 rounded-2xl rounded-tl-sm px-4 py-3 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+      <div className="bg-secondary/10 dark:bg-secondary/15 rounded-2xl rounded-tl-sm px-4 py-3">
         <div className="flex gap-1 items-center h-4">
           {[0,1,2].map(i => <div key={i} className="w-1.5 h-1.5 bg-secondary rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />)}
         </div>
@@ -84,14 +90,57 @@ function TypingDots() {
 
 // ─── Right sidebar (shared) ───────────────────────────────
 
-function RightSidebar({ onAI, onView, previousConsultations, loadingPrev }: {
+function RightSidebar({ onAI, onView, previousConsultations, loadingPrev, mode, aiChats, loadingAiChats, onLoadChat, onNewChat, onDeleteChat }: {
   onAI: () => void
   onView: (c: Consultation) => void
   previousConsultations: Consultation[]
   loadingPrev: boolean
+  mode: Mode
+  aiChats: AiChat[]
+  loadingAiChats: boolean
+  onLoadChat: (chat: AiChat) => void
+  onNewChat: () => void
+  onDeleteChat: (id: string) => void
 }) {
   return (
     <div className="hidden lg:flex w-72 flex-col gap-4 flex-shrink-0">
+      {/* AI chat history */}
+      {mode === "ai" ? (
+        <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-bold text-gray-900 dark:text-white">Previous chats</p>
+            <button onClick={onNewChat} className="text-xs font-semibold text-primary dark:text-secondary hover:opacity-70 transition-opacity">
+              + New chat
+            </button>
+          </div>
+          {loadingAiChats ? (
+            <div className="space-y-2 py-1">
+              {[0,1,2].map(i => <div key={i} className="h-8 rounded-lg bg-gray-100 dark:bg-white/8 animate-pulse" />)}
+            </div>
+          ) : aiChats.length > 0 ? (
+            <div className="space-y-1">
+              {aiChats.map(chat => (
+                <div key={chat.id} className="group flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer" onClick={() => onLoadChat(chat)}>
+                  <AiIcon size={20} />
+                  <span className="flex-1 text-xs text-gray-700 dark:text-gray-300 truncate">{chat.title}</span>
+                  <button
+                    onClick={e => { e.stopPropagation(); onDeleteChat(chat.id) }}
+                    className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all text-xs px-1"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-6 text-center">
+              <AiIcon size={28} />
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2.5">No previous chats</p>
+              <p className="text-xs text-gray-400 dark:text-gray-600 mt-1">Your AI conversations will appear here.</p>
+            </div>
+          )}
+        </div>
+      ) : (
       <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
         <div className="flex items-center justify-between mb-3">
           <p className="text-sm font-bold text-gray-900 dark:text-white">Previous consultations</p>
@@ -133,6 +182,7 @@ function RightSidebar({ onAI, onView, previousConsultations, loadingPrev }: {
           </div>
         )}
       </div>
+      )}
 
       <div
         className="rounded-2xl pt-5 px-5 text-white relative overflow-hidden self-start w-full"
@@ -143,8 +193,8 @@ function RightSidebar({ onAI, onView, previousConsultations, loadingPrev }: {
           backgroundSize: 'cover, cover',
         }}
       >
-        <Sparkles className="w-5 h-5 text-white mb-4" />
-        <p className="text-base font-bold mb-1.5">AI Assistant</p>
+        <div className="mb-4"><AiIcon size={28} /></div>
+        <p className="text-base font-bold mb-1.5">Planr AI</p>
         <p className="text-sm text-white/55 leading-relaxed mb-5">
           Get instant answers about architecture, permits, costs, and timelines — available 24/7.
         </p>
@@ -152,7 +202,7 @@ function RightSidebar({ onAI, onView, previousConsultations, loadingPrev }: {
           onClick={onAI}
           className="block w-full text-center bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-semibold py-3 rounded-xl transition-colors"
         >
-          Try AI Assistant
+          Try Planr AI
         </button>
       </div>
     </div>
@@ -187,7 +237,7 @@ function EmptyState({ onStart, onAI }: { onStart: () => void; onAI: () => void }
           onClick={onAI}
           className="w-full flex items-center justify-center gap-2 bg-secondary/15 hover:bg-secondary/25 text-primary dark:text-secondary text-sm font-semibold py-3 rounded-xl transition-colors border border-secondary/30"
         >
-          Try AI Assistant
+          Try Planr AI
         </button>
         <Link
           href="/bookings"
@@ -206,25 +256,122 @@ export default function QuestionAnswerPage() {
   const [view, setView]   = useState<View>("empty")
   const [mode, setMode]   = useState<Mode>("consultant")
   const [consultChat, setConsultChat] = useState<Message[]>([])
-  const [aiChat, setAiChat]           = useState<Message[]>([{ role: "ai", text: aiResponses.default, time: "just now" }])
+  const [aiChat, setAiChat]           = useState<Message[]>([{ role: "ai", text: AI_GREETING, time: "just now" }])
   const [input, setInput] = useState("")
-  const [isTyping, setIsTyping] = useState(false)
+  const [isTyping, setIsTyping]       = useState(false)
+  const [streamingText, setStreamingText] = useState("")
+  const streamingTimeRef = useRef("")
   const bottomRef = useRef<HTMLDivElement>(null)
+
+  async function callAI(userMessage: string, history: Message[]) {
+    setIsTyping(true)
+    setStreamingText("")
+    streamingTimeRef.current = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+
+    const allMapped = [
+      ...history.filter(m => m.text).map(m => ({
+        role: m.role === "user" ? ("user" as const) : ("assistant" as const),
+        content: m.text,
+      })),
+      { role: "user" as const, content: userMessage },
+    ]
+    // Anthropic requires the first message to be from "user"
+    const firstUserIdx = allMapped.findIndex(m => m.role === "user")
+    const apiMessages = firstUserIdx > 0 ? allMapped.slice(firstUserIdx) : allMapped
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: apiMessages }),
+      })
+
+      if (!response.ok || !response.body) {
+        const errText = await response.text()
+        throw new Error(errText || "Request failed")
+      }
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let accumulated = ""
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        accumulated += decoder.decode(value, { stream: true })
+        setStreamingText(accumulated)
+        setIsTyping(false)
+      }
+
+      const aiMsg: AiChatMessage = { role: "ai", text: accumulated, time: streamingTimeRef.current }
+      const userMsg: AiChatMessage = { role: "user", text: userMessage, time: streamingTimeRef.current }
+      const updatedChat = [...history.filter(m => m.role !== "consultant") as AiChatMessage[], userMsg, aiMsg]
+      setAiChat(p => [...p, aiMsg])
+
+      // Auto-save to Supabase
+      if (userIdRef.current) {
+        const title = userMessage.slice(0, 60)
+        const newId = await upsertAiChat(userIdRef.current, activeChatId, title, updatedChat)
+        if (newId && !activeChatId) {
+          setActiveChatId(newId)
+          setAiChats(prev => [{ id: newId, title, messages: updatedChat, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }, ...prev])
+        } else if (newId) {
+          setAiChats(prev => prev.map(c => c.id === newId ? { ...c, messages: updatedChat, updated_at: new Date().toISOString() } : c))
+        }
+      }
+    } catch {
+      const fallback = "I'm having trouble connecting right now. Please try again in a moment."
+      setAiChat(p => [...p, { role: "ai", text: fallback, time: streamingTimeRef.current }])
+    } finally {
+      setStreamingText("")
+      setIsTyping(false)
+    }
+  }
+
+  function handleLoadChat(chat: AiChat) {
+    setActiveChatId(chat.id)
+    setAiChat(chat.messages)
+    setView("chat")
+    setMode("ai")
+  }
+
+  function handleNewChat() {
+    setActiveChatId(null)
+    setAiChat([{ role: "ai", text: AI_GREETING, time: "just now" }])
+  }
+
+  async function handleDeleteChat(id: string) {
+    setAiChats(prev => prev.filter(c => c.id !== id))
+    if (activeChatId === id) handleNewChat()
+    if (userIdRef.current) await deleteAiChat(userIdRef.current, id)
+  }
 
   const [allConsultations, setAllConsultations] = useState<Consultation[]>([])
   const [loadingPrev, setLoadingPrev] = useState(true)
   const [activeConsultation, setActiveConsultation] = useState<Consultation | null>(null)
 
+  // ── AI chat history ───────────────────────────────────────
+  const [aiChats, setAiChats] = useState<AiChat[]>([])
+  const [loadingAiChats, setLoadingAiChats] = useState(true)
+  const [activeChatId, setActiveChatId] = useState<string | null>(null)
+  const userIdRef = useRef<string | null>(null)
+
   useEffect(() => {
-    async function loadConsultations() {
+    async function load() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setLoadingPrev(false); return }
-      const all = await fetchConsultations(user.id)
+      if (!user) { setLoadingPrev(false); setLoadingAiChats(false); return }
+      userIdRef.current = user.id
+      const [all, chats] = await Promise.all([
+        fetchConsultations(user.id),
+        fetchAiChats(user.id),
+      ])
       setAllConsultations(all)
+      setAiChats(chats)
       setLoadingPrev(false)
+      setLoadingAiChats(false)
     }
-    loadConsultations()
+    load()
   }, [])
 
   const previousConsultations = allConsultations.filter(c => c.status === "completed")
@@ -232,22 +379,22 @@ export default function QuestionAnswerPage() {
 
   const messages = mode === "consultant" ? consultChat : aiChat
 
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }) }, [messages, isTyping])
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }) }, [messages, isTyping, streamingText])
 
   function now() { return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }
 
-  function handleSend() {
-    if (!input.trim()) return
-    const msg: Message = { role: "user", text: input.trim(), time: now() }
-    if (mode === "consultant") {
-      setConsultChat(p => [...p, msg])
-    } else {
-      setAiChat(p => [...p, msg])
-      const reply = getAIResponse(input)
-      setIsTyping(true)
-      setTimeout(() => { setIsTyping(false); setAiChat(p => [...p, { role: "ai", text: reply, time: now() }]) }, 1400)
-    }
+  async function handleSend() {
+    if (!input.trim() || isTyping) return
+    const userText = input.trim()
+    const userMsg: Message = { role: "user", text: userText, time: now() }
     setInput("")
+    if (mode === "consultant") {
+      setConsultChat(p => [...p, userMsg])
+    } else {
+      const history = aiChat
+      setAiChat(p => [...p, userMsg])
+      await callAI(userText, history)
+    }
   }
 
   function openAI() { setMode("ai"); setView("chat") }
@@ -286,7 +433,8 @@ export default function QuestionAnswerPage() {
                   onClick={() => setMode("ai")}
                   className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold transition-all border-b-2 ${mode === "ai" ? "border-primary dark:border-secondary text-primary dark:text-secondary" : "border-transparent text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"}`}
                 >
-                  <Sparkles className="w-3.5 h-3.5" /> AI Assistant
+                  <AiIcon size={16} /> Planr AI
+                  <span className="text-[10px] font-semibold bg-secondary/20 text-primary dark:text-secondary px-1.5 py-0.5 rounded-full ml-0.5">Beta</span>
                 </button>
               </div>
 
@@ -326,24 +474,14 @@ export default function QuestionAnswerPage() {
                 </div>
               )}
 
-              {/* AI header */}
-              {mode === "ai" && (
-                <div className="flex items-center gap-3 px-6 py-3 border-b border-secondary/20 bg-secondary/10 dark:bg-secondary/8">
-                  <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                    <Sparkles className="w-5 h-5 text-primary dark:text-secondary" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">Planr AI</p>
-                    <p className="text-xs text-secondary font-medium">Available 24/7 · Instant answers</p>
-                  </div>
-                  <span className="text-xs bg-secondary/20 text-primary dark:text-secondary font-semibold px-2.5 py-1 rounded-full">Beta</span>
-                </div>
-              )}
 
               {/* Messages */}
               <div className="flex-1 overflow-y-auto px-6 py-5">
                 {messages.map((msg, i) => <ChatBubble key={i} msg={msg} />)}
-                {isTyping && <TypingDots />}
+                {mode === "ai" && isTyping && !streamingText && <TypingDots />}
+                {mode === "ai" && streamingText && (
+                  <ChatBubble msg={{ role: "ai", text: streamingText, time: "" }} />
+                )}
                 <div ref={bottomRef} />
               </div>
 
@@ -355,11 +493,12 @@ export default function QuestionAnswerPage() {
                     placeholder={mode === "ai" ? "Ask the AI about architecture, costs, permits..." : "Type here"}
                     value={input}
                     onChange={e => setInput(e.target.value)}
-                    onKeyDown={e => e.key === "Enter" && handleSend()}
-                    className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-600 outline-none"
+                    onKeyDown={e => e.key === "Enter" && !isTyping && handleSend()}
+                    disabled={mode === "ai" && isTyping}
+                    className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-300 placeholder:text-gray-400 dark:placeholder:text-gray-600 outline-none disabled:opacity-50"
                   />
                   <button className="text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 transition-colors"><Mic className="w-4 h-4" /></button>
-                  <button onClick={handleSend} disabled={!input.trim()} className={`text-sm font-semibold px-1 transition-colors disabled:text-gray-300 dark:disabled:text-gray-700 ${mode === "ai" ? "text-primary dark:text-secondary hover:opacity-70" : "text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"}`}>
+                  <button onClick={handleSend} disabled={!input.trim() || (mode === "ai" && isTyping)} className={`text-sm font-semibold px-1 transition-colors disabled:text-gray-300 dark:disabled:text-gray-700 ${mode === "ai" ? "text-primary dark:text-secondary hover:opacity-70" : "text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"}`}>
                     Send
                   </button>
                 </div>
@@ -376,6 +515,12 @@ export default function QuestionAnswerPage() {
             onView={(c) => openChat(c)}
             previousConsultations={previousConsultations}
             loadingPrev={loadingPrev}
+            mode={mode}
+            aiChats={aiChats}
+            loadingAiChats={loadingAiChats}
+            onLoadChat={handleLoadChat}
+            onNewChat={handleNewChat}
+            onDeleteChat={handleDeleteChat}
           />
         </div>
       </div>

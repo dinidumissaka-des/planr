@@ -2,7 +2,7 @@
 
 import {
   MoreHorizontal, ArrowUpRight, MessageCircle,
-  CalendarCheck, Sparkles, Clock,
+  CalendarCheck, Clock,
 } from "lucide-react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
@@ -205,8 +205,8 @@ export default function DashboardPage() {
                 {/* AI assistant nudge */}
                 <div className="mt-3 flex items-center justify-between bg-secondary/15 dark:bg-secondary/10 rounded-xl px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-secondary" />
-                    <p className="text-xs font-semibold text-primary dark:text-white">Try the AI Assistant for instant answers</p>
+                    <img src="/ai-icon.svg" alt="Planr AI" width={18} height={18} className="rounded-full flex-shrink-0" />
+                    <p className="text-xs font-semibold text-primary dark:text-white">Try the Planr AI for instant answers</p>
                   </div>
                   <Link href="/question-answer" className="text-xs font-bold text-primary dark:text-secondary hover:opacity-70 transition-colors whitespace-nowrap">
                     Ask now →
@@ -262,14 +262,16 @@ export default function DashboardPage() {
                     </Link>
                   </>
                 ) : (
-                  <div className="flex flex-col items-center justify-center flex-1 text-center">
-                    <CalendarCheck className="w-8 h-8 text-gray-300 dark:text-gray-700 mb-3" />
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Nothing scheduled</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-600 mt-1">You have no upcoming consultations booked.</p>
-                    <Link href="/bookings" className="block w-full text-center border border-gray-900 dark:border-white/20 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-bold py-2.5 rounded-xl transition-colors mt-auto">
+                  <>
+                    <div className="flex flex-col items-center justify-center flex-1 text-center py-6">
+                      <CalendarCheck className="w-8 h-8 text-gray-300 dark:text-gray-700 mb-3" />
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Nothing scheduled</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-600 mt-1">You have no upcoming consultations booked.</p>
+                    </div>
+                    <Link href="/bookings" className="block w-full text-center border border-gray-900 dark:border-white/20 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 text-xs font-bold py-2.5 rounded-xl transition-colors">
                       Book a consultation
                     </Link>
-                  </div>
+                  </>
                 )}
               </div>
 
@@ -295,7 +297,7 @@ export default function DashboardPage() {
                 )}
               </div>
 
-              {/* Ask a question CTA */}
+              {/* Planr AI CTA */}
               <div
                 className="rounded-2xl pt-5 px-5 text-white relative overflow-hidden self-start w-full"
                 style={{
@@ -305,16 +307,21 @@ export default function DashboardPage() {
                   backgroundSize: 'cover, cover',
                 }}
               >
-                <MessageCircle className="w-5 h-5 text-white mb-4" />
-                <p className="text-base font-bold mb-1.5">Have a question?</p>
+                <div className="mb-4">
+                  <img src="/ai-icon.svg" alt="Planr AI" width={36} height={36} className="rounded-full" />
+                </div>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <p className="text-base font-bold">Planr AI</p>
+                  <span className="text-[10px] font-semibold bg-white/15 px-2 py-0.5 rounded-full">Beta</span>
+                </div>
                 <p className="text-sm text-white/55 leading-relaxed mb-5">
-                  Get instant answers from expert architects or our AI — available 24/7.
+                  Get instant answers about architecture, permits, costs, and timelines — available 24/7.
                 </p>
                 <Link
-                  href="/question-answer"
+                  href="/question-answer?tab=ai"
                   className="block w-full text-center bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-semibold py-3 rounded-xl transition-colors"
                 >
-                  Ask a Question
+                  Try Planr AI
                 </Link>
               </div>
 

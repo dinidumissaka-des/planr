@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase"
+import { insertQuestion } from "@/lib/data"
 
 const categories = [
   "Residential Architecture",
@@ -63,6 +65,26 @@ export default function AskPage() {
   const [description, setDescription] = useState("")
   const [driveLink, setDriveLink] = useState("")
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+
+  async function handleSubmit() {
+    if (!question.trim() || submitting) return
+    setSubmitting(true)
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        await insertQuestion(user.id, {
+          question: question.trim(),
+          description: description.trim() || undefined,
+          category: category || undefined,
+        })
+      }
+    } finally {
+      setSubmitting(false)
+      setSubmitted(true)
+    }
+  }
 
   return (
     <>
@@ -173,9 +195,10 @@ export default function AskPage() {
             <div className="mt-6 flex flex-col gap-3">
               <Button
                 className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-base rounded-xl"
-                onClick={() => setSubmitted(true)}
+                onClick={handleSubmit}
+                disabled={!question.trim() || submitting}
               >
-                Submit Question
+                {submitting ? "Submitting…" : "Submit Question"}
               </Button>
               <button className="text-sm text-gray-500 dark:text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 transition-colors text-center">
                 Ask later

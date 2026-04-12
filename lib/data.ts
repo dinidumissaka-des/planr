@@ -2,6 +2,16 @@ import { createClient } from "./supabase"
 
 // ─── Types ─────────────────────────────────────────────────
 
+export type AiChatMessage = { role: "user" | "ai"; text: string; time: string }
+
+export type AiChat = {
+  id: string
+  title: string
+  messages: AiChatMessage[]
+  created_at: string
+  updated_at: string
+}
+
 export type ConsultationStatus = "upcoming" | "ongoing" | "completed"
 
 export type Consultation = {
@@ -139,4 +149,328 @@ export async function fetchRecentQuestions(
     .limit(limit)
   if (error) return []
   return (data ?? []) as RecentQuestion[]
+}
+
+/**
+ * Inserts a new consultation row for a user (status defaults to 'upcoming').
+ */
+export async function insertConsultation(
+  userId: string,
+  payload: {
+    architect_id: number
+    architect_name: string
+    architect_initials: string
+    consultation_type: string
+    scheduled_at: string
+    notes?: string
+    categories?: string[]
+  }
+): Promise<void> {
+  const supabase = createClient()
+  await supabase.from("consultations").insert({
+    user_id: userId,
+    architect_id: payload.architect_id,
+    architect_name: payload.architect_name,
+    architect_initials: payload.architect_initials,
+    consultation_type: payload.consultation_type,
+    scheduled_at: payload.scheduled_at,
+    status: "upcoming",
+    notes: payload.notes ?? null,
+    categories: payload.categories ?? [],
+  })
+}
+
+/**
+ * Fetches all AI chat sessions for a user, newest first.
+ */
+export async function fetchAiChats(userId: string): Promise<AiChat[]> {
+  const supabase = createClient()
+  const { data } = await supabase
+    .from("ai_chats")
+    .select("id, title, messages, created_at, updated_at")
+    .eq("user_id", userId)
+    .order("updated_at", { ascending: false })
+    .limit(20)
+  return (data ?? []) as AiChat[]
+}
+
+/**
+ * Creates or updates an AI chat session.
+ * Pass chatId=null to create a new one; returns the id.
+ */
+export async function upsertAiChat(
+  userId: string,
+  chatId: string | null,
+  title: string,
+  messages: AiChatMessage[]
+): Promise<string | null> {
+  const supabase = createClient()
+  if (chatId) {
+    await supabase
+      .from("ai_chats")
+      .update({ messages, updated_at: new Date().toISOString() })
+      .eq("id", chatId)
+      .eq("user_id", userId)
+    return chatId
+  }
+  const { data } = await supabase
+    .from("ai_chats")
+    .insert({ user_id: userId, title, messages })
+    .select("id")
+    .single()
+  return data?.id ?? null
+}
+
+/**
+ * Deletes an AI chat session.
+ */
+export async function deleteAiChat(userId: string, chatId: string): Promise<void> {
+  const supabase = createClient()
+  await supabase.from("ai_chats").delete().eq("id", chatId).eq("user_id", userId)
+}
+
+// ─── Project Board Types ────────────────────────────────────
+
+export type ProjectType = "home" | "restaurant" | "hotel" | "commercial" | "renovation"
+export type ProjectStatus = "planning" | "active" | "on_hold" | "completed"
+export type MilestoneStatus = "pending" | "in_progress" | "completed" | "blocked"
+
+export type Project = {
+  id: string
+  user_id: string
+  name: string
+  type: ProjectType
+  description: string | null
+  location: string | null
+  status: ProjectStatus
+  cover_emoji: string
+  created_at: string
+  updated_at: string
+}
+
+export type ProjectMilestone = {
+  id: string
+  project_id: string
+  user_id: string
+  title: string
+  status: MilestoneStatus
+  due_date: string | null
+  notes: string | null
+  order_index: number
+  created_at: string
+}
+
+// ─── Project Board Data ─────────────────────────────────────
+
+const DEFAULT_MILESTONES: Record<ProjectType, string[]> = {
+  home: [
+    "Planning & Design",
+    "Permits & Approvals",
+    "Site Preparation",
+    "Foundation",
+    "Framing & Structure",
+    "Roofing",
+    "Electrical & Plumbing",
+    "Interior Finishing",
+    "Exterior & Landscaping",
+    "Final Inspection & Handover",
+  ],
+  restaurant: [
+    "Concept & Planning",
+    "Permits & Health Approvals",
+    "Site Preparation",
+    "Structural Work",
+    "Kitchen & Ventilation",
+    "Electrical & Plumbing",
+    "Interior Design & Fit-out",
+    "Signage & Exterior",
+    "Equipment Installation",
+    "Soft Opening & Handover",
+  ],
+  hotel: [
+    "Feasibility & Design",
+    "Permits & Approvals",
+    "Site Preparation",
+    "Foundation & Structure",
+    "Roofing & Waterproofing",
+    "MEP (Mechanical, Electrical, Plumbing)",
+    "Interior Fit-out",
+    "Pool, Landscaping & Exterior",
+    "FF&E (Furniture, Fixtures & Equipment)",
+    "Commissioning & Handover",
+  ],
+  commercial: [
+    "Feasibility & Planning",
+    "Permits & Regulatory Approvals",
+    "Site Preparation",
+    "Foundation & Structure",
+    "Roofing & Facade",
+    "MEP Systems",
+    "Interior Fit-out",
+    "Parking & Exterior",
+    "Final Inspections",
+    "Handover",
+  ],
+  renovation: [
+    "Assessment & Planning",
+    "Permits (if required)",
+    "Demolition & Strip-out",
+    "Structural Repairs",
+    "Electrical & Plumbing Updates",
+    "Walls, Floors & Ceilings",
+    "Joinery & Built-ins",
+    "Painting & Finishing",
+    "Fixtures & Fittings",
+    "Final Cleanup & Handover",
+  ],
+}
+
+export const PROJECT_TYPE_EMOJI: Record<ProjectType, string> = {
+  home: "🏠",
+  restaurant: "🍽️",
+  hotel: "🏨",
+  commercial: "🏢",
+  renovation: "🔨",
+}
+
+export async function fetchProjects(userId: string): Promise<Project[]> {
+  const supabase = createClient()
+  const { data } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("user_id", userId)
+    .order("updated_at", { ascending: false })
+  return (data ?? []) as Project[]
+}
+
+export async function fetchProject(projectId: string): Promise<Project | null> {
+  const supabase = createClient()
+  const { data } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("id", projectId)
+    .single()
+  return (data ?? null) as Project | null
+}
+
+export async function createProject(
+  userId: string,
+  payload: { name: string; type: ProjectType; description?: string; location?: string }
+): Promise<string | null> {
+  const supabase = createClient()
+  const emoji = PROJECT_TYPE_EMOJI[payload.type]
+  const { data } = await supabase
+    .from("projects")
+    .insert({
+      user_id: userId,
+      name: payload.name,
+      type: payload.type,
+      description: payload.description ?? null,
+      location: payload.location ?? null,
+      status: "planning",
+      cover_emoji: emoji,
+    })
+    .select("id")
+    .single()
+
+  const projectId = data?.id ?? null
+  if (!projectId) return null
+
+  // Seed default milestones
+  const milestones = DEFAULT_MILESTONES[payload.type].map((title, i) => ({
+    project_id: projectId,
+    user_id: userId,
+    title,
+    status: "pending",
+    order_index: i,
+  }))
+  await supabase.from("project_milestones").insert(milestones)
+
+  return projectId
+}
+
+export async function updateProject(
+  projectId: string,
+  userId: string,
+  patch: Partial<Pick<Project, "name" | "status" | "description" | "location">>
+): Promise<void> {
+  const supabase = createClient()
+  await supabase
+    .from("projects")
+    .update({ ...patch, updated_at: new Date().toISOString() })
+    .eq("id", projectId)
+    .eq("user_id", userId)
+}
+
+export async function deleteProject(projectId: string, userId: string): Promise<void> {
+  const supabase = createClient()
+  await supabase.from("projects").delete().eq("id", projectId).eq("user_id", userId)
+}
+
+export async function fetchMilestones(projectId: string): Promise<ProjectMilestone[]> {
+  const supabase = createClient()
+  const { data } = await supabase
+    .from("project_milestones")
+    .select("*")
+    .eq("project_id", projectId)
+    .order("order_index", { ascending: true })
+  return (data ?? []) as ProjectMilestone[]
+}
+
+export async function updateMilestone(
+  milestoneId: string,
+  userId: string,
+  patch: Partial<Pick<ProjectMilestone, "status" | "due_date" | "notes" | "title">>
+): Promise<void> {
+  const supabase = createClient()
+  await supabase
+    .from("project_milestones")
+    .update(patch)
+    .eq("id", milestoneId)
+    .eq("user_id", userId)
+}
+
+export async function addMilestone(
+  projectId: string,
+  userId: string,
+  title: string,
+  orderIndex: number
+): Promise<void> {
+  const supabase = createClient()
+  await supabase.from("project_milestones").insert({
+    project_id: projectId,
+    user_id: userId,
+    title,
+    status: "pending",
+    order_index: orderIndex,
+  })
+}
+
+export async function deleteMilestone(milestoneId: string, userId: string): Promise<void> {
+  const supabase = createClient()
+  await supabase.from("project_milestones").delete().eq("id", milestoneId).eq("user_id", userId)
+}
+
+/**
+ * Inserts a new question row for a user.
+ * Consultant fields default to 'Planr Team' until a consultant is assigned.
+ */
+export async function insertQuestion(
+  userId: string,
+  payload: {
+    question: string
+    description?: string
+    category?: string
+  }
+): Promise<void> {
+  const supabase = createClient()
+  await supabase.from("questions").insert({
+    user_id: userId,
+    question: payload.question,
+    description: payload.description ?? null,
+    category: payload.category ?? null,
+    consultant_name: "Planr Team",
+    consultant_initials: "PT",
+    consultant_role: "Support",
+  })
 }

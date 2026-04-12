@@ -3,6 +3,7 @@
 import { use } from "react"
 import { notFound, useRouter } from "next/navigation"
 import { Star, MapPin, Briefcase, GraduationCap, Award, ArrowLeft, CalendarCheck } from "lucide-react"
+import { PortfolioGallery } from "@/components/ui/portfolio-gallery"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import { architects } from "@/lib/architects"
@@ -125,6 +126,13 @@ export default function ConsultantPage({ params }: { params: Promise<{ id: strin
                 </div>
               ))}
             </div>
+
+            {/* ── Portfolio ── */}
+            {architect.portfolio?.length > 0 && (
+              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6">
+                <PortfolioGallery portfolio={architect.portfolio} />
+              </div>
+            )}
 
             {/* ── Reviews ── */}
             <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6">

@@ -12,10 +12,33 @@ import { AppHeader } from "@/components/app-header"
 import { CalendarDays } from "lucide-react"
 import { architects, type Architect } from "@/lib/architects"
 import { AvatarInitials } from "@/components/ui/avatar-initials"
+import { createClient } from "@/lib/supabase"
+import { insertConsultation } from "@/lib/data"
+import { PortfolioGallery } from "@/components/ui/portfolio-gallery"
 
 // ─── Data ─────────────────────────────────────────────────
 
-const categories = ["Architecture", "Interior Design", "Construction", "Urban Design", "Residential Architect", "Landscape Design"]
+const categories = [
+  "Architecture",
+  "Interior Design",
+  "Landscape Architecture",
+  "Urban Design",
+  "Structural Engineering",
+  "Construction",
+  "Quantity Surveying",
+]
+
+function cardColor(role: string): string {
+  switch (role) {
+    case "Interior Designer":   return '#E1C1A5'
+    case "Landscape Architect": return '#BDC7D9'
+    case "Urban Designer":      return '#C5C9A0'
+    case "Structural Engineer": return '#B0C4B8'
+    case "Contractor":          return '#D4B8A0'
+    case "Quantity Surveyor":   return '#C4B4D4'
+    default:                    return '#81B9E9'  // Architect
+  }
+}
 
 // ─── Field Error ──────────────────────────────────────────
 
@@ -128,6 +151,11 @@ function ProfileDrawer({ architect, onClose, onSelect }: { architect: Architect;
               </div>
             ))}
           </div>
+
+          {/* Portfolio */}
+          {architect.portfolio?.length > 0 && (
+            <PortfolioGallery portfolio={architect.portfolio} />
+          )}
 
           {/* Reviews */}
           <div>
@@ -332,6 +360,33 @@ export default function BookingsPage() {
   const [agreedPayment, setAgreedPayment] = useState(false)
   const [saveCard, setSaveCard] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+
+  // ── Availability ──────────────────────────────────────────
+  const [bookedSlots, setBookedSlots] = useState<{ date: number; hour: number }[]>([])
+  const [loadingAvail, setLoadingAvail] = useState(false)
+
+  async function fetchAvailability(architectId: number, year: number, month: number) {
+    setLoadingAvail(true)
+    try {
+      const res = await fetch(`/api/availability?architect_id=${architectId}&year=${year}&month=${month}`)
+      if (res.ok) setBookedSlots(await res.json())
+    } finally {
+      setLoadingAvail(false)
+    }
+  }
+
+  function isSlotBooked(date: number, slotIndex: number) {
+    return bookedSlots.some(b => b.date === date && b.hour === slotHours[slotIndex])
+  }
+
+  function isDateFullyBooked(date: number) {
+    return slotHours.every(h => bookedSlots.some(b => b.date === date && b.hour === h))
+  }
+
+  function isDatePartiallyBooked(date: number) {
+    return bookedSlots.some(b => b.date === date)
+  }
 
   // ── Validation state ──────────────────────────────────────
   // triedNext: user clicked Next while disabled — show a banner
@@ -377,8 +432,45 @@ export default function BookingsPage() {
     }
   }
 
+  // ── Slot index → hour (9 AM = 9, 12 PM = 12, 1 PM = 13, …) ──
+  const slotHours = [9, 10, 11, 12, 13, 14, 15, 16]
+
+  async function handleConfirm() {
+    if (!step4Valid()) { setTriedNext(true); return }
+    if (submitting) return
+    setSubmitting(true)
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user && selectedDate !== null && selectedSlot !== null) {
+        const scheduled = new Date(calYear, calMonth, selectedDate, slotHours[selectedSlot], 0, 0)
+        await insertConsultation(user.id, {
+          architect_id: activeArchitect.id,
+          architect_name: activeArchitect.name,
+          architect_initials: activeArchitect.name.split(" ").map(n => n[0]).join(""),
+          consultation_type: activeArchitect.role,
+          scheduled_at: scheduled.toISOString(),
+          notes: notes.trim() || undefined,
+          categories: selectedCategories.length ? selectedCategories : undefined,
+        })
+      }
+    } finally {
+      setSubmitting(false)
+      setTriedNext(false)
+      setTouched({})
+      setConfirmed(true)
+    }
+  }
+
   const activeArchitect = architects.find(a => a.id === selectedArchitect) ?? architects[0]
-  const filtered = architects.filter(a => a.name.toLowerCase().includes(search.toLowerCase()) || a.role.toLowerCase().includes(search.toLowerCase()))
+  const filtered = architects.filter(a => {
+    const matchesSearch = search === "" ||
+      a.name.toLowerCase().includes(search.toLowerCase()) ||
+      a.role.toLowerCase().includes(search.toLowerCase())
+    const matchesCategory = selectedCategories.length === 0 ||
+      selectedCategories.includes(a.category)
+    return matchesSearch && matchesCategory
+  })
   const selectedSlotLabel = selectedSlot !== null ? timeSlots[selectedSlot] : "—"
   const [architectDot, setArchitectDot] = useState(0)
   const architectScrollRef = useRef<HTMLDivElement>(null)
@@ -583,7 +675,7 @@ export default function BookingsPage() {
                           : "border-transparent shadow-sm"
                       }`}
                       style={{
-                        backgroundColor: a.role === "Interior Designer" ? '#E1C1A5' : a.role === "Landscape Designer" ? '#BDC7D9' : '#81B9E9',
+                        backgroundColor: cardColor(a.role),
                         backgroundImage: "url('/grain-bg-lg.svg')",
                         backgroundBlendMode: 'screen',
                         backgroundSize: 'cover',
@@ -644,9 +736,7 @@ export default function BookingsPage() {
                         : "border-transparent shadow-sm hover:border-gray-200 dark:hover:border-white/20"
                     }`}
                     style={{
-                      backgroundColor:
-                        a.role === "Interior Designer"  ? '#E1C1A5' :
-                        a.role === "Landscape Designer" ? '#BDC7D9' : '#81B9E9',
+                      backgroundColor: cardColor(a.role),
                       backgroundImage: "url('/grain-bg-lg.svg')",
                       backgroundBlendMode: 'screen',
                       backgroundSize: 'cover',
@@ -687,7 +777,11 @@ export default function BookingsPage() {
                 <span className="text-sm text-gray-600 dark:text-gray-400">Please choose what suits me the best</span>
               </label>
 
-              <StepFooter onNext={() => tryAdvance(step1Valid, () => setStep(2))} />
+              <StepFooter onNext={() => tryAdvance(step1Valid, () => {
+                setStep(2)
+                const archId = autoChoose ? architects[0].id : (selectedArchitect ?? architects[0].id)
+                fetchAvailability(archId, calYear, calMonth)
+              })} />
             </div>
           )}
 
@@ -713,6 +807,7 @@ export default function BookingsPage() {
                         const now = new Date()
                         if (d >= new Date(now.getFullYear(), now.getMonth(), 1)) {
                           setCalYear(d.getFullYear()); setCalMonth(d.getMonth()); setSelectedDate(null); setSelectedSlot(null)
+                          fetchAvailability(activeArchitect.id, d.getFullYear(), d.getMonth())
                         }
                       }}
                       className="text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 transition-colors disabled:opacity-30"
@@ -724,6 +819,7 @@ export default function BookingsPage() {
                       onClick={() => {
                         const d = new Date(calYear, calMonth + 1, 1)
                         setCalYear(d.getFullYear()); setCalMonth(d.getMonth()); setSelectedDate(null); setSelectedSlot(null)
+                        fetchAvailability(activeArchitect.id, d.getFullYear(), d.getMonth())
                       }}
                       className="text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
                     >
@@ -735,21 +831,29 @@ export default function BookingsPage() {
                   </div>
                   {buildCalendarWeeks(calYear, calMonth).map((week, wi) => (
                     <div key={wi} className="grid grid-cols-7">
-                      {week.map((cell, ci) => (
-                        <button
-                          key={ci}
-                          disabled={!!cell.out || !!cell.past}
-                          onClick={() => { setSelectedDate(cell.d); setSelectedSlot(null) }}
-                          className={`text-center text-xs py-1.5 rounded-lg transition-colors font-medium ${
-                            cell.out || cell.past ? "text-gray-300 dark:text-gray-700 cursor-default" :
-                            selectedDate === cell.d ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900" :
-                            cell.today ? "ring-1 ring-gray-900 dark:ring-white text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/8" :
-                            "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/8"
-                          }`}
-                        >
-                          {cell.d}
-                        </button>
-                      ))}
+                      {week.map((cell, ci) => {
+                        const fullyBooked = !cell.out && !cell.past && isDateFullyBooked(cell.d)
+                        const partiallyBooked = !cell.out && !cell.past && !fullyBooked && isDatePartiallyBooked(cell.d)
+                        return (
+                          <button
+                            key={ci}
+                            disabled={!!cell.out || !!cell.past || fullyBooked}
+                            onClick={() => { setSelectedDate(cell.d); setSelectedSlot(null) }}
+                            className={`relative text-center text-xs py-1.5 rounded-lg transition-colors font-medium ${
+                              cell.out || cell.past ? "text-gray-300 dark:text-gray-700 cursor-default" :
+                              fullyBooked ? "text-gray-300 dark:text-gray-600 cursor-not-allowed line-through" :
+                              selectedDate === cell.d ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900" :
+                              cell.today ? "ring-1 ring-gray-900 dark:ring-white text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/8" :
+                              "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/8"
+                            }`}
+                          >
+                            {cell.d}
+                            {partiallyBooked && selectedDate !== cell.d && (
+                              <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-orange-400" />
+                            )}
+                          </button>
+                        )
+                      })}
                     </div>
                   ))}
                 </div>
@@ -762,21 +866,35 @@ export default function BookingsPage() {
                   <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">
                     {selectedDate ? `${MONTHS[calMonth]} ${selectedDate}, ${calYear}` : "Select a date first"}
                   </p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {timeSlots.map((slot, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setSelectedSlot(i)}
-                        className={`py-3 px-4 rounded-xl text-sm font-medium transition-colors text-left ${
-                          selectedSlot === i
-                            ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900"
-                            : "bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-100 dark:border-white/8"
-                        }`}
-                      >
-                        {slot}
-                      </button>
-                    ))}
-                  </div>
+                  {loadingAvail ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      {timeSlots.map((_, i) => (
+                        <div key={i} className="py-3 px-4 rounded-xl bg-gray-100 dark:bg-white/5 animate-pulse h-11" />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      {timeSlots.map((slot, i) => {
+                        const booked = selectedDate !== null && isSlotBooked(selectedDate, i)
+                        return (
+                          <button
+                            key={i}
+                            disabled={!selectedDate || booked}
+                            onClick={() => setSelectedSlot(i)}
+                            className={`py-3 px-4 rounded-xl text-sm font-medium transition-colors text-left ${
+                              booked
+                                ? "bg-gray-50 dark:bg-white/3 text-gray-300 dark:text-gray-700 border border-gray-100 dark:border-white/5 cursor-not-allowed line-through"
+                                : selectedSlot === i
+                                  ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900"
+                                  : "bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 border border-gray-100 dark:border-white/8"
+                            }`}
+                          >
+                            {slot}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -990,7 +1108,7 @@ export default function BookingsPage() {
                   </div>
                 </div>
 
-                <StepFooter onBack={() => { setTriedNext(false); setTouched({}); setStep(3) }} onNext={() => tryAdvance(step4Valid, () => setConfirmed(true))} nextLabel="Confirm & Pay" />
+                <StepFooter onBack={() => { setTriedNext(false); setTouched({}); setStep(3) }} onNext={handleConfirm} nextLabel={submitting ? "Processing…" : "Confirm & Pay"} />
               </div>
 
               {/* Booking summary */}

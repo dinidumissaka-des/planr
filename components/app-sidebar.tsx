@@ -1,6 +1,6 @@
 "use client"
 
-import { LayoutDashboard, MessageSquare, CalendarDays, CreditCard, LogOut } from "lucide-react"
+import { LayoutDashboard, MessageSquare, CalendarDays, CreditCard, FolderKanban, LogOut } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
@@ -52,7 +52,8 @@ function SignOutModal({ onConfirm, onCancel }: { onConfirm: () => Promise<void>;
 }
 
 const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard",       shortLabel: "Dashboard", href: "/dashboard" },
+  { icon: LayoutDashboard, label: "Dashboard",       shortLabel: "Home",      href: "/dashboard" },
+  { icon: FolderKanban,    label: "Projects",        shortLabel: "Projects",  href: "/projects" },
   { icon: MessageSquare,   label: "Question Answer", shortLabel: "Q&A",       href: "/question-answer" },
   { icon: CalendarDays,    label: "Bookings",        shortLabel: "Bookings",  href: "/bookings" },
   { icon: CreditCard,      label: "Billing",         shortLabel: "Billing",   href: "/billing" },
