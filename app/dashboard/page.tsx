@@ -37,7 +37,8 @@ function ConsultationRow({ row }: { row: Consultation }) {
       </span>
     </div>
   )
-  return <Link href={`/consultants/${row.id}`}>{inner}</Link>
+  const href = row.architect_id ? `/consultants/${row.architect_id}` : "/bookings"
+  return <Link href={href}>{inner}</Link>
 }
 
 // ─── Page ─────────────────────────────────────────────────
@@ -247,7 +248,7 @@ export default function DashboardPage() {
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Next consultation</p>
                 {nextUpcoming ? (
                   <>
-                    <Link href={`/consultants/${nextUpcoming.id}`} className="flex items-center gap-3 mb-3 hover:opacity-80 transition-opacity">
+                    <Link href={nextUpcoming.architect_id ? `/consultants/${nextUpcoming.architect_id}` : "/bookings"} className="flex items-center gap-3 mb-3 hover:opacity-80 transition-opacity">
                       <Avatar initials={nextUpcoming.architect_initials} size="w-10 h-10" textSize="text-xs" />
                       <div>
                         <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{nextUpcoming.architect_name}</p>
@@ -284,7 +285,7 @@ export default function DashboardPage() {
                   </button>
                 </div>
                 {upcoming.length > 0 ? upcoming.map((row) => (
-                  <Link key={row.id} href={`/consultants/${row.id}`} className="flex items-center gap-2.5 py-2.5 border-b border-gray-50 dark:border-white/5 last:border-0 hover:opacity-80 transition-opacity">
+                  <Link key={row.id} href={row.architect_id ? `/consultants/${row.architect_id}` : "/bookings"} className="flex items-center gap-2.5 py-2.5 border-b border-gray-50 dark:border-white/5 last:border-0 hover:opacity-80 transition-opacity">
                     <Avatar initials={row.architect_initials} />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{row.architect_name}</p>

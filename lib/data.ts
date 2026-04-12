@@ -16,6 +16,7 @@ export type ConsultationStatus = "upcoming" | "ongoing" | "completed"
 
 export type Consultation = {
   id: string
+  architect_id: number | null
   architect_name: string
   architect_initials: string
   consultation_type: string
@@ -89,7 +90,7 @@ export async function fetchConsultations(userId: string): Promise<Consultation[]
   const supabase = createClient()
   const { data, error } = await supabase
     .from("consultations")
-    .select("id, architect_name, architect_initials, consultation_type, scheduled_at, status")
+    .select("id, architect_id, architect_name, architect_initials, consultation_type, scheduled_at, status")
     .eq("user_id", userId)
     .order("scheduled_at", { ascending: true })
   if (error) return []
