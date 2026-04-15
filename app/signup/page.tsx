@@ -3,14 +3,16 @@
 import { Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
+import { applyReferralCode } from "@/lib/data"
 
 export default function SignupPage() {
   const router = useRouter()
-  const tab = "customer"
+  const searchParams = useSearchParams()
+  const [role, setRole] = useState<"client" | "consultant">("client")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [firstName, setFirstName] = useState("")
@@ -21,6 +23,11 @@ export default function SignupPage() {
   const [confirm, setConfirm] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const ref = searchParams.get("ref")
+    if (ref) localStorage.setItem("planr_ref", ref)
+  }, [searchParams])
 
   async function handleSignUp() {
     if (!firstName || !lastName) { setError("Please enter your first and last name"); return }
@@ -35,14 +42,22 @@ export default function SignupPage() {
       email,
       password,
       options: {
-        data: { first_name: firstName, last_name: lastName, phone, role: tab },
+        data: { first_name: firstName, last_name: lastName, phone, role },
       },
     })
     setLoading(false)
     if (error) {
       setError(error.message)
     } else {
-      router.push(`/signup/verify?email=${encodeURIComponent(email)}`)
+      // Apply referral code if present
+      const ref = searchParams.get("ref") ?? localStorage.getItem("planr_ref")
+      if (ref) {
+        const supabase = createClient()
+        const { data: { user: newUser } } = await supabase.auth.getUser()
+        if (newUser) await applyReferralCode(ref, newUser.id)
+        localStorage.removeItem("planr_ref")
+      }
+      router.push(`/signup/verify?email=${encodeURIComponent(email)}&role=${role}`)
     }
   }
 
@@ -68,10 +83,10 @@ export default function SignupPage() {
         {/* Bottom text */}
         <div className="relative z-10">
           <h2 className="text-4xl font-bold text-white leading-snug mb-3">
-            You can dream, create, design and build it
+            Great spaces don't happen by accident.
           </h2>
           <p className="text-white/60 text-sm leading-relaxed">
-            Join thousands of homeowners and professionals managing their projects on Planr.
+            Connect with certified architects, track every milestone, and get expert answers — all in one place.
           </p>
         </div>
       </div>
@@ -85,6 +100,32 @@ export default function SignupPage() {
             <Link href="/login" className="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors block mb-1">Go back</Link>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 leading-tight">Create your account</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">Get started with Planr — it only takes a minute.</p>
+          </div>
+
+          {/* Role toggle */}
+          <div className="flex gap-2 p-1 bg-gray-100 dark:bg-white/5 rounded-xl mb-5">
+            <button
+              type="button"
+              onClick={() => setRole("client")}
+              className={`flex-1 h-9 rounded-lg text-sm font-semibold transition-all ${
+                role === "client"
+                  ? "bg-white dark:bg-[#1A3050] text-gray-900 dark:text-white shadow-sm"
+                  : "text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              }`}
+            >
+              I&apos;m a client
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole("consultant")}
+              className={`flex-1 h-9 rounded-lg text-sm font-semibold transition-all ${
+                role === "consultant"
+                  ? "bg-white dark:bg-[#1A3050] text-gray-900 dark:text-white shadow-sm"
+                  : "text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              }`}
+            >
+              I&apos;m a consultant
+            </button>
           </div>
 
           {/* Form fields */}

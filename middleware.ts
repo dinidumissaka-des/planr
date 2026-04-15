@@ -44,10 +44,32 @@ export async function middleware(request: NextRequest) {
   }
 
   if (user) {
+    const role = user.user_metadata?.role as string | undefined
+    const isConsultant = role === "consultant"
     const onboardingDone = user.user_metadata?.onboarding_completed === true
     const isOnboardingRoute = pathname.startsWith("/onboarding")
+    const isConsultantRoute = pathname.startsWith("/consultant")
 
     if (isAuthRoute) {
+      return NextResponse.redirect(
+        new URL(isConsultant ? "/consultant/dashboard" : "/dashboard", request.url)
+      )
+    }
+
+    // Consultants bypass client onboarding and go straight to their dashboard
+    if (isConsultant) {
+      if (isOnboardingRoute) {
+        return NextResponse.redirect(new URL("/consultant/dashboard", request.url))
+      }
+      // Block consultants from client-only routes (non-consultant, non-auth, non-api)
+      if (!isConsultantRoute) {
+        return NextResponse.redirect(new URL("/consultant/dashboard", request.url))
+      }
+      return supabaseResponse
+    }
+
+    // Client flow: onboarding gate
+    if (isConsultantRoute) {
       return NextResponse.redirect(new URL("/dashboard", request.url))
     }
     if (!onboardingDone && !isOnboardingRoute) {

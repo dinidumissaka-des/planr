@@ -16,6 +16,7 @@ export type ConsultationStatus = "upcoming" | "ongoing" | "completed"
 
 export type Consultation = {
   id: string
+  user_id: string
   architect_id: number | null
   architect_name: string
   architect_initials: string
@@ -90,7 +91,7 @@ export async function fetchConsultations(userId: string): Promise<Consultation[]
   const supabase = createClient()
   const { data, error } = await supabase
     .from("consultations")
-    .select("id, architect_id, architect_name, architect_initials, consultation_type, scheduled_at, status")
+    .select("id, user_id, architect_id, architect_name, architect_initials, consultation_type, scheduled_at, status")
     .eq("user_id", userId)
     .order("scheduled_at", { ascending: true })
   if (error) return []
@@ -469,6 +470,194 @@ export async function deleteMilestone(milestoneId: string, userId: string): Prom
  * Inserts a new question row for a user.
  * Consultant fields default to 'Planr Team' until a consultant is assigned.
  */
+// ─── Referral System ───────────────────────────────────────
+
+export type ReferralStats = {
+  code: string
+  conversions: number
+}
+
+function generateReferralCode(userId: string): string {
+  return `PLANR-${userId.replace(/-/g, "").slice(0, 6).toUpperCase()}`
+}
+
+/**
+ * Upserts the user's referral code row and returns their stats.
+ * Run docs/referrals.sql in Supabase first.
+ */
+export async function fetchOrCreateReferralCode(userId: string): Promise<ReferralStats> {
+  const supabase = createClient()
+  const code = generateReferralCode(userId)
+
+  await supabase
+    .from("referral_codes")
+    .upsert({ user_id: userId, code }, { onConflict: "user_id" })
+
+  const { data: uses } = await supabase
+    .from("referral_uses")
+    .select("id")
+    .eq("code", code)
+
+  return { code, conversions: uses?.length ?? 0 }
+}
+
+/**
+ * Records a successful referral conversion after a new user signs up.
+ * Silently no-ops if the code is invalid or the user was already referred.
+ */
+export async function applyReferralCode(code: string, referredUserId: string): Promise<void> {
+  const supabase = createClient()
+
+  const { data: codeRow } = await supabase
+    .from("referral_codes")
+    .select("user_id")
+    .eq("code", code.toUpperCase())
+    .single()
+
+  if (!codeRow || codeRow.user_id === referredUserId) return
+
+  await supabase.from("referral_uses").insert({
+    code: code.toUpperCase(),
+    referrer_id: codeRow.user_id,
+    referred_id: referredUserId,
+  })
+}
+
+// ─── Consultant Types ───────────────────────────────────────
+
+export type ConsultantProfile = {
+  user_id: string
+  display_name: string
+  specialization: string
+  bio: string | null
+  years_experience: number | null
+  created_at: string
+}
+
+export type ConsultantQuestion = {
+  id: string
+  user_id: string
+  question: string
+  description: string | null
+  category: string | null
+  consultant_name: string
+  consultant_initials: string
+  consultant_role: string
+  reply: string | null
+  replied_at: string | null
+  replied_by: string | null
+  is_answered: boolean
+  created_at: string
+}
+
+// ─── Consultant Data Functions ──────────────────────────────
+
+/**
+ * Fetches or creates a consultant profile row.
+ * Expected schema: see docs/consultant.sql
+ */
+export async function fetchOrCreateConsultantProfile(
+  userId: string,
+  displayName: string
+): Promise<ConsultantProfile | null> {
+  const supabase = createClient()
+
+  const { data: existing } = await supabase
+    .from("consultant_profiles")
+    .select("*")
+    .eq("user_id", userId)
+    .single()
+
+  if (existing) return existing as ConsultantProfile
+
+  const { data: created } = await supabase
+    .from("consultant_profiles")
+    .insert({ user_id: userId, display_name: displayName, specialization: "General" })
+    .select("*")
+    .single()
+
+  return (created ?? null) as ConsultantProfile | null
+}
+
+/**
+ * Updates a consultant's profile.
+ */
+export async function updateConsultantProfile(
+  userId: string,
+  patch: Partial<Pick<ConsultantProfile, "display_name" | "specialization" | "bio" | "years_experience">>
+): Promise<void> {
+  const supabase = createClient()
+  await supabase.from("consultant_profiles").update(patch).eq("user_id", userId)
+}
+
+/**
+ * Fetches all consultations assigned to this consultant user.
+ * Requires `consultant_user_id` column on consultations table.
+ */
+export async function fetchConsultantBookings(consultantUserId: string): Promise<Consultation[]> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from("consultations")
+    .select("id, architect_id, architect_name, architect_initials, consultation_type, scheduled_at, status, user_id")
+    .eq("consultant_user_id", consultantUserId)
+    .order("scheduled_at", { ascending: true })
+  if (error) return []
+  return (data ?? []) as Consultation[]
+}
+
+/**
+ * Updates the status of a booking (for consultant actions: confirm / complete / cancel).
+ */
+export async function updateConsultationStatus(
+  consultationId: string,
+  status: ConsultationStatus
+): Promise<void> {
+  const supabase = createClient()
+  await supabase
+    .from("consultations")
+    .update({ status })
+    .eq("id", consultationId)
+}
+
+/**
+ * Fetches all questions visible to consultants (all users' questions), newest first.
+ */
+export async function fetchAllQuestions(limit = 50): Promise<ConsultantQuestion[]> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from("questions")
+    .select("id, user_id, question, description, category, consultant_name, consultant_initials, consultant_role, reply, replied_at, replied_by, is_answered, created_at")
+    .order("created_at", { ascending: false })
+    .limit(limit)
+  if (error) return []
+  return (data ?? []) as ConsultantQuestion[]
+}
+
+/**
+ * Posts a reply to a client question.
+ */
+export async function replyToQuestion(
+  questionId: string,
+  reply: string,
+  consultantUserId: string,
+  consultantName: string
+): Promise<void> {
+  const supabase = createClient()
+  await supabase
+    .from("questions")
+    .update({
+      reply,
+      replied_at: new Date().toISOString(),
+      replied_by: consultantUserId,
+      is_answered: true,
+      consultant_name: consultantName,
+      consultant_initials: consultantName.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2),
+    })
+    .eq("id", questionId)
+}
+
+// ─── Questions (client) ─────────────────────────────────────
+
 export async function insertQuestion(
   userId: string,
   payload: {

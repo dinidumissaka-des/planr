@@ -1,6 +1,6 @@
 "use client"
 
-import { Bell, ChevronDown, CheckCircle2, Info, X, ArrowUpRight, Sun, Moon, Command, User, Settings, LogOut } from "lucide-react"
+import { Bell, ChevronDown, CheckCircle2, Info, X, ArrowUpRight, Sun, Moon, Command, User, Settings, LogOut, Gift } from "lucide-react"
 import Link from "next/link"
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
@@ -312,6 +312,10 @@ export function AppHeader({ title }: AppHeaderProps) {
                     <Settings className="w-4 h-4" />
                     Account Settings
                   </Link>
+                  <Link href="/referral" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
+                    <Gift className="w-4 h-4" />
+                    Refer a Friend
+                  </Link>
                 </div>
                 <div className="border-t border-gray-100 dark:border-white/8 py-1.5">
                   <button
@@ -410,6 +414,10 @@ export function AppHeader({ title }: AppHeaderProps) {
               <Link href="/settings" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                 <Settings className="w-5 h-5 text-gray-400" />
                 Account Settings
+              </Link>
+              <Link href="/referral" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                <Gift className="w-5 h-5 text-gray-400" />
+                Refer a Friend
               </Link>
             </div>
           </div>

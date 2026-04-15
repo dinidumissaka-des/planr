@@ -25,12 +25,13 @@ export default function LoginPage() {
     setError("")
     setLoading(true)
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     setLoading(false)
     if (error) {
       setError(error.message)
     } else {
-      router.push("/dashboard")
+      const isConsultant = data.user?.user_metadata?.role === "consultant"
+      router.push(isConsultant ? "/consultant/dashboard" : "/dashboard")
       router.refresh()
     }
   }
@@ -52,10 +53,10 @@ export default function LoginPage() {
         </div>
         <div className="relative z-10">
           <h2 className="text-4xl font-bold text-white leading-snug mb-3">
-            Connect with expert architects & designers
+            Every great build starts with a plan.
           </h2>
           <p className="text-white/60 text-sm leading-relaxed">
-            Book consultations, get answers to your building questions, and manage your projects — all in one place.
+            Everything you need to manage your build is right where you left it.
           </p>
         </div>
       </div>

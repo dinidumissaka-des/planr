@@ -6,6 +6,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import { DashboardSkeleton } from "@/components/skeletons/dashboard-skeleton"
@@ -51,6 +52,7 @@ function getGreeting() {
 }
 
 export default function DashboardPage() {
+  const router = useRouter()
   const [loading, setLoading]             = useState(true)
   const [userName, setUserName]           = useState("")
   const [consultations, setConsultations] = useState<Consultation[]>([])
@@ -61,6 +63,11 @@ export default function DashboardPage() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { setLoading(false); return }
+
+      if (user.user_metadata?.role === "consultant") {
+        router.replace("/consultant/dashboard")
+        return
+      }
 
       const first = user.user_metadata?.first_name ?? ""
       const last  = user.user_metadata?.last_name  ?? ""
@@ -323,6 +330,23 @@ export default function DashboardPage() {
                   className="block w-full text-center bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-semibold py-3 rounded-xl transition-colors"
                 >
                   Try Planr AI
+                </Link>
+              </div>
+
+              {/* Referral CTA */}
+              <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ backgroundColor: 'rgba(219,207,99,0.18)' }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A89A30" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6"/><path d="m16 2 6 6-9 9-4 1 1-4z"/></svg>
+                </div>
+                <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">Invite a friend</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-4">
+                  Know someone who's building? Refer them and you both get a month free.
+                </p>
+                <Link
+                  href="/referral"
+                  className="block w-full text-center bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors"
+                >
+                  Get your referral link
                 </Link>
               </div>
 
