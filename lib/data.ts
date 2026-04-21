@@ -138,6 +138,20 @@ export async function dismissNotification(id: string): Promise<void> {
   await supabase.from("notifications").delete().eq("id", id)
 }
 
+export async function insertNotification(
+  userId: string,
+  payload: { type: Notification["type"]; title: string; body: string }
+): Promise<void> {
+  const supabase = createClient()
+  await supabase.from("notifications").insert({
+    user_id: userId,
+    type: payload.type,
+    title: payload.title,
+    body: payload.body,
+    read: false,
+  })
+}
+
 export async function fetchRecentQuestions(
   userId: string,
   limit = 2
@@ -182,6 +196,26 @@ export async function insertConsultation(
     notes: payload.notes ?? null,
     categories: payload.categories ?? [],
   })
+
+  const dateLabel = new Date(payload.scheduled_at).toLocaleDateString("en-US", {
+    month: "long", day: "numeric", year: "numeric",
+  })
+
+  // Notify client
+  insertNotification(userId, {
+    type: "success",
+    title: "Booking confirmed",
+    body: `Your consultation with ${payload.architect_name} is scheduled for ${dateLabel}.`,
+  }).catch(() => {})
+
+  // Notify consultant
+  if (payload.consultant_user_id) {
+    insertNotification(payload.consultant_user_id, {
+      type: "info",
+      title: "New booking request",
+      body: `A client has booked a ${payload.consultation_type} consultation with you on ${dateLabel}.`,
+    }).catch(() => {})
+  }
 }
 
 /**
@@ -658,6 +692,22 @@ export async function replyToQuestion(
       consultant_initials: consultantName.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2),
     })
     .eq("id", questionId)
+
+  // Notify the asker
+  const { data: q } = await supabase
+    .from("questions")
+    .select("user_id, question")
+    .eq("id", questionId)
+    .single()
+
+  if (q?.user_id) {
+    const preview = q.question.length > 80 ? q.question.slice(0, 80) + "…" : q.question
+    insertNotification(q.user_id, {
+      type: "success",
+      title: "Your question has been answered",
+      body: `${consultantName} replied to: "${preview}"`,
+    }).catch(() => {})
+  }
 }
 
 // ─── Questions (client) ─────────────────────────────────────
