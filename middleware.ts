@@ -61,6 +61,18 @@ export async function middleware(request: NextRequest) {
       if (isOnboardingRoute) {
         return NextResponse.redirect(new URL("/consultant/dashboard", request.url))
       }
+
+      const consultantProfileDone = user.user_metadata?.consultant_profile_completed === true
+      const isConsultantOnboardingRoute = pathname.startsWith("/consultant/onboarding")
+
+      // Gate: must complete profile before accessing the app
+      if (!consultantProfileDone && !isConsultantOnboardingRoute) {
+        return NextResponse.redirect(new URL("/consultant/onboarding", request.url))
+      }
+      if (consultantProfileDone && isConsultantOnboardingRoute) {
+        return NextResponse.redirect(new URL("/consultant/dashboard", request.url))
+      }
+
       // Block consultants from client-only routes (non-consultant, non-auth, non-api)
       if (!isConsultantRoute) {
         return NextResponse.redirect(new URL("/consultant/dashboard", request.url))

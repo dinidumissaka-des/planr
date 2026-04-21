@@ -10,10 +10,9 @@ import { Switch } from "@/components/ui/switch"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import { CalendarDays } from "lucide-react"
-import { architects, type Architect } from "@/lib/architects"
 import { AvatarInitials } from "@/components/ui/avatar-initials"
 import { createClient } from "@/lib/supabase"
-import { insertConsultation } from "@/lib/data"
+import { insertConsultation, fetchAllConsultants, type ConsultantProfile } from "@/lib/data"
 import { PortfolioGallery } from "@/components/ui/portfolio-gallery"
 
 // ─── Data ─────────────────────────────────────────────────
@@ -53,7 +52,7 @@ function FieldError({ msg }: { msg: string | undefined }) {
 
 // ─── Profile Drawer ────────────────────────────────────────
 
-function ProfileDrawer({ architect, onClose, onSelect }: { architect: Architect; onClose: () => void; onSelect: () => void }) {
+function ProfileDrawer({ architect, onClose, onSelect }: { architect: ConsultantProfile; onClose: () => void; onSelect: () => void }) {
   useEffect(() => {
     function handle(e: KeyboardEvent) { if (e.key === "Escape") onClose() }
     document.addEventListener("keydown", handle)
@@ -71,19 +70,21 @@ function ProfileDrawer({ architect, onClose, onSelect }: { architect: Architect;
         {/* Header */}
         <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-gray-100 dark:border-white/8 flex-shrink-0">
           <div className="flex items-center gap-4">
-            <AvatarInitials initials={architect.name.split(" ").map(n => n[0]).join("")} size="w-16 h-16" textSize="text-lg" rounded="rounded-2xl" />
+            <AvatarInitials initials={architect.display_name.split(" ").map(n => n[0]).join("")} size="w-16 h-16" textSize="text-lg" rounded="rounded-2xl" />
             <div>
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">{architect.name}</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{architect.role}</p>
-              <div className="flex items-center gap-1.5 mt-1">
-                <div className="flex items-center gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`w-3 h-3 ${i < Math.floor(architect.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300 dark:text-gray-600"}`} />
-                  ))}
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">{architect.display_name}</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{architect.role ?? "Consultant"}</p>
+              {architect.rating > 0 && (
+                <div className="flex items-center gap-1.5 mt-1">
+                  <div className="flex items-center gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className={`w-3 h-3 ${i < Math.floor(architect.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300 dark:text-gray-600"}`} />
+                    ))}
+                  </div>
+                  <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{architect.rating}</span>
+                  <span className="text-xs text-gray-400 dark:text-gray-500">({architect.review_count} reviews)</span>
                 </div>
-                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{architect.rating}</span>
-                <span className="text-xs text-gray-400 dark:text-gray-500">({architect.reviewCount} reviews)</span>
-              </div>
+              )}
             </div>
           </div>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors p-1 flex-shrink-0">
@@ -93,64 +94,76 @@ function ProfileDrawer({ architect, onClose, onSelect }: { architect: Architect;
 
         {/* Meta pills */}
         <div className="flex items-center gap-2 px-6 py-3 flex-shrink-0 flex-wrap border-b border-gray-100 dark:border-white/8">
-          <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-            <Briefcase className="w-3.5 h-3.5" />{architect.company}
-          </span>
-          <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
-          <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-            <MapPin className="w-3.5 h-3.5" />{architect.location}
-          </span>
+          {architect.company && (
+            <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+              <Briefcase className="w-3.5 h-3.5" />{architect.company}
+            </span>
+          )}
+          {architect.company && architect.location && <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />}
+          {architect.location && (
+            <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+              <MapPin className="w-3.5 h-3.5" />{architect.location}
+            </span>
+          )}
         </div>
 
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
 
           {/* About */}
-          <div>
-            <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-2">About</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{architect.about}</p>
-          </div>
+          {architect.bio && (
+            <div>
+              <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-2">About</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{architect.bio}</p>
+            </div>
+          )}
 
           {/* Specializations */}
-          <div>
-            <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-2.5">Specializations</p>
-            <div className="flex flex-wrap gap-2">
-              {architect.specializations.map(s => (
-                <span key={s} className="text-xs font-medium px-2.5 py-1 rounded-lg bg-secondary/15 dark:bg-secondary/10 text-primary dark:text-secondary">{s}</span>
-              ))}
+          {architect.specializations?.length > 0 && (
+            <div>
+              <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-2.5">Specializations</p>
+              <div className="flex flex-wrap gap-2">
+                {architect.specializations.map(s => (
+                  <span key={s} className="text-xs font-medium px-2.5 py-1 rounded-lg bg-secondary/15 dark:bg-secondary/10 text-primary dark:text-secondary">{s}</span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Experience */}
-          <div>
-            <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <Briefcase className="w-3.5 h-3.5" /> Experience
-            </p>
-            <div className="space-y-4">
-              {architect.experience.map((e, i) => (
-                <div key={i} className="border-l-2 border-secondary/30 pl-4">
-                  <p className="text-sm font-bold text-gray-900 dark:text-white">{e.company}</p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-0.5">{e.role} · <span className="text-secondary">{e.type}</span></p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mb-1.5">{e.period}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{e.description}</p>
+          {architect.experience?.length > 0 && (
+            <div>
+              <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                <Briefcase className="w-3.5 h-3.5" /> Experience
+              </p>
+              <div className="space-y-4">
+                {architect.experience.map((e, i) => (
+                  <div key={i} className="border-l-2 border-secondary/30 pl-4">
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">{e.company}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-0.5">{e.role} · <span className="text-secondary">{e.type}</span></p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mb-1.5">{e.period}</p>
+                    {e.description && <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{e.description}</p>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Education */}
+          {architect.education?.length > 0 && (
+            <div>
+              <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                <GraduationCap className="w-3.5 h-3.5" /> Education
+              </p>
+              {architect.education.map((e, i) => (
+                <div key={i} className="border-l-2 border-gray-200 dark:border-white/10 pl-4">
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">{e.school}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{e.dept}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">{e.period}</p>
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Education */}
-          <div>
-            <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <GraduationCap className="w-3.5 h-3.5" /> Education
-            </p>
-            {architect.education.map((e, i) => (
-              <div key={i} className="border-l-2 border-gray-200 dark:border-white/10 pl-4">
-                <p className="text-sm font-bold text-gray-900 dark:text-white">{e.school}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">{e.dept}</p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">{e.period}</p>
-              </div>
-            ))}
-          </div>
+          )}
 
           {/* Portfolio */}
           {architect.portfolio?.length > 0 && (
@@ -158,24 +171,26 @@ function ProfileDrawer({ architect, onClose, onSelect }: { architect: Architect;
           )}
 
           {/* Reviews */}
-          <div>
-            <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <Award className="w-3.5 h-3.5" /> Client Reviews
-            </p>
-            <div className="space-y-3">
-              {architect.reviews.map((r, i) => (
-                <div key={i} className="bg-gray-50 dark:bg-white/5 rounded-xl p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{r.name}</p>
-                    <div className="flex items-center gap-0.5">
-                      {[...Array(r.rating)].map((_, j) => <Star key={j} className="w-3 h-3 fill-yellow-400 text-yellow-400" />)}
+          {architect.reviews?.length > 0 && (
+            <div>
+              <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                <Award className="w-3.5 h-3.5" /> Client Reviews
+              </p>
+              <div className="space-y-3">
+                {architect.reviews.map((r, i) => (
+                  <div key={i} className="bg-gray-50 dark:bg-white/5 rounded-xl p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{r.name}</p>
+                      <div className="flex items-center gap-0.5">
+                        {[...Array(r.rating)].map((_, j) => <Star key={j} className="w-3 h-3 fill-yellow-400 text-yellow-400" />)}
+                      </div>
                     </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">"{r.text}"</p>
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">"{r.text}"</p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
         </div>
 
@@ -185,7 +200,7 @@ function ProfileDrawer({ architect, onClose, onSelect }: { architect: Architect;
             onClick={() => { onSelect(); onClose() }}
             className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold rounded-xl transition-colors"
           >
-            Select {architect.name.split(" ")[0]}
+            Select {architect.display_name.split(" ")[0]}
           </button>
         </div>
       </div>
@@ -274,19 +289,21 @@ function Stepper({ step }: { step: number }) {
 // ─── Architect Summary Bar ─────────────────────────────────
 
 function ArchitectBar({ architect, dateLabel, timeLabel, leftLabel, rightLabel, onViewProfile }: {
-  architect: typeof architects[0]; dateLabel: string; timeLabel: string; leftLabel: string; rightLabel: string; onViewProfile: () => void
+  architect: ConsultantProfile; dateLabel: string; timeLabel: string; leftLabel: string; rightLabel: string; onViewProfile: () => void
 }) {
   return (
     <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl p-4 mb-5">
       {/* Row 1: avatar + name + view profile */}
       <div className="flex items-center gap-3 mb-4">
-        <AvatarInitials initials={architect.name.split(" ").map(n => n[0]).join("")} size="w-10 h-10" textSize="text-xs" />
+        <AvatarInitials initials={architect.display_name.split(" ").map(n => n[0]).join("")} size="w-10 h-10" textSize="text-xs" />
         <div className="flex-1 min-w-0 space-y-1">
-          <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{architect.name}</p>
-          <p className="text-sm font-bold text-gray-900 dark:text-white">{architect.role}</p>
-          <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
-            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />{architect.rating} ({architect.reviewCount} Reviews)
-          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{architect.display_name}</p>
+          <p className="text-sm font-bold text-gray-900 dark:text-white">{architect.role ?? "Consultant"}</p>
+          {architect.rating > 0 && (
+            <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
+              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />{architect.rating} ({architect.review_count} Reviews)
+            </p>
+          )}
         </div>
         <button onClick={onViewProfile} className="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex-shrink-0">View Profile</button>
       </div>
@@ -336,10 +353,20 @@ function SuccessModal({ onClose }: { onClose: () => void }) {
 // ─── Page ─────────────────────────────────────────────────
 
 export default function BookingsPage() {
+  const [consultants, setConsultants] = useState<ConsultantProfile[]>([])
+  const [loadingConsultants, setLoadingConsultants] = useState(true)
+
+  useEffect(() => {
+    fetchAllConsultants().then(data => {
+      setConsultants(data)
+      setLoadingConsultants(false)
+    })
+  }, [])
+
   const [step, setStep] = useState(1)
   const [firstTime, setFirstTime] = useState(false)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedArchitect, setSelectedArchitect] = useState<number | null>(null)
+  const [selectedArchitect, setSelectedArchitect] = useState<string | null>(null)
   const [autoChoose, setAutoChoose] = useState(false)
   const [search, setSearch] = useState("")
   const [selectedDate, setSelectedDate] = useState<number | null>(null)
@@ -366,10 +393,10 @@ export default function BookingsPage() {
   const [bookedSlots, setBookedSlots] = useState<{ date: number; hour: number }[]>([])
   const [loadingAvail, setLoadingAvail] = useState(false)
 
-  async function fetchAvailability(architectId: number, year: number, month: number) {
+  async function fetchAvailability(consultantUserId: string, year: number, month: number) {
     setLoadingAvail(true)
     try {
-      const res = await fetch(`/api/availability?architect_id=${architectId}&year=${year}&month=${month}`)
+      const res = await fetch(`/api/availability?consultant_user_id=${consultantUserId}&year=${year}&month=${month}`)
       if (res.ok) setBookedSlots(await res.json())
     } finally {
       setLoadingAvail(false)
@@ -445,10 +472,10 @@ export default function BookingsPage() {
       if (user && selectedDate !== null && selectedSlot !== null) {
         const scheduled = new Date(calYear, calMonth, selectedDate, slotHours[selectedSlot], 0, 0)
         await insertConsultation(user.id, {
-          architect_id: activeArchitect.id,
-          architect_name: activeArchitect.name,
-          architect_initials: activeArchitect.name.split(" ").map(n => n[0]).join(""),
-          consultation_type: activeArchitect.role,
+          consultant_user_id: activeArchitect.user_id,
+          architect_name: activeArchitect.display_name,
+          architect_initials: activeArchitect.display_name.split(" ").map(n => n[0]).join(""),
+          consultation_type: activeArchitect.role ?? "Consultation",
           scheduled_at: scheduled.toISOString(),
           notes: notes.trim() || undefined,
           categories: selectedCategories.length ? selectedCategories : undefined,
@@ -462,19 +489,19 @@ export default function BookingsPage() {
     }
   }
 
-  const activeArchitect = architects.find(a => a.id === selectedArchitect) ?? architects[0]
-  const filtered = architects.filter(a => {
+  const activeArchitect = consultants.find(a => a.user_id === selectedArchitect) ?? consultants[0]
+  const filtered = consultants.filter(a => {
     const matchesSearch = search === "" ||
-      a.name.toLowerCase().includes(search.toLowerCase()) ||
-      a.role.toLowerCase().includes(search.toLowerCase())
+      a.display_name.toLowerCase().includes(search.toLowerCase()) ||
+      (a.role ?? "").toLowerCase().includes(search.toLowerCase())
     const matchesCategory = selectedCategories.length === 0 ||
-      selectedCategories.includes(a.category)
+      selectedCategories.includes(a.category ?? "")
     return matchesSearch && matchesCategory
   })
   const selectedSlotLabel = selectedSlot !== null ? timeSlots[selectedSlot] : "—"
   const [architectDot, setArchitectDot] = useState(0)
   const architectScrollRef = useRef<HTMLDivElement>(null)
-  const [profileDrawer, setProfileDrawer] = useState<Architect | null>(null)
+  const [profileDrawer, setProfileDrawer] = useState<ConsultantProfile | null>(null)
   const [profileLoading, setProfileLoading] = useState(false)
 
   function openProfile(a: Architect | null | undefined) {
@@ -662,39 +689,37 @@ export default function BookingsPage() {
                 >
                   {filtered.map(a => (
                     <button
-                      key={a.id}
-                      onClick={() => setSelectedArchitect(a.id)}
+                      key={a.user_id}
+                      onClick={() => setSelectedArchitect(a.user_id)}
                       className={`flex-shrink-0 w-[72%] snap-start rounded-xl border-2 p-4 text-left transition-all ${
-                        selectedArchitect === a.id
+                        selectedArchitect === a.user_id
                           ? "border-gray-900 dark:border-white shadow-sm"
                           : "border-transparent shadow-sm"
                       }`}
                       style={{
-                        backgroundColor: cardColor(a.role),
+                        backgroundColor: cardColor(a.role ?? ""),
                         backgroundImage: "url('/grain-bg-lg.svg')",
                         backgroundBlendMode: 'screen',
                         backgroundSize: 'cover',
                       }}
                     >
                       <div className="flex items-start justify-between mb-3">
-                        <AvatarInitials initials={a.name.split(" ").map(n => n[0]).join("")} size="w-12 h-12" textSize="text-sm" rounded="rounded-full" />
-                        <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex items-center justify-center flex-shrink-0 ${selectedArchitect === a.id ? "border-[#07111E]" : "border-[#07111E]/30"}`}>
-                          {selectedArchitect === a.id && <div className="w-2 h-2 bg-[#07111E] rounded-full" />}
+                        <AvatarInitials initials={a.display_name.split(" ").map(n => n[0]).join("")} size="w-12 h-12" textSize="text-sm" rounded="rounded-full" />
+                        <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex items-center justify-center flex-shrink-0 ${selectedArchitect === a.user_id ? "border-[#07111E]" : "border-[#07111E]/30"}`}>
+                          {selectedArchitect === a.user_id && <div className="w-2 h-2 bg-[#07111E] rounded-full" />}
                         </div>
                       </div>
-                      <p className="text-sm text-[#07111E]/60 truncate">{a.name}</p>
-                      <p className="text-sm font-bold text-[#07111E]">{a.role}</p>
-                      <div className="flex items-center gap-1 text-xs text-[#07111E]/50 mb-4">
-                        <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />{a.rating} ({a.reviewCount} Reviews)
-                      </div>
-                      <div className="grid grid-cols-2 gap-1.5 mb-3">
-                        <div>
-                          <p className="text-[10px] text-[#07111E]/50 mb-1">Available from:</p>
-                          <span className="text-[10px] font-semibold bg-white/40 text-[#07111E] px-2 py-1 rounded-md uppercase block text-center">10TH FEB</span>
+                      <p className="text-sm text-[#07111E]/60 truncate">{a.display_name}</p>
+                      <p className="text-sm font-bold text-[#07111E]">{a.role ?? "Consultant"}</p>
+                      {a.rating > 0 && (
+                        <div className="flex items-center gap-1 text-xs text-[#07111E]/50 mb-4">
+                          <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />{a.rating} ({a.review_count} Reviews)
                         </div>
+                      )}
+                      <div className="grid grid-cols-1 gap-1.5 mb-3 mt-2">
                         <div>
                           <p className="text-[10px] text-[#07111E]/50 mb-1">Working hours:</p>
-                          <span className="text-[10px] font-semibold bg-white/40 text-[#07111E] px-2 py-1 rounded-md block text-center">10AM–9PM</span>
+                          <span className="text-[10px] font-semibold bg-white/40 text-[#07111E] px-2 py-1 rounded-md block text-center">{a.working_hours ?? "Contact to confirm"}</span>
                         </div>
                       </div>
                       <div className="border-t border-[#07111E]/10 pt-2.5 text-center">
@@ -721,49 +746,51 @@ export default function BookingsPage() {
                 </div>
               ) : (
               <div className="hidden md:grid grid-cols-4 gap-3 mb-5">
-                {filtered.map(a => (
-                  <button
-                    key={a.id}
-                    onClick={() => setSelectedArchitect(a.id)}
-                    className={`rounded-xl border-2 p-4 text-left transition-all bg-cover bg-center ${
-                      selectedArchitect === a.id
-                        ? "border-gray-900 dark:border-white shadow-sm"
-                        : "border-transparent shadow-sm hover:border-gray-200 dark:hover:border-white/20"
-                    }`}
-                    style={{
-                      backgroundColor: cardColor(a.role),
-                      backgroundImage: "url('/grain-bg-lg.svg')",
-                      backgroundBlendMode: 'screen',
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                    }}
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <AvatarInitials initials={a.name.split(" ").map(n => n[0]).join("")} size="w-12 h-12" textSize="text-sm" />
-                      <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex items-center justify-center flex-shrink-0 ${selectedArchitect === a.id ? "border-[#07111E]" : "border-[#07111E]/30"}`}>
-                        {selectedArchitect === a.id && <div className="w-2 h-2 bg-[#07111E] rounded-full" />}
+                {loadingConsultants ? (
+                  Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="rounded-xl h-52 bg-gray-100 dark:bg-white/5 animate-pulse" />
+                  ))
+                ) : (
+                  filtered.map(a => (
+                    <button
+                      key={a.user_id}
+                      onClick={() => setSelectedArchitect(a.user_id)}
+                      className={`rounded-xl border-2 p-4 text-left transition-all bg-cover bg-center ${
+                        selectedArchitect === a.user_id
+                          ? "border-gray-900 dark:border-white shadow-sm"
+                          : "border-transparent shadow-sm hover:border-gray-200 dark:hover:border-white/20"
+                      }`}
+                      style={{
+                        backgroundColor: cardColor(a.role ?? ""),
+                        backgroundImage: "url('/grain-bg-lg.svg')",
+                        backgroundBlendMode: 'screen',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <AvatarInitials initials={a.display_name.split(" ").map(n => n[0]).join("")} size="w-12 h-12" textSize="text-sm" />
+                        <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex items-center justify-center flex-shrink-0 ${selectedArchitect === a.user_id ? "border-[#07111E]" : "border-[#07111E]/30"}`}>
+                          {selectedArchitect === a.user_id && <div className="w-2 h-2 bg-[#07111E] rounded-full" />}
+                        </div>
                       </div>
-                    </div>
-                    <p className="text-sm text-[#07111E]/60 truncate">{a.name}</p>
-                    <p className="text-sm font-bold text-[#07111E]">{a.role}</p>
-                    <div className="flex items-center gap-1 text-xs text-[#07111E]/50 mb-4">
-                      <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />{a.rating} ({a.reviewCount} Reviews)
-                    </div>
-                    <div className="grid grid-cols-2 gap-1.5 mb-3">
-                      <div>
-                        <p className="text-[10px] text-[#07111E]/50 mb-1">Available from:</p>
-                        <span className="text-[10px] font-semibold bg-white/40 text-[#07111E] px-2 py-1 rounded-md uppercase block text-center">10TH FEB</span>
-                      </div>
-                      <div>
+                      <p className="text-sm text-[#07111E]/60 truncate">{a.display_name}</p>
+                      <p className="text-sm font-bold text-[#07111E]">{a.role ?? "Consultant"}</p>
+                      {a.rating > 0 && (
+                        <div className="flex items-center gap-1 text-xs text-[#07111E]/50 mb-2">
+                          <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />{a.rating} ({a.review_count} Reviews)
+                        </div>
+                      )}
+                      <div className="mb-3 mt-2">
                         <p className="text-[10px] text-[#07111E]/50 mb-1">Working hours:</p>
-                        <span className="text-[10px] font-semibold bg-white/40 text-[#07111E] px-2 py-1 rounded-md block text-center">10AM–9PM</span>
+                        <span className="text-[10px] font-semibold bg-white/40 text-[#07111E] px-2 py-1 rounded-md block text-center">{a.working_hours ?? "Contact to confirm"}</span>
                       </div>
-                    </div>
-                    <div className="border-t border-[#07111E]/10 pt-2.5 text-center">
-                      <span onClick={e => { e.stopPropagation(); openProfile(a) }} className="text-xs font-medium text-[#07111E]/60 hover:text-[#07111E] transition-colors cursor-pointer">View Profile</span>
-                    </div>
-                  </button>
-                ))}
+                      <div className="border-t border-[#07111E]/10 pt-2.5 text-center">
+                        <span onClick={e => { e.stopPropagation(); openProfile(a) }} className="text-xs font-medium text-[#07111E]/60 hover:text-[#07111E] transition-colors cursor-pointer">View Profile</span>
+                      </div>
+                    </button>
+                  ))
+                )}
               </div>
               )}
 
@@ -774,8 +801,8 @@ export default function BookingsPage() {
 
               <StepFooter onNext={() => tryAdvance(step1Valid, () => {
                 setStep(2)
-                const archId = autoChoose ? architects[0].id : (selectedArchitect ?? architects[0].id)
-                fetchAvailability(archId, calYear, calMonth)
+                const archId = autoChoose ? (consultants[0]?.user_id ?? "") : (selectedArchitect ?? consultants[0]?.user_id ?? "")
+                if (archId) fetchAvailability(archId, calYear, calMonth)
               })} />
             </div>
           )}
@@ -788,7 +815,7 @@ export default function BookingsPage() {
                 dateLabel={selectedDate ? `${ordinal(selectedDate)} ${MONTHS[calMonth]}` : "Not selected"}
                 timeLabel={selectedSlotLabel}
                 leftLabel="Selected date:" rightLabel="Selected time:"
-                onViewProfile={() => openProfile(architects.find(a => a.id === activeArchitect.id))}
+                onViewProfile={() => openProfile(activeArchitect)}
               />
 
               <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
@@ -802,7 +829,7 @@ export default function BookingsPage() {
                         const now = new Date()
                         if (d >= new Date(now.getFullYear(), now.getMonth(), 1)) {
                           setCalYear(d.getFullYear()); setCalMonth(d.getMonth()); setSelectedDate(null); setSelectedSlot(null)
-                          fetchAvailability(activeArchitect.id, d.getFullYear(), d.getMonth())
+                          fetchAvailability(activeArchitect.user_id, d.getFullYear(), d.getMonth())
                         }
                       }}
                       className="text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 transition-colors disabled:opacity-30"
@@ -814,7 +841,7 @@ export default function BookingsPage() {
                       onClick={() => {
                         const d = new Date(calYear, calMonth + 1, 1)
                         setCalYear(d.getFullYear()); setCalMonth(d.getMonth()); setSelectedDate(null); setSelectedSlot(null)
-                        fetchAvailability(activeArchitect.id, d.getFullYear(), d.getMonth())
+                        fetchAvailability(activeArchitect.user_id, d.getFullYear(), d.getMonth())
                       }}
                       className="text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
                     >
@@ -909,7 +936,7 @@ export default function BookingsPage() {
                 architect={activeArchitect}
                 dateLabel={selectedDate ? `${ordinal(selectedDate)} ${MONTHS[calMonth]}` : "—"} timeLabel={selectedSlotLabel}
                 leftLabel="Date:" rightLabel="Time:"
-                onViewProfile={() => openProfile(architects.find(a => a.id === activeArchitect.id))}
+                onViewProfile={() => openProfile(activeArchitect)}
               />
 
               <div className="space-y-5">
@@ -1111,10 +1138,10 @@ export default function BookingsPage() {
                 <p className="text-sm font-bold text-gray-800 dark:text-white mb-4">Booking Summary</p>
 
                 <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100 dark:border-white/8">
-                  <AvatarInitials initials={activeArchitect.name.split(" ").map(n => n[0]).join("")} size="w-10 h-10" textSize="text-xs" />
+                  <AvatarInitials initials={activeArchitect?.display_name.split(" ").map(n => n[0]).join("") ?? "?"} size="w-10 h-10" textSize="text-xs" />
                   <div>
-                    <p className="text-sm font-semibold text-gray-800 dark:text-white">{activeArchitect.name}</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500">{activeArchitect.role}</p>
+                    <p className="text-sm font-semibold text-gray-800 dark:text-white">{activeArchitect?.display_name}</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">{activeArchitect?.role ?? "Consultant"}</p>
                   </div>
                 </div>
 
@@ -1171,7 +1198,7 @@ export default function BookingsPage() {
         <ProfileDrawer
           architect={profileDrawer}
           onClose={() => setProfileDrawer(null)}
-          onSelect={() => setSelectedArchitect(profileDrawer.id)}
+          onSelect={() => setSelectedArchitect(profileDrawer.user_id)}
         />
       )}
     </div>

@@ -159,7 +159,8 @@ export async function fetchRecentQuestions(
 export async function insertConsultation(
   userId: string,
   payload: {
-    architect_id: number
+    architect_id?: number | null
+    consultant_user_id?: string
     architect_name: string
     architect_initials: string
     consultation_type: string
@@ -171,7 +172,8 @@ export async function insertConsultation(
   const supabase = createClient()
   await supabase.from("consultations").insert({
     user_id: userId,
-    architect_id: payload.architect_id,
+    architect_id: payload.architect_id ?? null,
+    consultant_user_id: payload.consultant_user_id ?? null,
     architect_name: payload.architect_name,
     architect_initials: payload.architect_initials,
     consultation_type: payload.consultation_type,
@@ -525,13 +527,54 @@ export async function applyReferralCode(code: string, referredUserId: string): P
 
 // ─── Consultant Types ───────────────────────────────────────
 
+export type ExperienceEntry = {
+  company: string
+  role: string
+  type: string
+  period: string
+  description: string
+}
+
+export type EducationEntry = {
+  school: string
+  dept: string
+  period: string
+}
+
+export type PortfolioItem = {
+  url: string
+  caption: string
+  category: string
+}
+
+export type ReviewEntry = {
+  name: string
+  rating: number
+  text: string
+}
+
 export type ConsultantProfile = {
   user_id: string
   display_name: string
+  role: string | null
+  category: string | null
+  company: string | null
+  location: string | null
+  working_hours: string | null
   specialization: string
+  specializations: string[]
   bio: string | null
   years_experience: number | null
+  experience: ExperienceEntry[]
+  education: EducationEntry[]
+  portfolio: PortfolioItem[]
+  reviews: ReviewEntry[]
+  rating: number
+  review_count: number
+  is_visible: boolean
+  profile_completed: boolean
   created_at: string
+  updated_at: string | null
 }
 
 export type ConsultantQuestion = {
@@ -584,10 +627,46 @@ export async function fetchOrCreateConsultantProfile(
  */
 export async function updateConsultantProfile(
   userId: string,
-  patch: Partial<Pick<ConsultantProfile, "display_name" | "specialization" | "bio" | "years_experience">>
+  patch: Partial<Pick<ConsultantProfile,
+    | "display_name" | "role" | "category" | "company" | "location"
+    | "working_hours" | "specialization" | "specializations" | "bio"
+    | "years_experience" | "experience" | "education" | "portfolio"
+    | "is_visible" | "profile_completed"
+  >>
 ): Promise<void> {
   const supabase = createClient()
-  await supabase.from("consultant_profiles").update(patch).eq("user_id", userId)
+  await supabase
+    .from("consultant_profiles")
+    .update({ ...patch, updated_at: new Date().toISOString() })
+    .eq("user_id", userId)
+}
+
+/**
+ * Fetches all visible consultant profiles for the client directory.
+ */
+export async function fetchAllConsultants(): Promise<ConsultantProfile[]> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from("consultant_profiles")
+    .select("*")
+    .eq("is_visible", true)
+    .order("display_name", { ascending: true })
+  if (error) return []
+  return (data ?? []) as ConsultantProfile[]
+}
+
+/**
+ * Fetches a single consultant profile by user_id.
+ */
+export async function fetchConsultantByUserId(userId: string): Promise<ConsultantProfile | null> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from("consultant_profiles")
+    .select("*")
+    .eq("user_id", userId)
+    .single()
+  if (error) return null
+  return data as ConsultantProfile
 }
 
 /**
