@@ -677,3 +677,31 @@ export async function insertQuestion(
     consultant_role: "Support",
   })
 }
+
+/**
+ * Deletes all data associated with a user across every table, then signs them out.
+ * The auth.users row is removed via a cascading DB trigger if configured; otherwise
+ * the account becomes an empty shell with no personal data.
+ */
+export async function deleteUserAccount(userId: string): Promise<void> {
+  const supabase = createClient()
+
+  await Promise.all([
+    supabase.from("project_milestones").delete().eq("user_id", userId),
+    supabase.from("ai_chats").delete().eq("user_id", userId),
+    supabase.from("consultations").delete().eq("user_id", userId),
+    supabase.from("questions").delete().eq("user_id", userId),
+    supabase.from("notifications").delete().eq("user_id", userId),
+    supabase.from("consultant_profiles").delete().eq("user_id", userId),
+  ])
+
+  await Promise.all([
+    supabase.from("projects").delete().eq("user_id", userId),
+    supabase.from("referral_uses").delete().eq("referrer_id", userId),
+    supabase.from("referral_uses").delete().eq("referred_id", userId),
+  ])
+
+  await supabase.from("referral_codes").delete().eq("user_id", userId)
+
+  await supabase.auth.signOut()
+}

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase"
 import { Check, Eye, EyeOff, LogOut, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { deleteUserAccount } from "@/lib/data"
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -30,6 +31,10 @@ export default function SettingsPage() {
 
   // Danger
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleteInput, setDeleteInput] = useState("")
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState("")
 
   async function handleChangePassword() {
     if (!newPassword) { setPwError("Please enter a new password"); return }
@@ -51,6 +56,18 @@ export default function SettingsPage() {
   async function handleSignOut() {
     const supabase = createClient()
     await supabase.auth.signOut()
+    router.push("/login")
+    router.refresh()
+  }
+
+  async function handleDeleteAccount() {
+    if (deleteInput !== "DELETE") { setDeleteError('Type "DELETE" to confirm'); return }
+    setDeleteError("")
+    setDeleting(true)
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { router.push("/login"); return }
+    await deleteUserAccount(user.id)
     router.push("/login")
     router.refresh()
   }
@@ -158,13 +175,45 @@ export default function SettingsPage() {
                     </div>
                   </div>
                 )}
-                <button className="flex items-center gap-3 px-4 py-3 rounded-xl border border-red-100 dark:border-red-500/15 text-sm text-left hover:bg-red-50 dark:hover:bg-red-500/8 transition-colors">
-                  <Trash2 className="w-4 h-4 text-red-500 flex-shrink-0" />
-                  <div>
-                    <p className="font-semibold text-red-500">Delete account</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 font-normal mt-0.5">Permanently delete your account and all data</p>
+                {!showDeleteConfirm ? (
+                  <button
+                    onClick={() => { setShowDeleteConfirm(true); setDeleteInput(""); setDeleteError("") }}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl border border-red-100 dark:border-red-500/15 text-sm text-left hover:bg-red-50 dark:hover:bg-red-500/8 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-red-500">Delete account</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 font-normal mt-0.5">Permanently delete your account and all data</p>
+                    </div>
+                  </button>
+                ) : (
+                  <div className="px-4 py-3 rounded-xl border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/8">
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Delete your account?</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">This will permanently erase all your projects, bookings, chats, and personal data. This cannot be undone.</p>
+                    <Input
+                      value={deleteInput}
+                      onChange={e => setDeleteInput(e.target.value)}
+                      placeholder='Type "DELETE" to confirm'
+                      className="h-9 text-sm bg-white dark:bg-white/5 border-red-200 dark:border-red-500/30 dark:text-white rounded-lg mb-2"
+                    />
+                    {deleteError && <p className="text-xs text-red-500 mb-2">{deleteError}</p>}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleDeleteAccount}
+                        disabled={deleting}
+                        className="flex-1 h-9 bg-red-500 hover:bg-red-600 disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-colors"
+                      >
+                        {deleting ? "Deleting…" : "Delete account"}
+                      </button>
+                      <button
+                        onClick={() => setShowDeleteConfirm(false)}
+                        className="flex-1 h-9 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 text-sm font-semibold rounded-lg hover:bg-white dark:hover:bg-white/5 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
-                </button>
+                )}
               </div>
             </div>
 
