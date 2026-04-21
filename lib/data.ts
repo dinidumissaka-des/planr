@@ -12,7 +12,7 @@ export type AiChat = {
   updated_at: string
 }
 
-export type ConsultationStatus = "upcoming" | "ongoing" | "completed"
+export type ConsultationStatus = "upcoming" | "ongoing" | "completed" | "cancelled"
 
 export type Consultation = {
   id: string
@@ -23,6 +23,7 @@ export type Consultation = {
   consultation_type: string
   scheduled_at: string
   status: ConsultationStatus
+  consultant_user_id?: string | null
 }
 
 export type RecentQuestion = {
@@ -91,7 +92,7 @@ export async function fetchConsultations(userId: string): Promise<Consultation[]
   const supabase = createClient()
   const { data, error } = await supabase
     .from("consultations")
-    .select("id, user_id, architect_id, architect_name, architect_initials, consultation_type, scheduled_at, status")
+    .select("id, user_id, architect_id, architect_name, architect_initials, consultation_type, scheduled_at, status, consultant_user_id")
     .eq("user_id", userId)
     .order("scheduled_at", { ascending: true })
   if (error) return []
@@ -655,6 +656,49 @@ export async function updateConsultationStatus(
     .from("consultations")
     .update({ status })
     .eq("id", consultationId)
+}
+
+/**
+ * Cancels a consultation and optionally notifies the other party.
+ */
+export async function cancelConsultation(
+  consultationId: string,
+  notifyUserId?: string | null
+): Promise<void> {
+  const supabase = createClient()
+  await supabase.from("consultations").update({ status: "cancelled" }).eq("id", consultationId)
+  if (notifyUserId) {
+    insertNotification(notifyUserId, {
+      type: "info",
+      title: "Consultation cancelled",
+      body: "A consultation you were part of has been cancelled.",
+    }).catch(() => {})
+  }
+}
+
+/**
+ * Reschedules a consultation to a new date/time and optionally notifies the other party.
+ */
+export async function rescheduleConsultation(
+  consultationId: string,
+  newScheduledAt: string,
+  notifyUserId?: string | null
+): Promise<void> {
+  const supabase = createClient()
+  await supabase
+    .from("consultations")
+    .update({ scheduled_at: newScheduledAt, status: "upcoming" })
+    .eq("id", consultationId)
+  if (notifyUserId) {
+    const dateLabel = new Date(newScheduledAt).toLocaleDateString("en-US", {
+      month: "long", day: "numeric", year: "numeric",
+    })
+    insertNotification(notifyUserId, {
+      type: "info",
+      title: "Consultation rescheduled",
+      body: `A consultation has been moved to ${dateLabel}.`,
+    }).catch(() => {})
+  }
 }
 
 /**

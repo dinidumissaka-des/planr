@@ -2,7 +2,7 @@
 
 import {
   MoreHorizontal, ArrowUpRight, MessageCircle,
-  CalendarCheck, Clock, Plus, Loader2, X, Wallet,
+  CalendarCheck, Clock, Plus, Loader2, X, Wallet, Calendar, XCircle,
 } from "lucide-react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
@@ -18,6 +18,8 @@ import {
   fetchBudgetEntries,
   addBudgetEntry,
   deleteBudgetEntry,
+  cancelConsultation,
+  rescheduleConsultation,
   formatScheduledDate,
   timeAgo,
   BUDGET_RANGE_DEFAULTS,
@@ -302,6 +304,152 @@ function BudgetTracker({ userId, budgetRange }: { userId: string; budgetRange: s
   )
 }
 
+// ─── Reschedule Modal (client) ────────────────────────────
+
+const TIME_SLOTS = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"]
+const SLOT_HOURS = [9, 10, 11, 12, 13, 14, 15, 16]
+const TODAY_STR  = new Date().toISOString().split("T")[0]
+
+function RescheduleModal({
+  booking,
+  onConfirm,
+  onClose,
+}: {
+  booking: Consultation
+  onConfirm: (newIso: string) => Promise<void>
+  onClose: () => void
+}) {
+  const [date, setDate]   = useState("")
+  const [slot, setSlot]   = useState<number | null>(null)
+  const [saving, setSaving] = useState(false)
+
+  async function handleConfirm() {
+    if (!date || slot === null) return
+    setSaving(true)
+    const d = new Date(`${date}T${String(SLOT_HOURS[slot]).padStart(2, "0")}:00:00`)
+    await onConfirm(d.toISOString())
+    setSaving(false)
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-end md:items-center justify-center z-50 px-4">
+      <div className="bg-white dark:bg-[#0D1B2E] w-full md:max-w-md rounded-t-3xl md:rounded-2xl p-6 shadow-2xl">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-base font-bold text-gray-900 dark:text-white">Reschedule Booking</h2>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{booking.architect_name} · {booking.consultation_type}</p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">New date</label>
+            <input
+              type="date"
+              min={TODAY_STR}
+              value={date}
+              onChange={e => { setDate(e.target.value); setSlot(null) }}
+              className="w-full h-11 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-3.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-secondary/40"
+            />
+          </div>
+          {date && (
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">New time</label>
+              <div className="grid grid-cols-4 gap-2">
+                {TIME_SLOTS.map((s, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setSlot(i)}
+                    className={`py-2.5 rounded-xl text-xs font-medium transition-colors ${
+                      slot === i
+                        ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900"
+                        : "bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-100 dark:border-white/8 hover:bg-gray-100 dark:hover:bg-white/10"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="flex gap-2.5 mt-6">
+          <button
+            onClick={onClose}
+            className="flex-1 h-11 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-semibold rounded-xl transition-colors"
+          >
+            Go back
+          </button>
+          <button
+            onClick={handleConfirm}
+            disabled={!date || slot === null || saving}
+            className="flex-1 h-11 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-50 text-white dark:text-gray-900 text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+          >
+            {saving
+              ? <><div className="w-4 h-4 rounded-full border-2 border-white/40 dark:border-gray-400/40 border-t-white dark:border-t-gray-900 animate-spin" /> Saving…</>
+              : "Confirm Reschedule"
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function CancelModal({
+  booking,
+  onConfirm,
+  onClose,
+}: {
+  booking: Consultation
+  onConfirm: () => Promise<void>
+  onClose: () => void
+}) {
+  const [cancelling, setCancelling] = useState(false)
+
+  async function handleConfirm() {
+    setCancelling(true)
+    await onConfirm()
+    setCancelling(false)
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-end md:items-center justify-center z-50 px-4">
+      <div className="bg-white dark:bg-[#0D1B2E] w-full md:max-w-sm rounded-t-3xl md:rounded-2xl p-6 shadow-2xl">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-bold text-gray-900 dark:text-white">Cancel Booking</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Are you sure you want to cancel this booking?</p>
+        <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">{booking.architect_name}</p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 mb-6">{booking.consultation_type} · {formatScheduledDate(booking.scheduled_at)}</p>
+        <div className="flex gap-2.5">
+          <button
+            onClick={onClose}
+            className="flex-1 h-11 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-semibold rounded-xl transition-colors"
+          >
+            Go back
+          </button>
+          <button
+            onClick={handleConfirm}
+            disabled={cancelling}
+            className="flex-1 h-11 bg-red-500 hover:bg-red-600 disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+          >
+            {cancelling
+              ? <><div className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" /> Cancelling…</>
+              : "Confirm Cancel"
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Page ─────────────────────────────────────────────────
 
 function getGreeting() {
@@ -319,6 +467,8 @@ export default function DashboardPage() {
   const [budgetRange, setBudgetRange]     = useState("")
   const [consultations, setConsultations] = useState<Consultation[]>([])
   const [recentQuestions, setRecentQuestions] = useState<RecentQuestion[]>([])
+  const [cancelTarget, setCancelTarget]         = useState<Consultation | null>(null)
+  const [rescheduleTarget, setRescheduleTarget] = useState<Consultation | null>(null)
 
   useEffect(() => {
     async function load() {
@@ -348,6 +498,18 @@ export default function DashboardPage() {
     load()
   }, [])
 
+  async function handleCancel(booking: Consultation) {
+    await cancelConsultation(booking.id, booking.consultant_user_id)
+    setConsultations(prev => prev.map(c => c.id === booking.id ? { ...c, status: "cancelled" as const } : c))
+    setCancelTarget(null)
+  }
+
+  async function handleReschedule(booking: Consultation, newIso: string) {
+    await rescheduleConsultation(booking.id, newIso, booking.consultant_user_id)
+    setConsultations(prev => prev.map(c => c.id === booking.id ? { ...c, scheduled_at: newIso, status: "upcoming" as const } : c))
+    setRescheduleTarget(null)
+  }
+
   if (loading) return <DashboardSkeleton />
 
   // ── Derived data ──────────────────────────────────────────
@@ -374,6 +536,7 @@ export default function DashboardPage() {
   ]
 
   return (
+    <>
     <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -559,14 +722,32 @@ export default function DashboardPage() {
                   </button>
                 </div>
                 {upcoming.length > 0 ? upcoming.map((row) => (
-                  <Link key={row.id} href={row.architect_id ? `/consultants/${row.architect_id}` : "/bookings"} className="flex items-center gap-2.5 py-2.5 border-b border-gray-50 dark:border-white/5 last:border-0 hover:opacity-80 transition-opacity">
-                    <Avatar initials={row.architect_initials} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{row.architect_name}</p>
-                      <p className="text-[10px] text-gray-400 dark:text-gray-600">{formatScheduledDate(row.scheduled_at)}</p>
+                  <div key={row.id} className="flex items-center gap-2.5 py-2.5 border-b border-gray-50 dark:border-white/5 last:border-0 group">
+                    <Link href={row.architect_id ? `/consultants/${row.architect_id}` : "/bookings"} className="flex items-center gap-2.5 flex-1 min-w-0 hover:opacity-80 transition-opacity">
+                      <Avatar initials={row.architect_initials} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate">{row.architect_name}</p>
+                        <p className="text-[10px] text-gray-400 dark:text-gray-600">{formatScheduledDate(row.scheduled_at)}</p>
+                      </div>
+                    </Link>
+                    <div className="flex items-center gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => setRescheduleTarget(row)}
+                        title="Reschedule"
+                        className="p-1.5 rounded-lg text-gray-400 hover:text-secondary hover:bg-secondary/10 transition-colors"
+                      >
+                        <Calendar className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => setCancelTarget(row)}
+                        title="Cancel"
+                        className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                      >
+                        <XCircle className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                     <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-secondary/20 text-primary dark:text-secondary whitespace-nowrap">{row.consultation_type}</span>
-                  </Link>
+                  </div>
                 )) : (
                   <p className="text-xs text-gray-400 dark:text-gray-600 text-center py-5">No upcoming consultations.</p>
                 )}
@@ -622,5 +803,22 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+
+    {cancelTarget && (
+      <CancelModal
+        booking={cancelTarget}
+        onConfirm={() => handleCancel(cancelTarget)}
+        onClose={() => setCancelTarget(null)}
+      />
+    )}
+
+    {rescheduleTarget && (
+      <RescheduleModal
+        booking={rescheduleTarget}
+        onConfirm={(newIso) => handleReschedule(rescheduleTarget, newIso)}
+        onClose={() => setRescheduleTarget(null)}
+      />
+    )}
+    </>
   )
 }
