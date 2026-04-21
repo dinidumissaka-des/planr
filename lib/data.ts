@@ -658,6 +658,72 @@ export async function replyToQuestion(
 
 // ─── Questions (client) ─────────────────────────────────────
 
+// ─── Budget Tracker ────────────────────────────────────────
+
+export type BudgetCategory =
+  | "architecture"
+  | "consulting"
+  | "materials"
+  | "labor"
+  | "permits"
+  | "landscaping"
+  | "other"
+
+export type BudgetEntry = {
+  id: string
+  user_id: string
+  category: BudgetCategory
+  description: string
+  amount: number
+  entry_date: string
+  created_at: string
+}
+
+export const BUDGET_RANGE_DEFAULTS: Record<string, number> = {
+  under_50k:   50_000,
+  "50k_150k":  150_000,
+  "150k_300k": 300_000,
+  "300k_plus": 500_000,
+}
+
+export const BUDGET_CATEGORY_CONFIG: Record<BudgetCategory, { label: string; dotColor: string }> = {
+  architecture: { label: "Architecture & Design", dotColor: "bg-blue-500" },
+  consulting:   { label: "Consulting Fees",        dotColor: "bg-violet-500" },
+  materials:    { label: "Materials",              dotColor: "bg-amber-500" },
+  labor:        { label: "Labor",                  dotColor: "bg-orange-500" },
+  permits:      { label: "Permits & Legal",        dotColor: "bg-green-500" },
+  landscaping:  { label: "Landscaping",            dotColor: "bg-teal-500" },
+  other:        { label: "Other",                  dotColor: "bg-gray-400" },
+}
+
+export async function fetchBudgetEntries(userId: string): Promise<BudgetEntry[]> {
+  const supabase = createClient()
+  const { data } = await supabase
+    .from("budget_entries")
+    .select("*")
+    .eq("user_id", userId)
+    .order("entry_date", { ascending: false })
+  return (data ?? []) as BudgetEntry[]
+}
+
+export async function addBudgetEntry(
+  userId: string,
+  payload: { category: BudgetCategory; description: string; amount: number; entry_date: string }
+): Promise<BudgetEntry | null> {
+  const supabase = createClient()
+  const { data } = await supabase
+    .from("budget_entries")
+    .insert({ user_id: userId, ...payload })
+    .select("*")
+    .single()
+  return (data ?? null) as BudgetEntry | null
+}
+
+export async function deleteBudgetEntry(id: string, userId: string): Promise<void> {
+  const supabase = createClient()
+  await supabase.from("budget_entries").delete().eq("id", id).eq("user_id", userId)
+}
+
 // ─── Credentials & Verification ────────────────────────────
 
 export type CredentialStatus = "pending" | "verified" | "rejected"

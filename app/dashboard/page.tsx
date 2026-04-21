@@ -2,7 +2,7 @@
 
 import {
   MoreHorizontal, ArrowUpRight, MessageCircle,
-  CalendarCheck, Clock,
+  CalendarCheck, Clock, Plus, Loader2, X, Wallet,
 } from "lucide-react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
@@ -15,10 +15,17 @@ import { AvatarInitials } from "@/components/ui/avatar-initials"
 import {
   fetchConsultations,
   fetchRecentQuestions,
+  fetchBudgetEntries,
+  addBudgetEntry,
+  deleteBudgetEntry,
   formatScheduledDate,
   timeAgo,
+  BUDGET_RANGE_DEFAULTS,
+  BUDGET_CATEGORY_CONFIG,
   type Consultation,
   type RecentQuestion,
+  type BudgetEntry,
+  type BudgetCategory,
 } from "@/lib/data"
 
 // ─── Sub-components ───────────────────────────────────────
@@ -42,6 +49,259 @@ function ConsultationRow({ row }: { row: Consultation }) {
   return <Link href={href}>{inner}</Link>
 }
 
+// ─── Budget Tracker ──────────────────────────────────────
+
+function formatCurrency(n: number): string {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n)
+}
+
+function BudgetTracker({ userId, budgetRange }: { userId: string; budgetRange: string }) {
+  const [entries, setEntries]       = useState<BudgetEntry[]>([])
+  const [budgetCap, setBudgetCap]   = useState(0)
+  const [loading, setLoading]       = useState(true)
+  const [editingCap, setEditingCap] = useState(false)
+  const [capInput, setCapInput]     = useState("")
+  const [showModal, setShowModal]   = useState(false)
+  const [newCat, setNewCat]         = useState<BudgetCategory>("architecture")
+  const [newDesc, setNewDesc]       = useState("")
+  const [newAmt, setNewAmt]         = useState("")
+  const [newDate, setNewDate]       = useState(new Date().toISOString().split("T")[0])
+  const [adding, setAdding]         = useState(false)
+
+  useEffect(() => {
+    async function load() {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      const stored = user?.user_metadata?.budget_amount
+      const fallback = BUDGET_RANGE_DEFAULTS[budgetRange] ?? 150_000
+      const cap = stored ?? fallback
+      setBudgetCap(cap)
+      setCapInput(String(cap))
+      setEntries(await fetchBudgetEntries(userId))
+      setLoading(false)
+    }
+    load()
+  }, [userId, budgetRange])
+
+  const totalSpent = entries.reduce((s, e) => s + e.amount, 0)
+  const remaining  = budgetCap - totalSpent
+  const pct        = budgetCap > 0 ? Math.min(100, Math.round((totalSpent / budgetCap) * 100)) : 0
+  const barColor   = pct >= 90 ? "#ef4444" : pct >= 75 ? "#f59e0b" : "var(--color-secondary, #6366f1)"
+
+  const categoryTotals = (Object.keys(BUDGET_CATEGORY_CONFIG) as BudgetCategory[])
+    .map(cat => ({ cat, ...BUDGET_CATEGORY_CONFIG[cat], total: entries.filter(e => e.category === cat).reduce((s, e) => s + e.amount, 0) }))
+    .filter(c => c.total > 0)
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 4)
+
+  async function saveCap() {
+    const val = parseFloat(capInput)
+    if (isNaN(val) || val <= 0) { setCapInput(String(budgetCap)); setEditingCap(false); return }
+    setBudgetCap(val)
+    setEditingCap(false)
+    const supabase = createClient()
+    await supabase.auth.updateUser({ data: { budget_amount: val } })
+  }
+
+  async function handleAdd() {
+    const amt = parseFloat(newAmt)
+    if (!newDesc.trim() || isNaN(amt) || amt <= 0) return
+    setAdding(true)
+    const entry = await addBudgetEntry(userId, { category: newCat, description: newDesc.trim(), amount: amt, entry_date: newDate })
+    if (entry) setEntries(prev => [entry, ...prev])
+    setAdding(false)
+    setShowModal(false)
+    setNewDesc(""); setNewAmt(""); setNewDate(new Date().toISOString().split("T")[0])
+  }
+
+  async function handleDelete(id: string) {
+    setEntries(prev => prev.filter(e => e.id !== id))
+    await deleteBudgetEntry(id, userId)
+  }
+
+  return (
+    <>
+      <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-sm font-bold text-gray-900 dark:text-white">Budget Tracker</p>
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" /> Log expense
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-gray-300 dark:text-gray-700" /></div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+            {/* Progress side */}
+            <div>
+              <div className="flex items-baseline gap-1.5 mb-2">
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(totalSpent)}</p>
+                <span className="text-sm text-gray-400 dark:text-gray-500">of</span>
+                {editingCap ? (
+                  <input
+                    value={capInput}
+                    onChange={e => setCapInput(e.target.value)}
+                    onBlur={saveCap}
+                    onKeyDown={e => { if (e.key === "Enter") saveCap(); if (e.key === "Escape") { setCapInput(String(budgetCap)); setEditingCap(false) } }}
+                    className="w-24 text-sm font-semibold bg-transparent border-b border-secondary focus:outline-none text-gray-700 dark:text-gray-300"
+                    autoFocus
+                  />
+                ) : (
+                  <button
+                    onClick={() => setEditingCap(true)}
+                    title="Click to edit budget"
+                    className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-secondary transition-colors"
+                  >
+                    {formatCurrency(budgetCap)}
+                  </button>
+                )}
+              </div>
+
+              <div className="h-2.5 rounded-full bg-gray-100 dark:bg-white/8 overflow-hidden mb-2">
+                <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct}%`, backgroundColor: barColor }} />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <p className={`text-xs font-medium ${remaining < 0 ? "text-red-500" : "text-gray-500 dark:text-gray-400"}`}>
+                  {remaining >= 0 ? `${formatCurrency(remaining)} remaining` : `${formatCurrency(Math.abs(remaining))} over budget`}
+                </p>
+                <p className={`text-xs font-bold tabular-nums ${pct >= 90 ? "text-red-500" : pct >= 75 ? "text-amber-500" : "text-gray-500 dark:text-gray-400"}`}>{pct}%</p>
+              </div>
+
+              {/* Recent entries */}
+              {entries.length > 0 && (
+                <div className="mt-4 space-y-1.5">
+                  {entries.slice(0, 3).map(e => (
+                    <div key={e.id} className="group flex items-center gap-2 text-xs">
+                      <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${BUDGET_CATEGORY_CONFIG[e.category].dotColor}`} />
+                      <span className="flex-1 text-gray-600 dark:text-gray-400 truncate">{e.description}</span>
+                      <span className="font-semibold text-gray-700 dark:text-gray-300 flex-shrink-0">{formatCurrency(e.amount)}</span>
+                      <button onClick={() => handleDelete(e.id)} className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 transition-all flex-shrink-0">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                  {entries.length > 3 && (
+                    <p className="text-[10px] text-gray-400 dark:text-gray-600 pt-0.5">{entries.length - 3} more entries</p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Category side */}
+            {categoryTotals.length > 0 ? (
+              <div className="sm:border-l sm:border-gray-100 sm:dark:border-white/8 sm:pl-6">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-600 mb-3">By category</p>
+                <div className="space-y-3">
+                  {categoryTotals.map(c => (
+                    <div key={c.cat}>
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-1.5">
+                          <div className={`w-2 h-2 rounded-full flex-shrink-0 ${c.dotColor}`} />
+                          <span className="text-xs text-gray-600 dark:text-gray-400 truncate">{c.label}</span>
+                        </div>
+                        <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 ml-2 flex-shrink-0 tabular-nums">{formatCurrency(c.total)}</span>
+                      </div>
+                      <div className="h-1 rounded-full bg-gray-100 dark:bg-white/8 overflow-hidden">
+                        <div className="h-full rounded-full transition-all" style={{ width: `${totalSpent > 0 ? Math.round((c.total / totalSpent) * 100) : 0}%`, backgroundColor: barColor }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center text-center sm:border-l sm:border-gray-100 sm:dark:border-white/8 sm:pl-6">
+                <Wallet className="w-7 h-7 text-gray-200 dark:text-gray-700 mb-2" />
+                <p className="text-xs font-medium text-gray-400 dark:text-gray-600">No expenses yet</p>
+                <p className="text-[10px] text-gray-300 dark:text-gray-700 mt-0.5 leading-relaxed">Log invoices, payments, and fees to track your spend</p>
+                <button onClick={() => setShowModal(true)} className="text-xs font-semibold text-secondary mt-3 hover:opacity-70 transition-opacity">Log first expense →</button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Log expense modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-end md:items-center justify-center z-50 px-4">
+          <div className="bg-white dark:bg-[#0D1B2E] w-full md:max-w-md rounded-t-3xl md:rounded-2xl p-6 shadow-2xl">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-base font-bold text-gray-900 dark:text-white">Log Expense</h2>
+              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Category</label>
+                <select
+                  value={newCat}
+                  onChange={e => setNewCat(e.target.value as BudgetCategory)}
+                  className="h-11 w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-800 dark:text-white text-sm rounded-xl px-3 focus:outline-none focus:ring-2 focus:ring-secondary/40"
+                >
+                  {(Object.keys(BUDGET_CATEGORY_CONFIG) as BudgetCategory[]).map(v => (
+                    <option key={v} value={v}>{BUDGET_CATEGORY_CONFIG[v].label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Description *</label>
+                <input
+                  value={newDesc}
+                  onChange={e => setNewDesc(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleAdd()}
+                  placeholder="e.g. Foundation pour, Architect consultation"
+                  className="w-full h-11 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-3.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-secondary/40"
+                />
+              </div>
+              <div className="flex gap-3">
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Amount ($) *</label>
+                  <input
+                    type="number" min="0" step="1"
+                    value={newAmt}
+                    onChange={e => setNewAmt(e.target.value)}
+                    placeholder="0"
+                    className="w-full h-11 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-3.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-secondary/40"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Date</label>
+                  <input
+                    type="date"
+                    value={newDate}
+                    onChange={e => setNewDate(e.target.value)}
+                    className="w-full h-11 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-3.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-secondary/40"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2.5 mt-5">
+              <button
+                onClick={() => setShowModal(false)}
+                className="flex-1 h-11 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-semibold rounded-xl transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAdd}
+                disabled={adding || !newDesc.trim() || !newAmt}
+                className="flex-1 h-11 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-50 text-white dark:text-gray-900 text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+              >
+                {adding ? <><Loader2 className="w-4 h-4 animate-spin" /> Adding…</> : "Log Expense"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
 // ─── Page ─────────────────────────────────────────────────
 
 function getGreeting() {
@@ -55,6 +315,8 @@ export default function DashboardPage() {
   const router = useRouter()
   const [loading, setLoading]             = useState(true)
   const [userName, setUserName]           = useState("")
+  const [userId, setUserId]               = useState("")
+  const [budgetRange, setBudgetRange]     = useState("")
   const [consultations, setConsultations] = useState<Consultation[]>([])
   const [recentQuestions, setRecentQuestions] = useState<RecentQuestion[]>([])
 
@@ -69,6 +331,8 @@ export default function DashboardPage() {
         return
       }
 
+      setUserId(user.id)
+      setBudgetRange(user.user_metadata?.budget_range ?? "")
       const first = user.user_metadata?.first_name ?? ""
       const last  = user.user_metadata?.last_name  ?? ""
       setUserName(first && last ? `${first} ${last}` : (user.email ?? ""))
@@ -174,6 +438,9 @@ export default function DashboardPage() {
                   </div>
                 ))}
               </div>
+
+              {/* ── Budget Tracker ── */}
+              {userId && <BudgetTracker userId={userId} budgetRange={budgetRange} />}
 
               {/* ── Recent Q&A ── */}
               <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 flex-shrink-0">
