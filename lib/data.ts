@@ -658,6 +658,74 @@ export async function replyToQuestion(
 
 // ─── Questions (client) ─────────────────────────────────────
 
+// ─── Document Vault ────────────────────────────────────────
+
+export type ProjectDocument = {
+  id: string
+  project_id: string
+  user_id: string
+  name: string
+  size: number
+  mime_type: string | null
+  storage_path: string
+  created_at: string
+}
+
+export async function fetchDocuments(projectId: string): Promise<ProjectDocument[]> {
+  const supabase = createClient()
+  const { data } = await supabase
+    .from("project_documents")
+    .select("*")
+    .eq("project_id", projectId)
+    .order("created_at", { ascending: false })
+  return (data ?? []) as ProjectDocument[]
+}
+
+export async function uploadDocument(
+  projectId: string,
+  userId: string,
+  file: File
+): Promise<ProjectDocument | null> {
+  const supabase = createClient()
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_")
+  const storagePath = `${projectId}/${Date.now()}-${safeName}`
+
+  const { error: storageError } = await supabase.storage
+    .from("project-docs")
+    .upload(storagePath, file, { contentType: file.type })
+
+  if (storageError) return null
+
+  const { data } = await supabase
+    .from("project_documents")
+    .insert({
+      project_id: projectId,
+      user_id: userId,
+      name: file.name,
+      size: file.size,
+      mime_type: file.type || null,
+      storage_path: storagePath,
+    })
+    .select("*")
+    .single()
+
+  return (data ?? null) as ProjectDocument | null
+}
+
+export async function deleteDocument(doc: ProjectDocument): Promise<void> {
+  const supabase = createClient()
+  await supabase.storage.from("project-docs").remove([doc.storage_path])
+  await supabase.from("project_documents").delete().eq("id", doc.id)
+}
+
+export async function getDocumentSignedUrl(storagePath: string): Promise<string | null> {
+  const supabase = createClient()
+  const { data } = await supabase.storage
+    .from("project-docs")
+    .createSignedUrl(storagePath, 300)
+  return data?.signedUrl ?? null
+}
+
 export async function insertQuestion(
   userId: string,
   payload: {

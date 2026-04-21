@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import {
   ArrowLeft, CheckCircle2, Circle, Clock, AlertTriangle, Plus,
   Loader2, Pencil, Trash2, Calendar, ChevronDown, X, Check,
-  FolderKanban, TrendingUp,
+  FolderKanban, TrendingUp, Upload, Download, FileText, File, Paperclip,
 } from "lucide-react"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
@@ -13,7 +13,9 @@ import { createClient } from "@/lib/supabase"
 import {
   fetchProject, fetchMilestones, updateMilestone, addMilestone,
   deleteMilestone, updateProject,
+  fetchDocuments, uploadDocument, deleteDocument, getDocumentSignedUrl,
   type Project, type ProjectMilestone, type ProjectStatus, type MilestoneStatus,
+  type ProjectDocument,
 } from "@/lib/data"
 import Link from "next/link"
 
@@ -215,6 +217,149 @@ function MilestoneRow({
   )
 }
 
+// ── Document Vault ─────────────────────────────────────────
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+function DocFileIcon({ mimeType }: { mimeType: string | null }) {
+  const m = mimeType ?? ""
+  if (m.includes("pdf")) return <FileText className="w-4 h-4 text-red-400" />
+  if (m.startsWith("image/")) return <FileText className="w-4 h-4 text-blue-400" />
+  if (m.includes("word") || m.includes("document")) return <FileText className="w-4 h-4 text-blue-600" />
+  if (m.includes("sheet") || m.includes("excel")) return <FileText className="w-4 h-4 text-green-500" />
+  return <File className="w-4 h-4 text-gray-400" />
+}
+
+function DocRow({
+  doc,
+  onDownload,
+  onDelete,
+}: {
+  doc: ProjectDocument
+  onDownload: (doc: ProjectDocument) => void
+  onDelete: (doc: ProjectDocument) => void
+}) {
+  return (
+    <div className="group flex items-center gap-3 px-5 py-3.5 border-b border-gray-50 dark:border-white/5 last:border-0 hover:bg-gray-50/60 dark:hover:bg-white/[0.03] transition-colors">
+      <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center flex-shrink-0">
+        <DocFileIcon mimeType={doc.mime_type} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{doc.name}</p>
+        <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
+          {formatFileSize(doc.size)} · {new Date(doc.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+        </p>
+      </div>
+      <div className="flex items-center gap-1 flex-shrink-0">
+        <button
+          onClick={() => onDownload(doc)}
+          title="Download"
+          className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/8 transition-all"
+        >
+          <Download className="w-3.5 h-3.5" />
+        </button>
+        <button
+          onClick={() => onDelete(doc)}
+          title="Delete"
+          className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/8 transition-all"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function DocumentVault({ projectId, userId }: { projectId: string; userId: string }) {
+  const [docs, setDocs]         = useState<ProjectDocument[]>([])
+  const [loading, setLoading]   = useState(true)
+  const [uploading, setUploading] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    fetchDocuments(projectId).then(d => { setDocs(d); setLoading(false) })
+  }, [projectId])
+
+  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    const doc = await uploadDocument(projectId, userId, file)
+    if (doc) setDocs(prev => [doc, ...prev])
+    setUploading(false)
+    if (fileRef.current) fileRef.current.value = ""
+  }
+
+  async function handleDownload(doc: ProjectDocument) {
+    const url = await getDocumentSignedUrl(doc.storage_path)
+    if (url) window.open(url, "_blank")
+  }
+
+  async function handleDelete(doc: ProjectDocument) {
+    setDocs(prev => prev.filter(d => d.id !== doc.id))
+    await deleteDocument(doc)
+  }
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Upload bar */}
+      <div className="px-5 py-3 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
+        <p className="text-xs text-gray-400 dark:text-gray-500">{docs.length} document{docs.length !== 1 ? "s" : ""}</p>
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.webp,.zip,.dwg,.dxf"
+          onChange={handleUpload}
+          className="hidden"
+        />
+        <button
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading}
+          className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 disabled:opacity-50 transition-colors"
+        >
+          {uploading
+            ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Uploading…</>
+            : <><Upload className="w-3.5 h-3.5" /> Upload</>}
+        </button>
+      </div>
+
+      {/* List */}
+      <div className="flex-1 overflow-y-auto">
+        {loading ? (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="w-5 h-5 animate-spin text-gray-300 dark:text-gray-700" />
+          </div>
+        ) : docs.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-center py-16 px-8">
+            <Paperclip className="w-8 h-8 text-gray-200 dark:text-gray-700 mb-3" />
+            <p className="text-sm font-medium text-gray-400 dark:text-gray-600">No documents yet</p>
+            <p className="text-xs text-gray-300 dark:text-gray-700 mt-1 leading-relaxed">Upload blueprints, permits, contracts, invoices, and more</p>
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="mt-4 text-xs font-semibold text-secondary hover:opacity-70 transition-opacity"
+            >
+              Upload your first document
+            </button>
+          </div>
+        ) : (
+          docs.map(doc => (
+            <DocRow
+              key={doc.id}
+              doc={doc}
+              onDownload={handleDownload}
+              onDelete={handleDelete}
+            />
+          ))
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ── Right Sidebar ──────────────────────────────────────────
 
 function RightSidebar({ project, milestones }: { project: Project; milestones: ProjectMilestone[] }) {
@@ -306,6 +451,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
   const [addingNew, setAddingNew]   = useState(false)
   const [newTitle, setNewTitle]     = useState("")
   const [statusOpen, setStatusOpen] = useState(false)
+  const [activeTab, setActiveTab]   = useState<"milestones" | "documents">("milestones")
   const newTitleRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -391,7 +537,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
           <div className="flex-1 bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 flex flex-col overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] min-w-0">
 
             {/* Panel header */}
-            <div className="px-5 py-4 border-b border-gray-100 dark:border-white/8">
+            <div className="px-5 py-4">
               <button
                 onClick={() => router.back()}
                 className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors mb-3"
@@ -469,74 +615,99 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
 
-            {/* Milestones list */}
-            <div className="flex-1 overflow-y-auto">
-              {milestones.length === 0 && !addingNew ? (
-                <div className="flex flex-col items-center justify-center h-full text-center py-16">
-                  <FolderKanban className="w-8 h-8 text-gray-300 dark:text-gray-600 mb-3" />
-                  <p className="text-sm text-gray-400 dark:text-gray-600">No milestones yet</p>
-                </div>
-              ) : (
-                <div>
-                  {milestones.map((m, i) => (
-                    <MilestoneRow
-                      key={m.id}
-                      milestone={m}
-                      index={i}
-                      onStatusToggle={handleStatusToggle}
-                      onUpdate={handleUpdate}
-                      onDelete={handleDelete}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {/* Add new inline */}
-              {addingNew && (
-                <div className="flex items-center gap-3 px-5 py-3.5 border-t border-gray-50 dark:border-white/5">
-                  <div className="w-7 h-7 rounded-full border-2 border-dashed border-secondary/40 flex items-center justify-center flex-shrink-0">
-                    <Plus className="w-3 h-3 text-secondary/60" />
-                  </div>
-                  <input
-                    ref={newTitleRef}
-                    value={newTitle}
-                    onChange={e => setNewTitle(e.target.value)}
-                    onKeyDown={e => {
-                      if (e.key === "Enter") handleAddMilestone()
-                      if (e.key === "Escape") { setAddingNew(false); setNewTitle("") }
-                    }}
-                    placeholder="Milestone name…"
-                    className="flex-1 text-sm text-gray-900 dark:text-white bg-transparent focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
-                    autoFocus
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleAddMilestone}
-                      disabled={!newTitle.trim()}
-                      className="text-xs font-semibold text-green-600 dark:text-green-400 disabled:opacity-40"
-                    >
-                      Add
-                    </button>
-                    <button
-                      onClick={() => { setAddingNew(false); setNewTitle("") }}
-                      className="text-xs font-semibold text-gray-400 hover:text-gray-600"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
+            {/* Tab bar */}
+            <div className="flex gap-1 px-5 border-b border-gray-100 dark:border-white/8">
+              {(["milestones", "documents"] as const).map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`text-xs font-semibold py-2.5 px-1 border-b-2 -mb-px capitalize transition-colors ${
+                    activeTab === tab
+                      ? "border-secondary text-secondary"
+                      : "border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  }`}
+                >
+                  {tab === "milestones" ? "Milestones" : "Documents"}
+                </button>
+              ))}
             </div>
 
-            {/* Footer add button */}
-            <div className="px-5 py-3 border-t border-gray-100 dark:border-white/8">
-              <button
-                onClick={() => { setAddingNew(true); setTimeout(() => newTitleRef.current?.focus(), 50) }}
-                className="flex items-center gap-1.5 text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
-              >
-                <Plus className="w-3.5 h-3.5" /> Add milestone
-              </button>
-            </div>
+            {/* Tab content */}
+            {activeTab === "milestones" ? (
+              <>
+                <div className="flex-1 overflow-y-auto">
+                  {milestones.length === 0 && !addingNew ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center py-16">
+                      <FolderKanban className="w-8 h-8 text-gray-300 dark:text-gray-600 mb-3" />
+                      <p className="text-sm text-gray-400 dark:text-gray-600">No milestones yet</p>
+                    </div>
+                  ) : (
+                    <div>
+                      {milestones.map((m, i) => (
+                        <MilestoneRow
+                          key={m.id}
+                          milestone={m}
+                          index={i}
+                          onStatusToggle={handleStatusToggle}
+                          onUpdate={handleUpdate}
+                          onDelete={handleDelete}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Add new inline */}
+                  {addingNew && (
+                    <div className="flex items-center gap-3 px-5 py-3.5 border-t border-gray-50 dark:border-white/5">
+                      <div className="w-7 h-7 rounded-full border-2 border-dashed border-secondary/40 flex items-center justify-center flex-shrink-0">
+                        <Plus className="w-3 h-3 text-secondary/60" />
+                      </div>
+                      <input
+                        ref={newTitleRef}
+                        value={newTitle}
+                        onChange={e => setNewTitle(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === "Enter") handleAddMilestone()
+                          if (e.key === "Escape") { setAddingNew(false); setNewTitle("") }
+                        }}
+                        placeholder="Milestone name…"
+                        className="flex-1 text-sm text-gray-900 dark:text-white bg-transparent focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                        autoFocus
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleAddMilestone}
+                          disabled={!newTitle.trim()}
+                          className="text-xs font-semibold text-green-600 dark:text-green-400 disabled:opacity-40"
+                        >
+                          Add
+                        </button>
+                        <button
+                          onClick={() => { setAddingNew(false); setNewTitle("") }}
+                          className="text-xs font-semibold text-gray-400 hover:text-gray-600"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer add button */}
+                <div className="px-5 py-3 border-t border-gray-100 dark:border-white/8">
+                  <button
+                    onClick={() => { setAddingNew(true); setTimeout(() => newTitleRef.current?.focus(), 50) }}
+                    className="flex items-center gap-1.5 text-xs font-semibold text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add milestone
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="flex-1 overflow-hidden flex flex-col min-h-0">
+                {userId && <DocumentVault projectId={id} userId={userId} />}
+              </div>
+            )}
           </div>
 
           {/* ── Right sidebar ── */}
