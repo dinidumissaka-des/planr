@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Search, Star, X, BadgeCheck, Check, ChevronLeft, ChevronRight, MapPin, Briefcase, GraduationCap, Award, AlertCircle } from "lucide-react"
+import { Search, Star, X, BadgeCheck, Check, ChevronLeft, ChevronRight, MapPin, Briefcase, GraduationCap, Award, AlertCircle, ShieldCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -73,7 +73,14 @@ function ProfileDrawer({ architect, onClose, onSelect }: { architect: Architect;
           <div className="flex items-center gap-4">
             <AvatarInitials initials={architect.name.split(" ").map(n => n[0]).join("")} size="w-16 h-16" textSize="text-lg" rounded="rounded-2xl" />
             <div>
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">{architect.name}</h2>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">{architect.name}</h2>
+                {architect.verified && (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                    <ShieldCheck className="w-3 h-3" /> Verified
+                  </span>
+                )}
+              </div>
               <p className="text-sm text-gray-500 dark:text-gray-400">{architect.role}</p>
               <div className="flex items-center gap-1.5 mt-1">
                 <div className="flex items-center gap-0.5">
@@ -282,7 +289,14 @@ function ArchitectBar({ architect, dateLabel, timeLabel, leftLabel, rightLabel, 
       <div className="flex items-center gap-3 mb-4">
         <AvatarInitials initials={architect.name.split(" ").map(n => n[0]).join("")} size="w-10 h-10" textSize="text-xs" />
         <div className="flex-1 min-w-0 space-y-1">
-          <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{architect.name}</p>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{architect.name}</p>
+            {architect.verified && (
+              <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex-shrink-0">
+                <ShieldCheck className="w-2.5 h-2.5" /> Verified
+              </span>
+            )}
+          </div>
           <p className="text-sm font-bold text-gray-900 dark:text-white">{architect.role}</p>
           <p className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
             <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />{architect.rating} ({architect.reviewCount} Reviews)
@@ -682,7 +696,14 @@ export default function BookingsPage() {
                           {selectedArchitect === a.id && <div className="w-2 h-2 bg-[#07111E] rounded-full" />}
                         </div>
                       </div>
-                      <p className="text-sm text-[#07111E]/60 truncate">{a.name}</p>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <p className="text-sm text-[#07111E]/60 truncate">{a.name}</p>
+                        {a.verified && (
+                          <span className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 flex-shrink-0">
+                            <ShieldCheck className="w-2.5 h-2.5" /> Verified
+                          </span>
+                        )}
+                      </div>
                       <p className="text-sm font-bold text-[#07111E]">{a.role}</p>
                       <div className="flex items-center gap-1 text-xs text-[#07111E]/50 mb-4">
                         <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />{a.rating} ({a.reviewCount} Reviews)
@@ -744,7 +765,14 @@ export default function BookingsPage() {
                         {selectedArchitect === a.id && <div className="w-2 h-2 bg-[#07111E] rounded-full" />}
                       </div>
                     </div>
-                    <p className="text-sm text-[#07111E]/60 truncate">{a.name}</p>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <p className="text-sm text-[#07111E]/60 truncate">{a.name}</p>
+                      {a.verified && (
+                        <span className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 flex-shrink-0">
+                          <ShieldCheck className="w-2.5 h-2.5" /> Verified
+                        </span>
+                      )}
+                    </div>
                     <p className="text-sm font-bold text-[#07111E]">{a.role}</p>
                     <div className="flex items-center gap-1 text-xs text-[#07111E]/50 mb-4">
                       <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />{a.rating} ({a.reviewCount} Reviews)

@@ -658,6 +658,79 @@ export async function replyToQuestion(
 
 // ─── Questions (client) ─────────────────────────────────────
 
+// ─── Credentials & Verification ────────────────────────────
+
+export type CredentialStatus = "pending" | "verified" | "rejected"
+
+export type ConsultantCredential = {
+  id: string
+  user_id: string
+  credential_type: "license" | "certification" | "degree" | "membership"
+  title: string
+  issuing_body: string
+  issued_year: number | null
+  doc_path: string | null
+  status: CredentialStatus
+  created_at: string
+}
+
+export async function fetchCredentials(userId: string): Promise<ConsultantCredential[]> {
+  const supabase = createClient()
+  const { data } = await supabase
+    .from("consultant_credentials")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+  return (data ?? []) as ConsultantCredential[]
+}
+
+export async function submitCredential(
+  userId: string,
+  payload: {
+    credential_type: ConsultantCredential["credential_type"]
+    title: string
+    issuing_body: string
+    issued_year?: number | null
+    file?: File | null
+  }
+): Promise<ConsultantCredential | null> {
+  const supabase = createClient()
+  let doc_path: string | null = null
+
+  if (payload.file) {
+    const safeName = payload.file.name.replace(/[^a-zA-Z0-9._-]/g, "_")
+    const path = `${userId}/${Date.now()}-${safeName}`
+    const { error } = await supabase.storage
+      .from("consultant-credentials")
+      .upload(path, payload.file, { contentType: payload.file.type })
+    if (!error) doc_path = path
+  }
+
+  const { data } = await supabase
+    .from("consultant_credentials")
+    .insert({
+      user_id: userId,
+      credential_type: payload.credential_type,
+      title: payload.title,
+      issuing_body: payload.issuing_body,
+      issued_year: payload.issued_year ?? null,
+      doc_path,
+      status: "pending",
+    })
+    .select("*")
+    .single()
+
+  return (data ?? null) as ConsultantCredential | null
+}
+
+export async function deleteCredential(credential: ConsultantCredential): Promise<void> {
+  const supabase = createClient()
+  if (credential.doc_path) {
+    await supabase.storage.from("consultant-credentials").remove([credential.doc_path])
+  }
+  await supabase.from("consultant_credentials").delete().eq("id", credential.id)
+}
+
 // ─── Document Vault ────────────────────────────────────────
 
 export type ProjectDocument = {

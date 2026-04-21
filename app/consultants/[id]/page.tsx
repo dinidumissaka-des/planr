@@ -2,7 +2,7 @@
 
 import { use } from "react"
 import { notFound, useRouter } from "next/navigation"
-import { Star, MapPin, Briefcase, GraduationCap, Award, ArrowLeft, CalendarCheck } from "lucide-react"
+import { Star, MapPin, Briefcase, GraduationCap, Award, ArrowLeft, CalendarCheck, ShieldCheck } from "lucide-react"
 import { PortfolioGallery } from "@/components/ui/portfolio-gallery"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
@@ -45,7 +45,14 @@ export default function ConsultantPage({ params }: { params: Promise<{ id: strin
               <div className="flex-1 min-w-0">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div>
-                    <h1 className="text-xl font-bold text-gray-900 dark:text-white">{architect.name}</h1>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h1 className="text-xl font-bold text-gray-900 dark:text-white">{architect.name}</h1>
+                      {architect.verified && (
+                        <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                          <ShieldCheck className="w-3 h-3" /> Verified
+                        </span>
+                      )}
+                    </div>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{architect.role} · {architect.company}</p>
                     <div className="flex items-center gap-1.5 mt-2">
                       <div className="flex items-center gap-0.5">

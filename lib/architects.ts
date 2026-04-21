@@ -1,6 +1,7 @@
 export const architects = [
   {
     id: 1, name: "Roshan Perera", role: "Architect", category: "Architecture",
+    verified: true,
     rating: 4.9, reviewCount: 34,
     company: "Perera & Associates",
     location: "Colombo 03, Sri Lanka",
@@ -26,6 +27,7 @@ export const architects = [
   },
   {
     id: 2, name: "Dilani Wijesinghe", role: "Interior Designer", category: "Interior Design",
+    verified: true,
     rating: 4.7, reviewCount: 21,
     company: "Studio Dilani",
     location: "Colombo 07, Sri Lanka",
@@ -101,6 +103,7 @@ export const architects = [
   },
   {
     id: 5, name: "Nishantha Gunasekara", role: "Architect", category: "Architecture",
+    verified: true,
     rating: 4.8, reviewCount: 27,
     company: "Gunasekara Architects",
     location: "Negombo, Sri Lanka",
@@ -151,6 +154,7 @@ export const architects = [
   },
   {
     id: 7, name: "Pradeep Liyanage", role: "Structural Engineer", category: "Structural Engineering",
+    verified: true,
     rating: 4.3, reviewCount: 12,
     company: "Liyanage Structural Consultants",
     location: "Kandy, Sri Lanka",
