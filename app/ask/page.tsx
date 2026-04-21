@@ -74,10 +74,14 @@ export default function AskPage() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
+        const firstName = user.user_metadata?.first_name ?? ""
+        const lastName  = user.user_metadata?.last_name  ?? ""
         await insertQuestion(user.id, {
           question: question.trim(),
           description: description.trim() || undefined,
           category: category || undefined,
+          asker_email: user.email ?? null,
+          asker_name: firstName && lastName ? `${firstName} ${lastName}` : (user.email ?? null),
         })
       }
     } finally {

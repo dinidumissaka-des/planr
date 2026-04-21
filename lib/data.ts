@@ -164,6 +164,7 @@ export async function insertConsultation(
     architect_initials: string
     consultation_type: string
     scheduled_at: string
+    consultant_user_id?: string | null
     notes?: string
     categories?: string[]
   }
@@ -176,6 +177,7 @@ export async function insertConsultation(
     architect_initials: payload.architect_initials,
     consultation_type: payload.consultation_type,
     scheduled_at: payload.scheduled_at,
+    consultant_user_id: payload.consultant_user_id ?? null,
     status: "upcoming",
     notes: payload.notes ?? null,
     categories: payload.categories ?? [],
@@ -537,6 +539,8 @@ export type ConsultantProfile = {
 export type ConsultantQuestion = {
   id: string
   user_id: string
+  asker_email: string | null
+  asker_name: string | null
   question: string
   description: string | null
   category: string | null
@@ -626,7 +630,7 @@ export async function fetchAllQuestions(limit = 50): Promise<ConsultantQuestion[
   const supabase = createClient()
   const { data, error } = await supabase
     .from("questions")
-    .select("id, user_id, question, description, category, consultant_name, consultant_initials, consultant_role, reply, replied_at, replied_by, is_answered, created_at")
+    .select("id, user_id, asker_email, asker_name, question, description, category, consultant_name, consultant_initials, consultant_role, reply, replied_at, replied_by, is_answered, created_at")
     .order("created_at", { ascending: false })
     .limit(limit)
   if (error) return []
@@ -871,6 +875,8 @@ export async function insertQuestion(
     question: string
     description?: string
     category?: string
+    asker_email?: string | null
+    asker_name?: string | null
   }
 ): Promise<void> {
   const supabase = createClient()
@@ -879,6 +885,8 @@ export async function insertQuestion(
     question: payload.question,
     description: payload.description ?? null,
     category: payload.category ?? null,
+    asker_email: payload.asker_email ?? null,
+    asker_name: payload.asker_name ?? null,
     consultant_name: "Planr Team",
     consultant_initials: "PT",
     consultant_role: "Support",

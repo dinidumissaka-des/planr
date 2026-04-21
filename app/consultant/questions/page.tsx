@@ -147,11 +147,28 @@ export default function ConsultantQuestionsPage() {
 
   async function handleReply(questionId: string, reply: string) {
     await replyToQuestion(questionId, reply, consultantId, consultantName)
-    setQuestions(prev => prev.map(q =>
-      q.id === questionId
-        ? { ...q, reply, replied_at: new Date().toISOString(), replied_by: consultantId, is_answered: true, consultant_name: consultantName }
-        : q
+    const q = questions.find(x => x.id === questionId)
+    setQuestions(prev => prev.map(x =>
+      x.id === questionId
+        ? { ...x, reply, replied_at: new Date().toISOString(), replied_by: consultantId, is_answered: true, consultant_name: consultantName }
+        : x
     ))
+
+    // Send reply notification email (fire-and-forget)
+    if (q?.asker_email) {
+      fetch("/api/email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "qa_reply",
+          clientEmail: q.asker_email,
+          clientName: q.asker_name ?? q.asker_email,
+          consultantName,
+          question: q.question,
+          reply,
+        }),
+      }).catch(() => {})
+    }
   }
 
   const filtered = questions.filter(q => {

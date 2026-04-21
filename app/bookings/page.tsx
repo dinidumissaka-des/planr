@@ -464,9 +464,25 @@ export default function BookingsPage() {
           architect_initials: activeArchitect.name.split(" ").map(n => n[0]).join(""),
           consultation_type: activeArchitect.role,
           scheduled_at: scheduled.toISOString(),
+          consultant_user_id: activeArchitect.consultant_user_id ?? null,
           notes: notes.trim() || undefined,
           categories: selectedCategories.length ? selectedCategories : undefined,
         })
+
+        // Send booking confirmation email (fire-and-forget)
+        fetch("/api/email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "booking_confirmation",
+            clientEmail: email,
+            clientName: `${firstName} ${lastName}`,
+            consultantName: activeArchitect.name,
+            consultantRole: activeArchitect.role,
+            scheduledDate: scheduled.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
+            scheduledTime: timeSlots[selectedSlot],
+          }),
+        }).catch(() => {})
       }
     } finally {
       setSubmitting(false)

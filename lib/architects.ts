@@ -1,6 +1,7 @@
 export const architects = [
   {
     id: 1, name: "Roshan Perera", role: "Architect", category: "Architecture",
+    consultant_user_id: null as string | null,
     verified: true,
     rating: 4.9, reviewCount: 34,
     company: "Perera & Associates",
@@ -27,6 +28,7 @@ export const architects = [
   },
   {
     id: 2, name: "Dilani Wijesinghe", role: "Interior Designer", category: "Interior Design",
+    consultant_user_id: null as string | null,
     verified: true,
     rating: 4.7, reviewCount: 21,
     company: "Studio Dilani",
@@ -53,6 +55,7 @@ export const architects = [
   },
   {
     id: 3, name: "Kavinda Rajapaksa", role: "Landscape Architect", category: "Landscape Architecture",
+    consultant_user_id: null as string | null,
     rating: 4.5, reviewCount: 16,
     company: "Greenlane Lanka",
     location: "Kandy, Sri Lanka",
@@ -78,6 +81,7 @@ export const architects = [
   },
   {
     id: 4, name: "Amali Senanayake", role: "Interior Designer", category: "Interior Design",
+    consultant_user_id: null as string | null,
     rating: 4.4, reviewCount: 13,
     company: "Amali Design Co.",
     location: "Galle, Sri Lanka",
@@ -103,6 +107,7 @@ export const architects = [
   },
   {
     id: 5, name: "Nishantha Gunasekara", role: "Architect", category: "Architecture",
+    consultant_user_id: null as string | null,
     verified: true,
     rating: 4.8, reviewCount: 27,
     company: "Gunasekara Architects",
@@ -129,6 +134,7 @@ export const architects = [
   },
   {
     id: 6, name: "Thamali Kumarasinghe", role: "Urban Designer", category: "Urban Design",
+    consultant_user_id: null as string | null,
     rating: 4.6, reviewCount: 18,
     company: "UrbanForms Lanka",
     location: "Colombo 02, Sri Lanka",
@@ -154,6 +160,7 @@ export const architects = [
   },
   {
     id: 7, name: "Pradeep Liyanage", role: "Structural Engineer", category: "Structural Engineering",
+    consultant_user_id: null as string | null,
     verified: true,
     rating: 4.3, reviewCount: 12,
     company: "Liyanage Structural Consultants",
@@ -179,6 +186,7 @@ export const architects = [
   },
   {
     id: 8, name: "Sampath Jayawardena", role: "Contractor", category: "Construction",
+    consultant_user_id: null as string | null,
     rating: 4.6, reviewCount: 22,
     company: "Jayawardena Builders",
     location: "Colombo 10, Sri Lanka",
@@ -204,6 +212,7 @@ export const architects = [
   },
   {
     id: 9, name: "Ishara Bandara", role: "Quantity Surveyor", category: "Quantity Surveying",
+    consultant_user_id: null as string | null,
     rating: 4.5, reviewCount: 14,
     company: "Bandara Cost Consultants",
     location: "Colombo 05, Sri Lanka",
