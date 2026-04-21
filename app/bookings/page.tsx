@@ -504,7 +504,7 @@ export default function BookingsPage() {
   const [profileDrawer, setProfileDrawer] = useState<ConsultantProfile | null>(null)
   const [profileLoading, setProfileLoading] = useState(false)
 
-  function openProfile(a: Architect | null | undefined) {
+  function openProfile(a: ConsultantProfile | null | undefined) {
     if (!a) return
     setProfileLoading(true)
     setTimeout(() => { setProfileLoading(false); setProfileDrawer(a) }, 80)
