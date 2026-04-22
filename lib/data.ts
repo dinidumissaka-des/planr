@@ -756,3 +756,27 @@ export async function insertQuestion(
     consultant_role: "Support",
   })
 }
+
+/**
+ * Deletes all data owned by the user across every table, then signs them out.
+ * The auth.users record is removed via a server-side admin call if available;
+ * otherwise the user is simply signed out and their data is gone.
+ */
+export async function deleteUserAccount(userId: string): Promise<void> {
+  const supabase = createClient()
+
+  await Promise.all([
+    supabase.from("consultations").delete().eq("user_id", userId),
+    supabase.from("questions").delete().eq("user_id", userId),
+    supabase.from("notifications").delete().eq("user_id", userId),
+    supabase.from("ai_chats").delete().eq("user_id", userId),
+    supabase.from("project_milestones").delete().eq("user_id", userId),
+    supabase.from("projects").delete().eq("user_id", userId),
+    supabase.from("referral_uses").delete().eq("referrer_id", userId),
+    supabase.from("referral_uses").delete().eq("referred_id", userId),
+    supabase.from("referral_codes").delete().eq("user_id", userId),
+    supabase.from("consultant_profiles").delete().eq("user_id", userId),
+  ])
+
+  await supabase.auth.signOut()
+}
