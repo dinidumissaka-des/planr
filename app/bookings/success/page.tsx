@@ -57,9 +57,12 @@ function SuccessContent() {
         bookingMeta = json.metadata as BookingMeta
         total = json.amount_total
       } else if (bkEncoded) {
-        // Dev mode — booking data encoded in URL
+        // Dev mode — booking data encoded in URL (base64url, client-safe decode)
         try {
-          bookingMeta = JSON.parse(Buffer.from(bkEncoded, "base64url").toString("utf-8")) as BookingMeta
+          const b64 = bkEncoded.replace(/-/g, "+").replace(/_/g, "/").padEnd(
+            bkEncoded.length + (4 - bkEncoded.length % 4) % 4, "="
+          )
+          bookingMeta = JSON.parse(atob(b64)) as BookingMeta
           const rate = Number(bookingMeta.rate ?? 120)
           total = (rate + 5) * 100
         } catch {
