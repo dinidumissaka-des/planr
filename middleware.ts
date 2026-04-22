@@ -46,9 +46,16 @@ export async function middleware(request: NextRequest) {
   if (user) {
     const role = user.user_metadata?.role as string | undefined
     const isConsultant = role === "consultant"
+    const isAdmin = user.user_metadata?.is_admin === true
     const onboardingDone = user.user_metadata?.onboarding_completed === true
     const isOnboardingRoute = pathname.startsWith("/onboarding")
     const isConsultantRoute = pathname.startsWith("/consultant")
+    const isAdminRoute = pathname.startsWith("/admin")
+
+    // Admin gate
+    if (isAdminRoute && !isAdmin) {
+      return NextResponse.redirect(new URL(isConsultant ? "/consultant/dashboard" : "/dashboard", request.url))
+    }
 
     if (isAuthRoute) {
       return NextResponse.redirect(

@@ -27,13 +27,17 @@ export async function GET(req: NextRequest) {
   const from = new Date(year, month, 1).toISOString()
   const to   = new Date(year, month + 1, 1).toISOString()
 
-  const { data, error } = await supabase
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(architectId!)
+  let query = supabase
     .from("consultations")
     .select("scheduled_at")
-    .eq("architect_id", Number(architectId))
     .not("status", "eq", "cancelled")
     .gte("scheduled_at", from)
     .lt("scheduled_at", to)
+  query = isUuid
+    ? query.eq("consultant_user_id", architectId!)
+    : query.eq("architect_id", Number(architectId))
+  const { data, error } = await query
 
   if (error) {
     console.error("Availability error:", error.message)

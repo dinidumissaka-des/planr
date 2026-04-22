@@ -10,10 +10,9 @@ import { Switch } from "@/components/ui/switch"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import { CalendarDays } from "lucide-react"
-import { architects, type Architect } from "@/lib/architects"
 import { AvatarInitials } from "@/components/ui/avatar-initials"
 import { createClient } from "@/lib/supabase"
-import { insertConsultation } from "@/lib/data"
+import { insertConsultation, staticConsultants, fetchPublicConsultants, type DisplayConsultant } from "@/lib/data"
 import { PortfolioGallery } from "@/components/ui/portfolio-gallery"
 
 // ─── Data ─────────────────────────────────────────────────
@@ -53,7 +52,7 @@ function FieldError({ msg }: { msg: string | undefined }) {
 
 // ─── Profile Drawer ────────────────────────────────────────
 
-function ProfileDrawer({ architect, onClose, onSelect }: { architect: Architect; onClose: () => void; onSelect: () => void }) {
+function ProfileDrawer({ architect, onClose, onSelect }: { architect: DisplayConsultant; onClose: () => void; onSelect: () => void }) {
   useEffect(() => {
     function handle(e: KeyboardEvent) { if (e.key === "Escape") onClose() }
     document.addEventListener("keydown", handle)
@@ -281,13 +280,13 @@ function Stepper({ step }: { step: number }) {
 // ─── Architect Summary Bar ─────────────────────────────────
 
 function ArchitectBar({ architect, dateLabel, timeLabel, leftLabel, rightLabel, onViewProfile }: {
-  architect: typeof architects[0]; dateLabel: string; timeLabel: string; leftLabel: string; rightLabel: string; onViewProfile: () => void
+  architect: DisplayConsultant; dateLabel: string; timeLabel: string; leftLabel: string; rightLabel: string; onViewProfile: () => void
 }) {
   return (
     <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl p-4 mb-5">
       {/* Row 1: avatar + name + view profile */}
       <div className="flex items-center gap-3 mb-4">
-        <AvatarInitials initials={architect.name.split(" ").map(n => n[0]).join("")} size="w-10 h-10" textSize="text-xs" />
+        <AvatarInitials initials={architect.name.split(" ").map((n: string) => n[0]).join("")} size="w-10 h-10" textSize="text-xs" />
         <div className="flex-1 min-w-0 space-y-1">
           <div className="flex items-center gap-1.5 flex-wrap">
             <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{architect.name}</p>
@@ -353,7 +352,8 @@ export default function BookingsPage() {
   const [step, setStep] = useState(1)
   const [firstTime, setFirstTime] = useState(false)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-  const [selectedArchitect, setSelectedArchitect] = useState<number | null>(null)
+  const [allConsultants, setAllConsultants] = useState<DisplayConsultant[]>(() => staticConsultants())
+  const [selectedArchitect, setSelectedArchitect] = useState<string | null>(null)
   const [autoChoose, setAutoChoose] = useState(false)
   const [search, setSearch] = useState("")
   const [selectedDate, setSelectedDate] = useState<number | null>(null)
@@ -367,20 +367,22 @@ export default function BookingsPage() {
   const [email, setEmail] = useState("")
   const [mobile, setMobile] = useState("")
   const [agreedConsult, setAgreedConsult] = useState(false)
-  const [cardNumber, setCardNumber] = useState("")
-  const [expiry, setExpiry] = useState("")
-  const [cvv, setCvv] = useState("")
-  const [zip, setZip] = useState("")
   const [agreedPayment, setAgreedPayment] = useState(false)
-  const [saveCard, setSaveCard] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+
+  // Load live consultants and merge with static
+  useEffect(() => {
+    fetchPublicConsultants().then(live => {
+      if (live.length > 0) setAllConsultants([...staticConsultants(), ...live])
+    }).catch(() => {})
+  }, [])
 
   // ── Availability ──────────────────────────────────────────
   const [bookedSlots, setBookedSlots] = useState<{ date: number; hour: number }[]>([])
   const [loadingAvail, setLoadingAvail] = useState(false)
 
-  async function fetchAvailability(architectId: number, year: number, month: number) {
+  async function fetchAvailability(architectId: string, year: number, month: number) {
     setLoadingAvail(true)
     try {
       const res = await fetch(`/api/availability?architect_id=${architectId}&year=${year}&month=${month}`)
@@ -416,7 +418,7 @@ export default function BookingsPage() {
   function step1Valid() { return selectedArchitect !== null || autoChoose }
   function step2Valid() { return selectedSlot !== null }
   function step3Valid() { return !!firstName.trim() && !!lastName.trim() && !!email.trim() && !!mobile.trim() && agreedConsult }
-  function step4Valid() { return !!cardNumber.trim() && !!expiry.trim() && !!cvv.trim() && !!zip.trim() && agreedPayment }
+  function step4Valid() { return agreedPayment }
 
   // Per-field error messages (only shown after the field is touched or triedNext)
   function err(field: string, condition: boolean, msg: string) {
@@ -426,14 +428,10 @@ export default function BookingsPage() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
   const errors = {
-    firstName:  err("firstName",  !firstName.trim(),                       "First name is required"),
-    lastName:   err("lastName",   !lastName.trim(),                        "Last name is required"),
-    email:      err("email",      !email.trim() ? true : !emailRegex.test(email), !email.trim() ? "Email is required" : "Enter a valid email address"),
-    mobile:     err("mobile",     !mobile.trim(),                          "Mobile number is required"),
-    cardNumber: err("cardNumber", !cardNumber.trim(),                      "Card number is required"),
-    expiry:     err("expiry",     !expiry.trim(),                          "Expiration date is required"),
-    cvv:        err("cvv",        !cvv.trim(),                             "CVV is required"),
-    zip:        err("zip",        !zip.trim(),                             "ZIP code is required"),
+    firstName: err("firstName", !firstName.trim(), "First name is required"),
+    lastName:  err("lastName",  !lastName.trim(),  "Last name is required"),
+    email:     err("email",     !email.trim() ? true : !emailRegex.test(email), !email.trim() ? "Email is required" : "Enter a valid email address"),
+    mobile:    err("mobile",    !mobile.trim(),    "Mobile number is required"),
   }
 
   function tryAdvance(isValid: () => boolean, onNext: () => void) {
@@ -449,27 +447,47 @@ export default function BookingsPage() {
   // ── Slot index → hour (9 AM = 9, 12 PM = 12, 1 PM = 13, …) ──
   const slotHours = [9, 10, 11, 12, 13, 14, 15, 16]
 
-  async function handleConfirm() {
+  async function handlePayWithStripe() {
     if (!step4Valid()) { setTriedNext(true); return }
     if (submitting) return
     setSubmitting(true)
     try {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
-      if (user && selectedDate !== null && selectedSlot !== null) {
-        const scheduled = new Date(calYear, calMonth, selectedDate, slotHours[selectedSlot], 0, 0)
-        await insertConsultation(user.id, {
-          architect_id: activeArchitect.id,
+      if (!user || selectedDate === null || selectedSlot === null) { setSubmitting(false); return }
+      const scheduled = new Date(calYear, calMonth, selectedDate, slotHours[selectedSlot], 0, 0)
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: user.id,
+          architect_id: activeArchitect.architect_id,
           architect_name: activeArchitect.name,
-          architect_initials: activeArchitect.name.split(" ").map(n => n[0]).join(""),
+          architect_initials: activeArchitect.name.split(" ").map((n: string) => n[0]).join(""),
+          consultation_type: activeArchitect.role,
+          scheduled_at: scheduled.toISOString(),
+          consultant_user_id: activeArchitect.consultant_user_id ?? null,
+          notes: notes.trim() || null,
+          categories: selectedCategories.length ? selectedCategories : null,
+          client_name: `${firstName} ${lastName}`,
+          client_email: email,
+          client_mobile: mobile,
+          rate: activeArchitect.rate,
+        }),
+      })
+      const json = await res.json()
+      if (json.dev) {
+        // Stripe not configured — insert booking directly and show success modal
+        await insertConsultation(user.id, {
+          architect_id: activeArchitect.architect_id,
+          architect_name: activeArchitect.name,
+          architect_initials: activeArchitect.name.split(" ").map((n: string) => n[0]).join(""),
           consultation_type: activeArchitect.role,
           scheduled_at: scheduled.toISOString(),
           consultant_user_id: activeArchitect.consultant_user_id ?? null,
           notes: notes.trim() || undefined,
           categories: selectedCategories.length ? selectedCategories : undefined,
         })
-
-        // Send booking confirmation email (fire-and-forget)
         fetch("/api/email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -483,17 +501,24 @@ export default function BookingsPage() {
             scheduledTime: timeSlots[selectedSlot],
           }),
         }).catch(() => {})
+        setSubmitting(false)
+        setTriedNext(false)
+        setTouched({})
+        setConfirmed(true)
+        return
       }
-    } finally {
-      setSubmitting(false)
-      setTriedNext(false)
-      setTouched({})
-      setConfirmed(true)
+      if (json.url) {
+        window.location.href = json.url
+        return
+      }
+    } catch (err) {
+      console.error("Checkout error:", err)
     }
+    setSubmitting(false)
   }
 
-  const activeArchitect = architects.find(a => a.id === selectedArchitect) ?? architects[0]
-  const filtered = architects.filter(a => {
+  const activeArchitect = allConsultants.find((a: DisplayConsultant) => a.id === selectedArchitect) ?? allConsultants[0]
+  const filtered = allConsultants.filter((a: DisplayConsultant) => {
     const matchesSearch = search === "" ||
       a.name.toLowerCase().includes(search.toLowerCase()) ||
       a.role.toLowerCase().includes(search.toLowerCase())
@@ -504,10 +529,10 @@ export default function BookingsPage() {
   const selectedSlotLabel = selectedSlot !== null ? timeSlots[selectedSlot] : "—"
   const [architectDot, setArchitectDot] = useState(0)
   const architectScrollRef = useRef<HTMLDivElement>(null)
-  const [profileDrawer, setProfileDrawer] = useState<Architect | null>(null)
+  const [profileDrawer, setProfileDrawer] = useState<DisplayConsultant | null>(null)
   const [profileLoading, setProfileLoading] = useState(false)
 
-  function openProfile(a: Architect | null | undefined) {
+  function openProfile(a: DisplayConsultant | null | undefined) {
     if (!a) return
     setProfileLoading(true)
     setTimeout(() => { setProfileLoading(false); setProfileDrawer(a) }, 80)
@@ -546,9 +571,6 @@ export default function BookingsPage() {
         return "Agree to the Terms of Use to continue"
       case 4:
         if (step4Valid()) return null
-        if (!cardNumber.trim()) return "Enter your card number"
-        if (!expiry.trim() || !cvv.trim()) return "Enter your card expiry and CVV"
-        if (!zip.trim()) return "Enter your ZIP / postal code"
         return "Agree to the Terms of Use to continue"
       default:
         return null
@@ -818,7 +840,7 @@ export default function BookingsPage() {
 
               <StepFooter onNext={() => tryAdvance(step1Valid, () => {
                 setStep(2)
-                const archId = autoChoose ? architects[0].id : (selectedArchitect ?? architects[0].id)
+                const archId = autoChoose ? (allConsultants[0]?.id ?? "1") : (selectedArchitect ?? allConsultants[0]?.id ?? "1")
                 fetchAvailability(archId, calYear, calMonth)
               })} />
             </div>
@@ -832,7 +854,7 @@ export default function BookingsPage() {
                 dateLabel={selectedDate ? `${ordinal(selectedDate)} ${MONTHS[calMonth]}` : "Not selected"}
                 timeLabel={selectedSlotLabel}
                 leftLabel="Selected date:" rightLabel="Selected time:"
-                onViewProfile={() => openProfile(architects.find(a => a.id === activeArchitect.id))}
+                onViewProfile={() => openProfile(allConsultants.find((a: DisplayConsultant) => a.id === activeArchitect.id))}
               />
 
               <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
@@ -953,7 +975,7 @@ export default function BookingsPage() {
                 architect={activeArchitect}
                 dateLabel={selectedDate ? `${ordinal(selectedDate)} ${MONTHS[calMonth]}` : "—"} timeLabel={selectedSlotLabel}
                 leftLabel="Date:" rightLabel="Time:"
-                onViewProfile={() => openProfile(architects.find(a => a.id === activeArchitect.id))}
+                onViewProfile={() => openProfile(allConsultants.find((a: DisplayConsultant) => a.id === activeArchitect.id))}
               />
 
               <div className="space-y-5">
@@ -1066,88 +1088,43 @@ export default function BookingsPage() {
           {step === 4 && (
             <div className="max-w-5xl flex flex-col lg:flex-row gap-5 items-start">
 
-              {/* Payment form */}
+              {/* Payment panel */}
               <div className="flex-1 bg-white dark:bg-[#0D1B2E] border border-secondary/15 dark:border-white/8 rounded-2xl p-5 md:p-7">
-                <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-5">Payment details</h3>
+                <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-2">Complete your payment</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-6">You'll be taken to Stripe's secure checkout to pay. Your booking is confirmed once payment is complete.</p>
 
-                <div className="space-y-4">
-                  <div>
-                    <label htmlFor="cardNumber" className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 block">Card number</label>
-                    <Input
-                      id="cardNumber"
-                      placeholder="0000 0000 0000 0000"
-                      value={cardNumber}
-                      onChange={e => setCardNumber(e.target.value)}
-                      onBlur={() => touch("cardNumber")}
-                      className={`bg-white dark:bg-white/5 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm font-mono ${errors.cardNumber ? "border-red-400 dark:border-red-500 focus-visible:ring-red-400" : "border-gray-200 dark:border-white/10"}`}
-                    />
-                    <FieldError msg={errors.cardNumber} />
+                <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4 mb-6 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500 dark:text-gray-400">Consultation fee</span>
+                    <span className="font-semibold text-gray-800 dark:text-white">${activeArchitect.rate}.00</span>
                   </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label htmlFor="expiry" className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 block">Expiration</label>
-                      <Input
-                        id="expiry"
-                        placeholder="MM / YY"
-                        value={expiry}
-                        onChange={e => setExpiry(e.target.value)}
-                        onBlur={() => touch("expiry")}
-                        className={`bg-white dark:bg-white/5 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm ${errors.expiry ? "border-red-400 dark:border-red-500 focus-visible:ring-red-400" : "border-gray-200 dark:border-white/10"}`}
-                      />
-                      <FieldError msg={errors.expiry} />
-                    </div>
-                    <div>
-                      <label htmlFor="cvv" className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 block">CVV</label>
-                      <Input
-                        id="cvv"
-                        placeholder="000"
-                        value={cvv}
-                        onChange={e => setCvv(e.target.value)}
-                        onBlur={() => touch("cvv")}
-                        className={`bg-white dark:bg-white/5 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm ${errors.cvv ? "border-red-400 dark:border-red-500 focus-visible:ring-red-400" : "border-gray-200 dark:border-white/10"}`}
-                      />
-                      <FieldError msg={errors.cvv} />
-                    </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500 dark:text-gray-400">Platform fee</span>
+                    <span className="font-semibold text-gray-800 dark:text-white">$5.00</span>
                   </div>
-
-                  <div>
-                    <label htmlFor="zip" className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 block">ZIP / Postal code</label>
-                    <Input
-                      id="zip"
-                      placeholder="00000"
-                      value={zip}
-                      onChange={e => setZip(e.target.value)}
-                      onBlur={() => touch("zip")}
-                      className={`w-40 bg-white dark:bg-white/5 dark:text-white dark:placeholder:text-gray-600 h-11 text-sm ${errors.zip ? "border-red-400 dark:border-red-500 focus-visible:ring-red-400" : "border-gray-200 dark:border-white/10"}`}
-                    />
-                    <FieldError msg={errors.zip} />
+                  <div className="flex justify-between text-sm font-bold pt-2 border-t border-gray-100 dark:border-white/8">
+                    <span className="text-gray-800 dark:text-white">Total</span>
+                    <span className="text-gray-900 dark:text-white">${activeArchitect.rate + 5}.00</span>
                   </div>
                 </div>
 
-                <div className="space-y-3 mt-5 pt-5 border-t border-gray-100 dark:border-white/8">
+                <div className="mb-5">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <Checkbox checked={saveCard} onCheckedChange={v => setSaveCard(!!v)} />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Save card for future bookings</span>
+                    <Checkbox checked={agreedPayment} onCheckedChange={v => setAgreedPayment(!!v)} />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      I agree to Planr{" "}
+                      <a href="#" className="text-orange-500 hover:underline font-medium">Terms of Use</a>
+                      {" "}and to receive electronic communication from Planr
+                    </span>
                   </label>
-                  <div>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <Checkbox checked={agreedPayment} onCheckedChange={v => setAgreedPayment(!!v)} />
-                      <span className="text-sm text-gray-600 dark:text-gray-400">
-                        I agree to Planr{" "}
-                        <a href="#" className="text-orange-500 hover:underline font-medium">Terms of Use</a>
-                        {" "}and to receive electronic communication from Planr
-                      </span>
-                    </label>
-                    {triedNext && !agreedPayment && (
-                      <p className="flex items-center gap-1 text-xs text-red-500 mt-1.5 ml-6">
-                        <AlertCircle className="w-3 h-3 flex-shrink-0" />You must agree to the Terms of Use to continue
-                      </p>
-                    )}
-                  </div>
+                  {triedNext && !agreedPayment && (
+                    <p className="flex items-center gap-1 text-xs text-red-500 mt-1.5 ml-6">
+                      <AlertCircle className="w-3 h-3 flex-shrink-0" />You must agree to the Terms of Use to continue
+                    </p>
+                  )}
                 </div>
 
-                <StepFooter onBack={() => { setTriedNext(false); setTouched({}); setStep(3) }} onNext={handleConfirm} nextLabel={submitting ? "Processing…" : "Confirm & Pay"} />
+                <StepFooter onBack={() => { setTriedNext(false); setTouched({}); setStep(3) }} onNext={handlePayWithStripe} nextLabel={submitting ? "Redirecting…" : `Pay $${activeArchitect.rate + 5}`} />
               </div>
 
               {/* Booking summary */}
@@ -1155,7 +1132,7 @@ export default function BookingsPage() {
                 <p className="text-sm font-bold text-gray-800 dark:text-white mb-4">Booking Summary</p>
 
                 <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100 dark:border-white/8">
-                  <AvatarInitials initials={activeArchitect.name.split(" ").map(n => n[0]).join("")} size="w-10 h-10" textSize="text-xs" />
+                  <AvatarInitials initials={activeArchitect.name.split(" ").map((n: string) => n[0]).join("")} size="w-10 h-10" textSize="text-xs" />
                   <div>
                     <p className="text-sm font-semibold text-gray-800 dark:text-white">{activeArchitect.name}</p>
                     <p className="text-xs text-gray-400 dark:text-gray-500">{activeArchitect.role}</p>
@@ -1186,7 +1163,7 @@ export default function BookingsPage() {
                 <div className="border-t border-gray-100 dark:border-white/8 pt-3 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500 dark:text-gray-400">Consultation fee</span>
-                    <span className="font-semibold text-gray-800 dark:text-white">$120.00</span>
+                    <span className="font-semibold text-gray-800 dark:text-white">${activeArchitect.rate}.00</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500 dark:text-gray-400">Platform fee</span>
@@ -1194,7 +1171,7 @@ export default function BookingsPage() {
                   </div>
                   <div className="flex justify-between text-sm font-bold pt-2 border-t border-gray-100 dark:border-white/8">
                     <span className="text-gray-800 dark:text-white">Total</span>
-                    <span className="text-gray-900 dark:text-white">$125.00</span>
+                    <span className="text-gray-900 dark:text-white">${activeArchitect.rate + 5}.00</span>
                   </div>
                 </div>
               </div>

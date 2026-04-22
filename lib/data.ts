@@ -1,4 +1,5 @@
 import { createClient } from "./supabase"
+import { architects, type Architect } from "./architects"
 
 // ─── Types ─────────────────────────────────────────────────
 
@@ -69,6 +70,135 @@ export type Notification = {
   body: string
   read: boolean
   created_at: string
+}
+
+// ─── Display Consultant (unified static + live) ────────────
+
+export type DisplayConsultant = {
+  id: string
+  isLive: boolean
+  architect_id: number | null
+  consultant_user_id: string | null
+  name: string
+  role: string
+  category: string
+  verified: boolean
+  rating: number
+  reviewCount: number
+  company: string
+  location: string
+  available: string
+  hours: string
+  about: string
+  rate: number
+  specializations: string[]
+  experience: Array<{ company: string; role: string; type: string; period: string; description: string }>
+  education: Array<{ school: string; dept: string; period: string }>
+  reviews: Array<{ name: string; rating: number; text: string }>
+  portfolio: Array<{ url: string; caption: string; category: string }>
+}
+
+export function architectToDisplay(a: Architect): DisplayConsultant {
+  return {
+    id: String(a.id),
+    isLive: false,
+    architect_id: a.id,
+    consultant_user_id: a.consultant_user_id,
+    name: a.name,
+    role: a.role,
+    category: a.category,
+    verified: a.verified ?? false,
+    rating: a.rating,
+    reviewCount: a.reviewCount,
+    company: a.company,
+    location: a.location,
+    available: a.available,
+    hours: a.hours,
+    about: a.about,
+    rate: a.rate,
+    specializations: a.specializations,
+    experience: a.experience,
+    education: a.education,
+    reviews: a.reviews,
+    portfolio: a.portfolio,
+  }
+}
+
+export function staticConsultants(): DisplayConsultant[] {
+  return architects.map(architectToDisplay)
+}
+
+export async function fetchPublicConsultants(): Promise<DisplayConsultant[]> {
+  const supabase = createClient()
+  const [{ data: profiles }, { data: verifiedCreds }] = await Promise.all([
+    supabase.from("consultant_profiles").select("user_id, display_name, specialization, bio, years_experience, rate, location"),
+    supabase.from("consultant_credentials").select("user_id").eq("status", "verified"),
+  ])
+  const verifiedSet = new Set<string>((verifiedCreds ?? []).map((c: { user_id: string }) => c.user_id))
+  return (profiles ?? []).map((p: {
+    user_id: string; display_name: string; specialization: string; bio: string | null;
+    years_experience: number | null; rate: number | null; location: string | null
+  }): DisplayConsultant => ({
+    id: p.user_id,
+    isLive: true,
+    architect_id: null,
+    consultant_user_id: p.user_id,
+    name: p.display_name,
+    role: p.specialization,
+    category: p.specialization,
+    verified: verifiedSet.has(p.user_id),
+    rating: 0,
+    reviewCount: 0,
+    company: "",
+    location: p.location ?? "Sri Lanka",
+    available: "Available",
+    hours: "9AM – 6PM",
+    about: p.bio ?? "",
+    rate: p.rate ?? 120,
+    specializations: [p.specialization],
+    experience: [],
+    education: [],
+    reviews: [],
+    portfolio: [],
+  }))
+}
+
+export async function fetchConsultantById(userId: string): Promise<DisplayConsultant | null> {
+  const supabase = createClient()
+  const [{ data: profile }, { data: verifiedCreds }] = await Promise.all([
+    supabase.from("consultant_profiles")
+      .select("user_id, display_name, specialization, bio, years_experience, rate, location")
+      .eq("user_id", userId).single(),
+    supabase.from("consultant_credentials").select("user_id").eq("user_id", userId).eq("status", "verified"),
+  ])
+  if (!profile) return null
+  const p = profile as {
+    user_id: string; display_name: string; specialization: string; bio: string | null;
+    years_experience: number | null; rate: number | null; location: string | null
+  }
+  return {
+    id: p.user_id,
+    isLive: true,
+    architect_id: null,
+    consultant_user_id: p.user_id,
+    name: p.display_name,
+    role: p.specialization,
+    category: p.specialization,
+    verified: (verifiedCreds?.length ?? 0) > 0,
+    rating: 0,
+    reviewCount: 0,
+    company: "",
+    location: p.location ?? "Sri Lanka",
+    available: "Available",
+    hours: "9AM – 6PM",
+    about: p.bio ?? "",
+    rate: p.rate ?? 120,
+    specializations: [p.specialization],
+    experience: [],
+    education: [],
+    reviews: [],
+    portfolio: [],
+  }
 }
 
 // ─── Fetch functions ───────────────────────────────────────
@@ -174,7 +304,7 @@ export async function fetchRecentQuestions(
 export async function insertConsultation(
   userId: string,
   payload: {
-    architect_id: number
+    architect_id: number | null
     architect_name: string
     architect_initials: string
     consultation_type: string
@@ -846,6 +976,43 @@ export async function fetchCredentials(userId: string): Promise<ConsultantCreden
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
   return (data ?? []) as ConsultantCredential[]
+}
+
+// ─── Admin ─────────────────────────────────────────────────
+
+export type PendingCredential = ConsultantCredential & { display_name: string }
+
+export async function fetchPendingCredentials(): Promise<PendingCredential[]> {
+  const supabase = createClient()
+  const { data } = await supabase
+    .from("consultant_credentials")
+    .select("*, consultant_profiles(display_name)")
+    .eq("status", "pending")
+    .order("created_at", { ascending: false })
+  return (data ?? []).map((row: ConsultantCredential & { consultant_profiles: { display_name: string } | null }) => ({
+    ...row,
+    display_name: row.consultant_profiles?.display_name ?? "Unknown",
+  }))
+}
+
+export async function approveCredential(credentialId: string, consultantUserId: string): Promise<void> {
+  const supabase = createClient()
+  await supabase.from("consultant_credentials").update({ status: "verified" }).eq("id", credentialId)
+  insertNotification(consultantUserId, {
+    type: "success",
+    title: "Credential verified",
+    body: "Your credential has been reviewed and verified. Your profile now shows as Verified.",
+  }).catch(() => {})
+}
+
+export async function rejectCredential(credentialId: string, consultantUserId: string): Promise<void> {
+  const supabase = createClient()
+  await supabase.from("consultant_credentials").update({ status: "rejected" }).eq("id", credentialId)
+  insertNotification(consultantUserId, {
+    type: "warning",
+    title: "Credential not approved",
+    body: "Your credential could not be verified at this time. Please check your submission and try again.",
+  }).catch(() => {})
 }
 
 export async function submitCredential(
