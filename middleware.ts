@@ -39,7 +39,9 @@ export async function middleware(request: NextRequest) {
     pathname === "/forgot-password/sent" ||
     pathname === "/reset-password"
 
-  if (!user && !isAuthRoute) {
+  const isPublicRoute = pathname === "/"
+
+  if (!user && !isAuthRoute && !isPublicRoute) {
     return NextResponse.redirect(new URL("/login", request.url))
   }
 
@@ -49,6 +51,12 @@ export async function middleware(request: NextRequest) {
     const onboardingDone = user.user_metadata?.onboarding_completed === true
     const isOnboardingRoute = pathname.startsWith("/onboarding")
     const isConsultantRoute = pathname.startsWith("/consultant")
+
+    if (pathname === "/") {
+      return NextResponse.redirect(
+        new URL(isConsultant ? "/consultant/dashboard" : "/dashboard", request.url)
+      )
+    }
 
     if (isAuthRoute) {
       return NextResponse.redirect(
