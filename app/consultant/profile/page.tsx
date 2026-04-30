@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Plus, Trash2 } from "lucide-react"
+import { Plus, Trash2, CheckCircle2 } from "lucide-react"
 import { ConsultantSidebar } from "@/components/consultant-sidebar"
 import { AppHeader } from "@/components/app-header"
 import { Input } from "@/components/ui/input"
@@ -157,6 +157,17 @@ export default function ConsultantProfilePage() {
   const inputCls = "h-11 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl"
   const sectionCls = "bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 flex flex-col gap-4 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]"
 
+  const checklist = [
+    { label: "Display name",      done: displayName.trim().length > 0 },
+    { label: "Role",              done: role.length > 0 },
+    { label: "Bio",               done: bio.trim().length > 0 },
+    { label: "Specializations",   done: selectedSpecs.length > 0 },
+    { label: "Experience",        done: experience.length > 0 },
+    { label: "Education",         done: education.length > 0 },
+    { label: "Portfolio",         done: portfolio.length > 0 },
+  ]
+  const completionPct = Math.round((checklist.filter(c => c.done).length / checklist.length) * 100)
+
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
       <ConsultantSidebar />
@@ -164,7 +175,9 @@ export default function ConsultantProfilePage() {
         <AppHeader title="Profile" />
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6">
-          <div className="max-w-lg mx-auto flex flex-col gap-5">
+          <div className="flex flex-col lg:flex-row gap-5 items-start">
+            {/* ── Main form column ── */}
+            <div className="flex-1 min-w-0 flex flex-col gap-5">
 
             {/* Avatar card */}
             <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6 flex items-center gap-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
@@ -414,6 +427,63 @@ export default function ConsultantProfilePage() {
                 </button>
               </>
             )}
+            </div>{/* end main form column */}
+
+            {/* ── Right sidebar ── */}
+            <div className="hidden lg:flex w-[280px] flex-shrink-0 flex-col gap-4 sticky top-0">
+
+              {/* Profile completeness */}
+              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+                <p className="text-sm font-bold text-gray-900 dark:text-white mb-4">Profile completeness</p>
+
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">Completion</span>
+                    <span className="text-xs font-bold text-gray-900 dark:text-white">{completionPct}%</span>
+                  </div>
+                  <div className="w-full h-2 bg-gray-100 dark:bg-white/8 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                      style={{ width: `${completionPct}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2.5">
+                  {checklist.map(({ label, done }) => (
+                    <div key={label} className="flex items-center gap-2.5">
+                      {done
+                        ? <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                        : <div className="w-4 h-4 rounded-full border-2 border-gray-200 dark:border-white/15 flex-shrink-0" />
+                      }
+                      <span className={`text-sm ${done ? "text-gray-700 dark:text-gray-300" : "text-gray-400 dark:text-gray-600"}`}>
+                        {label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Visibility tips */}
+              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+                <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Visibility tips</p>
+                <div className="space-y-3">
+                  {[
+                    "A detailed bio helps clients trust you before booking.",
+                    "Portfolio images significantly increase booking rates.",
+                    "Set your working hours so clients know when to reach you.",
+                  ].map((tip, i) => (
+                    <div key={i} className="flex items-start gap-2.5">
+                      <span className="w-5 h-5 rounded-full bg-secondary/15 text-primary dark:text-secondary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                        {i + 1}
+                      </span>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{tip}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
