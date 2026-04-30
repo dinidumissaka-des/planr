@@ -24,16 +24,30 @@ Each color has a full 50–950 shade scale (e.g. `bg-secondary-100`, `text-prima
 **When a brand color is used as a background, light and dark mode must look identical. Never add `dark:` overrides to brand-color backgrounds.**
 
 ```tsx
-// Correct — same in both modes
+// Correct — background stays identical in both modes
 <div className="bg-white/40" />
 <p className="text-gray-900">{label}</p>
 
 // Wrong — dark override kills the brand color
 <div className="bg-white/40 dark:bg-black/70" />
-<p className="text-gray-900 dark:text-white">{label}</p>
 ```
 
 Only add `dark:` overrides for neutral grays (`bg-gray-*`, `bg-white`, `bg-black`).
+
+### Text on brand-color backgrounds in dark mode
+
+Brand backgrounds stay the same, but the *text* on top may need a dark override because the underlying card darkens (semi-transparent colors shift). Use Tailwind classes, **not inline `color:` styles** (inline styles can't respond to dark mode).
+
+```tsx
+// Correct — text adapts, background stays identical
+<div
+  className="text-[#1A3050] dark:text-white"
+  style={{ backgroundColor: "rgba(129,185,233,0.20)" }}
+/>
+
+// Wrong — inline color is invisible in dark mode
+<div style={{ backgroundColor: "rgba(129,185,233,0.20)", color: "#1A3050" }} />
+```
 
 ## Typography
 

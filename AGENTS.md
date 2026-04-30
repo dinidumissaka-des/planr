@@ -1,5 +1,11 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# Agents
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+See `CLAUDE.md` for full project instructions.
+
+Specialized agents live in `.claude/agents/`:
+
+| Agent | Scope |
+|---|---|
+| `planr-brand.md` | UI, colors, dark mode, layout patterns |
+| `planr-persona.md` | Copy, UX, product naming, tone of voice |
+| `planr-db.md` | Database schema, Supabase queries, data types |
