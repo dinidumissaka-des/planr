@@ -87,6 +87,7 @@ export function AppHeader({ title }: AppHeaderProps) {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [userEmail, setUserEmail] = useState("")
   const [userName, setUserName] = useState("")
+  const [isConsultant, setIsConsultant] = useState(false)
   const notifRef = useRef<HTMLDivElement>(null)
   const userRef = useRef<HTMLDivElement>(null)
   const { theme, toggleTheme } = useTheme()
@@ -104,6 +105,7 @@ export function AppHeader({ title }: AppHeaderProps) {
       const first = user.user_metadata?.first_name ?? ""
       const last = user.user_metadata?.last_name ?? ""
       setUserName(first && last ? `${first} ${last}` : (user.email ?? ""))
+      setIsConsultant(user.user_metadata?.role === "consultant")
 
       const notifs = await fetchNotifications(user.id)
       if (!active) return
@@ -304,18 +306,22 @@ export function AppHeader({ title }: AppHeaderProps) {
                   </div>
                 </div>
                 <div className="py-1.5">
-                  <Link href="/profile" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
+                  <Link href={isConsultant ? "/consultant/profile" : "/profile"} onClick={() => setUserOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
                     <User className="w-4 h-4" />
                     My Profile
                   </Link>
-                  <Link href="/settings" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
-                    <Settings className="w-4 h-4" />
-                    Account Settings
-                  </Link>
-                  <Link href="/referral" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
-                    <Gift className="w-4 h-4" />
-                    Refer a Friend
-                  </Link>
+                  {!isConsultant && (
+                    <>
+                      <Link href="/settings" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <Settings className="w-4 h-4" />
+                        Account Settings
+                      </Link>
+                      <Link href="/referral" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <Gift className="w-4 h-4" />
+                        Refer a Friend
+                      </Link>
+                    </>
+                  )}
                 </div>
                 <div className="border-t border-gray-100 dark:border-white/8 py-1.5">
                   <button
@@ -407,18 +413,22 @@ export function AppHeader({ title }: AppHeaderProps) {
             </div>
             {/* Menu items */}
             <div className="py-2">
-              <Link href="/profile" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+              <Link href={isConsultant ? "/consultant/profile" : "/profile"} onClick={() => setUserOpen(false)} className="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                 <User className="w-5 h-5 text-gray-400" />
                 My Profile
               </Link>
-              <Link href="/settings" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                <Settings className="w-5 h-5 text-gray-400" />
-                Account Settings
-              </Link>
-              <Link href="/referral" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                <Gift className="w-5 h-5 text-gray-400" />
-                Refer a Friend
-              </Link>
+              {!isConsultant && (
+                <>
+                  <Link href="/settings" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                    <Settings className="w-5 h-5 text-gray-400" />
+                    Account Settings
+                  </Link>
+                  <Link href="/referral" onClick={() => setUserOpen(false)} className="w-full flex items-center gap-4 px-5 py-4 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                    <Gift className="w-5 h-5 text-gray-400" />
+                    Refer a Friend
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
