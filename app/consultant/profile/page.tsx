@@ -188,15 +188,17 @@ export default function ConsultantProfilePage() {
                 {initials}
               </div>
               <div className="min-w-0">
-                <p className="text-base font-bold text-gray-900 dark:text-white truncate">{displayName || "—"}</p>
-                <p className="text-sm text-gray-400 dark:text-gray-500 truncate">{email}</p>
-                <span
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full mt-2 text-[#1A3050] dark:text-[#81B9E9]"
-                  style={{ backgroundColor: "rgba(129,185,233,0.18)" }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#81B9E9]" />
-                  Consultant
-                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="text-base font-bold text-gray-900 dark:text-white truncate">{displayName || "—"}</p>
+                  <span
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0 text-[#1A3050] dark:text-[#81B9E9]"
+                    style={{ backgroundColor: "rgba(129,185,233,0.18)" }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#81B9E9]" />
+                    Consultant
+                  </span>
+                </div>
+                <p className="text-sm text-gray-400 dark:text-gray-500 truncate mt-0.5">{email}</p>
               </div>
             </div>
 
