@@ -182,8 +182,8 @@ export default function ConsultantProfilePage() {
             {/* Avatar card */}
             <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6 flex items-center gap-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
               <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold flex-shrink-0"
-                style={{ backgroundColor: "rgba(129,185,233,0.20)", color: "#1A3050" }}
+                className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold flex-shrink-0 text-[#1A3050] dark:text-white"
+                style={{ backgroundColor: "rgba(129,185,233,0.20)" }}
               >
                 {initials}
               </div>
@@ -191,8 +191,8 @@ export default function ConsultantProfilePage() {
                 <p className="text-base font-bold text-gray-900 dark:text-white truncate">{displayName || "—"}</p>
                 <p className="text-sm text-gray-400 dark:text-gray-500 truncate">{email}</p>
                 <span
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full mt-2"
-                  style={{ backgroundColor: "rgba(129,185,233,0.18)", color: "#1A3050" }}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full mt-2 text-[#1A3050] dark:text-[#81B9E9]"
+                  style={{ backgroundColor: "rgba(129,185,233,0.18)" }}
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[#81B9E9]" />
                   Consultant
