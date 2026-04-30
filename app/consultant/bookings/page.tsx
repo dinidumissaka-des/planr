@@ -269,13 +269,13 @@ export default function ConsultantBookingsPage() {
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Status guide</p>
                 <div className="space-y-2.5">
                   {[
-                    { label: "Upcoming", desc: "Session is scheduled and confirmed.", color: "bg-secondary/20 text-primary dark:text-secondary" },
-                    { label: "Ongoing",  desc: "Session is currently in progress.",   color: "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" },
-                    { label: "Completed",desc: "Session has been completed.",         color: "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400" },
+                    { label: "Upcoming",  desc: "Scheduled and confirmed.",  color: "bg-secondary/20 text-primary dark:text-secondary" },
+                    { label: "Ongoing",   desc: "Currently in progress.",    color: "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" },
+                    { label: "Completed", desc: "Session has been completed.", color: "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400" },
                   ].map(({ label, desc, color }) => (
-                    <div key={label} className="flex items-start gap-2.5">
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 mt-0.5 ${color}`}>{label}</span>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{desc}</p>
+                    <div key={label} className="grid grid-cols-[80px_1fr] items-center gap-2">
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full text-center whitespace-nowrap ${color}`}>{label}</span>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{desc}</p>
                     </div>
                   ))}
                 </div>
