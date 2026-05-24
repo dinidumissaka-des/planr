@@ -81,8 +81,8 @@ export function ConsultantSidebar() {
         {/* Role badge */}
         <div className="px-2 mb-6">
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
-            style={{ backgroundColor: "rgba(129,185,233,0.18)", color: "#1A3050" }}>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#81B9E9]" />
+            style={{ backgroundColor: "rgba(0,54,24,0.12)", color: "#003618" }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#003618]" />
             Consultant
           </span>
         </div>
@@ -96,7 +96,7 @@ export function ConsultantSidebar() {
                 href={href}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   active
-                    ? "bg-secondary/40 text-primary dark:text-white dark:bg-secondary/20"
+                    ? "bg-[rgba(0,54,24,0.1)] text-[#003618] dark:bg-[rgba(0,54,24,0.35)] dark:text-[#4ade80]"
                     : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5"
                 }`}
               >
@@ -125,7 +125,7 @@ export function ConsultantSidebar() {
               href={href}
               className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-colors ${
                 active
-                  ? "bg-secondary/40 text-primary dark:bg-secondary/20 dark:text-white"
+                  ? "bg-[rgba(0,54,24,0.1)] text-[#003618] dark:bg-[rgba(0,54,24,0.35)] dark:text-[#4ade80]"
                   : "text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-400"
               }`}
             >
