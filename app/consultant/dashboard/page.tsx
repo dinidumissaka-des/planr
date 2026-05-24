@@ -116,7 +116,7 @@ export default function ConsultantDashboardPage() {
                   <h2 className="text-xl md:text-2xl font-bold text-white mb-1">{userName}</h2>
                   <p className="text-white/60 text-sm">
                     You have{" "}
-                    <span className="text-secondary font-semibold">{upcoming.length} upcoming</span>
+                    <span className="text-white font-semibold">{upcoming.length} upcoming</span>
                     {" "}session{upcoming.length !== 1 ? "s" : ""} and{" "}
                     <span className="text-white font-semibold">{unanswered.length} question{unanswered.length !== 1 ? "s" : ""}</span>
                     {" "}waiting

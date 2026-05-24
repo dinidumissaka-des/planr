@@ -135,7 +135,7 @@ export default function DashboardPage() {
                   <h2 className="text-xl md:text-2xl font-bold text-white mb-1">{userName}</h2>
                   <p className="text-white/60 text-sm">
                     You have{" "}
-                    <span className="text-secondary font-semibold">{ongoing.length} ongoing</span>
+                    <span className="text-white font-semibold">{ongoing.length} ongoing</span>
                     {" "}and{" "}
                     <span className="text-white font-semibold">{upcoming.length} upcoming</span>
                     {" "}consultation{upcoming.length !== 1 ? "s" : ""}
