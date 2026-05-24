@@ -216,7 +216,7 @@ export function AppHeader({ title }: AppHeaderProps) {
             >
               <Bell className="w-5 h-5" />
               {unread > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-secondary rounded-full text-[9px] font-bold text-primary flex items-center justify-center">
+                <span className={`absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center ${isConsultant ? "bg-[#003618] text-white" : "bg-secondary text-primary"}`}>
                   {unread}
                 </span>
               )}
@@ -284,7 +284,7 @@ export function AppHeader({ title }: AppHeaderProps) {
               onClick={() => setUserOpen(o => !o)}
               className="flex items-center gap-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
-              <div className="w-8 h-8 rounded-full bg-secondary/25 dark:bg-secondary/20 flex items-center justify-center text-xs font-bold text-primary dark:text-secondary">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${isConsultant ? "bg-[rgba(0,54,24,0.15)] text-[#003618] dark:bg-[rgba(0,54,24,0.35)] dark:text-[#4ade80]" : "bg-secondary/25 dark:bg-secondary/20 text-primary dark:text-secondary"}`}>
                 {initials}
               </div>
               <span className="hidden sm:inline">{userName || userEmail}</span>
@@ -296,7 +296,7 @@ export function AppHeader({ title }: AppHeaderProps) {
               <div className="hidden md:block absolute right-0 top-11 w-56 bg-white dark:bg-[#0D1B2E] rounded-2xl shadow-xl border border-gray-100 dark:border-white/8 overflow-hidden">
                 <div className="px-4 py-3.5 border-b border-gray-100 dark:border-white/8">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-secondary/25 dark:bg-secondary/20 flex items-center justify-center text-xs font-bold text-primary dark:text-secondary flex-shrink-0">
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${isConsultant ? "bg-[rgba(0,54,24,0.15)] text-[#003618] dark:bg-[rgba(0,54,24,0.35)] dark:text-[#4ade80]" : "bg-secondary/25 dark:bg-secondary/20 text-primary dark:text-secondary"}`}>
                       {initials}
                     </div>
                     <div className="min-w-0">

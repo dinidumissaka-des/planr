@@ -297,7 +297,7 @@ export default function ConsultantDashboardPage() {
                 </p>
                 <Link
                   href="/consultant/profile"
-                  className="block w-full text-center bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors"
+                  className="block w-full text-center bg-[#003618] hover:bg-[#004d22] text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
                 >
                   Edit profile
                 </Link>
