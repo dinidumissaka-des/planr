@@ -54,7 +54,7 @@ function QuestionCard({
           <p className="text-sm font-semibold text-gray-900 dark:text-white leading-snug">{question.question}</p>
           <div className="flex items-center gap-2 mt-1 flex-wrap">
             {question.category && (
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-secondary/15 text-primary dark:text-secondary">{question.category}</span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[rgba(0,54,24,0.1)] text-[#003618] dark:bg-[rgba(0,54,24,0.3)] dark:text-[#4ade80]">{question.category}</span>
             )}
             <span className="text-xs text-gray-400 dark:text-gray-600">{timeAgo(question.created_at)}</span>
           </div>
@@ -297,7 +297,7 @@ export default function ConsultantQuestionsPage() {
                     "Use the Pending filter to quickly find unanswered questions.",
                   ].map((tip, i) => (
                     <div key={i} className="flex items-start gap-2.5">
-                      <span className="w-5 h-5 rounded-full bg-secondary/15 text-primary dark:text-secondary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="w-5 h-5 rounded-full bg-[rgba(0,54,24,0.12)] text-[#003618] dark:bg-[rgba(0,54,24,0.3)] dark:text-[#4ade80] text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                         {i + 1}
                       </span>
                       <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{tip}</p>

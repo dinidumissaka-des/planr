@@ -23,7 +23,7 @@ const TABS: { label: string; value: ConsultationStatus | "all" }[] = [
 ]
 
 const STATUS_META: Record<ConsultationStatus, { label: string; color: string; icon: React.ElementType }> = {
-  upcoming:  { label: "Upcoming",  color: "bg-secondary/20 text-primary dark:text-secondary",                              icon: CalendarDays },
+  upcoming:  { label: "Upcoming",  color: "bg-[rgba(0,54,24,0.1)] text-[#003618] dark:bg-[rgba(0,54,24,0.3)] dark:text-[#4ade80]",                              icon: CalendarDays },
   ongoing:   { label: "Ongoing",   color: "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",  icon: Clock },
   completed: { label: "Completed", color: "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400",                icon: CheckCircle2 },
 }
@@ -55,8 +55,8 @@ function BookingCard({
         className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-gray-50/50 dark:hover:bg-white/3 transition-colors"
         onClick={() => setExpanded(e => !e)}
       >
-        <div className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: "rgba(129,185,233,0.18)" }}>
-          <CalendarDays className="w-5 h-5" style={{ color: "#1A3050" }} />
+        <div className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: "rgba(0,54,24,0.12)" }}>
+          <CalendarDays className="w-5 h-5" style={{ color: "#003618" }} />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{booking.consultation_type}</p>
@@ -111,7 +111,7 @@ function BookingCard({
               <button
                 onClick={() => change("upcoming")}
                 disabled={updating}
-                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg bg-secondary/20 text-primary dark:text-secondary hover:opacity-80 disabled:opacity-50 transition-opacity"
+                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg bg-[rgba(0,54,24,0.1)] text-[#003618] dark:bg-[rgba(0,54,24,0.3)] dark:text-[#4ade80] hover:opacity-80 disabled:opacity-50 transition-opacity"
               >
                 <CalendarDays className="w-3.5 h-3.5" /> Reset to Upcoming
               </button>
@@ -220,7 +220,7 @@ export default function ConsultantBookingsPage() {
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-4">Overview</p>
                 <div className="space-y-3">
                   {[
-                    { label: "Upcoming",  value: upcoming.length,  icon: CalendarDays, color: "text-secondary dark:text-secondary" },
+                    { label: "Upcoming",  value: upcoming.length,  icon: CalendarDays, color: "text-[#003618] dark:text-[#4ade80]" },
                     { label: "Ongoing",   value: ongoing.length,   icon: Clock,        color: "text-emerald-500" },
                     { label: "Completed", value: completed.length, icon: CheckCircle2, color: "text-gray-400 dark:text-gray-600" },
                   ].map(({ label, value, icon: Icon, color }) => (
@@ -244,7 +244,7 @@ export default function ConsultantBookingsPage() {
                       <AvatarInitials initials={nextSession.architect_initials} size="w-10 h-10" textSize="text-xs" />
                       <div className="min-w-0">
                         <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">{nextSession.architect_name}</p>
-                        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-secondary/20 text-primary dark:text-secondary">
+                        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[rgba(0,54,24,0.1)] text-[#003618] dark:bg-[rgba(0,54,24,0.3)] dark:text-[#4ade80]">
                           {nextSession.consultation_type}
                         </span>
                       </div>
@@ -269,7 +269,7 @@ export default function ConsultantBookingsPage() {
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Status guide</p>
                 <div className="space-y-2.5">
                   {[
-                    { label: "Upcoming",  desc: "Scheduled and confirmed.",  color: "bg-secondary/20 text-primary dark:text-secondary" },
+                    { label: "Upcoming",  desc: "Scheduled and confirmed.",  color: "bg-[rgba(0,54,24,0.1)] text-[#003618] dark:bg-[rgba(0,54,24,0.3)] dark:text-[#4ade80]" },
                     { label: "Ongoing",   desc: "Currently in progress.",    color: "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" },
                     { label: "Completed", desc: "Session has been completed.", color: "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400" },
                   ].map(({ label, desc, color }) => (

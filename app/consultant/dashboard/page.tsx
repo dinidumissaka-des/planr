@@ -25,7 +25,7 @@ function getGreeting() {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  upcoming:  "bg-secondary/20 text-primary dark:text-secondary",
+  upcoming:  "bg-[rgba(0,54,24,0.1)] text-[#003618] dark:bg-[rgba(0,54,24,0.3)] dark:text-[#4ade80]",
   ongoing:   "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
   completed: "bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400",
 }
@@ -179,7 +179,7 @@ export default function ConsultantDashboardPage() {
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">{q.question}</p>
                           {q.category && (
-                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-secondary/15 text-primary dark:text-secondary mr-2">{q.category}</span>
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[rgba(0,54,24,0.1)] text-[#003618] dark:bg-[rgba(0,54,24,0.3)] dark:text-[#4ade80] mr-2">{q.category}</span>
                           )}
                           <span className="text-xs text-gray-400 dark:text-gray-600">{timeAgo(q.created_at)}</span>
                         </div>

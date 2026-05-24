@@ -182,8 +182,8 @@ export default function ConsultantProfilePage() {
             {/* Avatar card */}
             <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6 flex items-center gap-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
               <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold flex-shrink-0 text-[#1A3050] dark:text-white"
-                style={{ backgroundColor: "rgba(129,185,233,0.20)" }}
+                className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold flex-shrink-0 text-[#003618] dark:text-[#4ade80]"
+                style={{ backgroundColor: "rgba(0,54,24,0.12)" }}
               >
                 {initials}
               </div>
@@ -191,10 +191,10 @@ export default function ConsultantProfilePage() {
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="text-base font-bold text-gray-900 dark:text-white truncate">{displayName || "—"}</p>
                   <span
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0 text-[#1A3050] dark:text-[#81B9E9]"
-                    style={{ backgroundColor: "rgba(129,185,233,0.18)" }}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0 text-[#003618] dark:text-[#4ade80]"
+                    style={{ backgroundColor: "rgba(0,54,24,0.12)" }}
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#81B9E9]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#003618]" />
                     Consultant
                   </span>
                 </div>
@@ -476,7 +476,7 @@ export default function ConsultantProfilePage() {
                     "Set your working hours so clients know when to reach you.",
                   ].map((tip, i) => (
                     <div key={i} className="flex items-start gap-2.5">
-                      <span className="w-5 h-5 rounded-full bg-secondary/15 text-primary dark:text-secondary text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="w-5 h-5 rounded-full bg-[rgba(0,54,24,0.12)] text-[#003618] dark:bg-[rgba(0,54,24,0.3)] dark:text-[#4ade80] text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                         {i + 1}
                       </span>
                       <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{tip}</p>
