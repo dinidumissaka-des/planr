@@ -105,7 +105,7 @@ export default function ConsultantDashboardPage() {
               <div
                 className="relative rounded-2xl overflow-hidden px-5 md:px-7 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                 style={{
-                  backgroundImage: `url('/banner.png'), linear-gradient(to right, #1A3050 0%, #81B9E9 100%)`,
+                  backgroundImage: `url('/banner.png'), linear-gradient(to right, #003618 0%, #1a6b3a 100%)`,
                   backgroundBlendMode: "overlay",
                   backgroundSize: "cover, cover",
                   backgroundPosition: "center",
