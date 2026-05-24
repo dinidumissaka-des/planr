@@ -178,7 +178,7 @@ export default function ConsultantBookingsPage() {
                     onClick={() => setTab(t.value)}
                     className={`flex-1 h-9 rounded-xl text-sm font-semibold transition-all ${
                       tab === t.value
-                        ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm"
+                        ? "bg-[#003618] text-white shadow-sm"
                         : "text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                     }`}
                   >

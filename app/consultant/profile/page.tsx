@@ -274,7 +274,7 @@ export default function ConsultantProfilePage() {
                           onClick={() => toggleSpec(s)}
                           className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
                             selectedSpecs.includes(s)
-                              ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white"
+                              ? "bg-[#003618] text-white border-[#003618]"
                               : "bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/30"
                           }`}
                         >
@@ -423,7 +423,7 @@ export default function ConsultantProfilePage() {
                 <button
                   onClick={handleSave}
                   disabled={saving || !displayName.trim()}
-                  className="w-full h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-50 text-white dark:text-gray-900 text-sm font-semibold rounded-xl transition-colors"
+                  className="w-full h-12 bg-[#003618] hover:bg-[#004d22] disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition-colors"
                 >
                   {saving ? "Saving…" : saved ? "Saved!" : "Save changes"}
                 </button>

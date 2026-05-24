@@ -54,9 +54,9 @@ function StepDots({ step }: { step: number }) {
           key={i}
           className={`rounded-full transition-all ${
             i + 1 === step
-              ? "w-6 h-2 bg-gray-900 dark:bg-white"
+              ? "w-6 h-2 bg-[#003618]"
               : i + 1 < step
-              ? "w-2 h-2 bg-gray-900 dark:bg-white opacity-40"
+              ? "w-2 h-2 bg-[#003618] opacity-40"
               : "w-2 h-2 bg-gray-200 dark:bg-white/15"
           }`}
         />
@@ -223,7 +223,7 @@ export default function ConsultantOnboardingPage() {
                         onClick={() => { setSelectedRole(r); setSelectedSpecs([]) }}
                         className={`h-11 px-4 rounded-xl text-sm font-medium text-left border transition-all ${
                           selectedRole === r
-                            ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white"
+                            ? "bg-[#003618] text-white border-[#003618]"
                             : "bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/30"
                         }`}
                       >
@@ -252,7 +252,7 @@ export default function ConsultantOnboardingPage() {
               <button
                 onClick={() => step1Valid() && setStep(2)}
                 disabled={!step1Valid()}
-                className="w-full h-12 mt-8 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-40 text-white dark:text-gray-900 text-sm font-semibold rounded-xl transition-colors"
+                className="w-full h-12 mt-8 bg-[#003618] hover:bg-[#004d22] disabled:opacity-40 text-white text-sm font-semibold rounded-xl transition-colors"
               >
                 Continue
               </button>
@@ -276,7 +276,7 @@ export default function ConsultantOnboardingPage() {
                         onClick={() => toggleSpec(s)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
                           selectedSpecs.includes(s)
-                            ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white"
+                            ? "bg-[#003618] text-white border-[#003618]"
                             : "bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/30"
                         }`}
                       >
@@ -314,7 +314,7 @@ export default function ConsultantOnboardingPage() {
                 <button
                   onClick={() => step2Valid() && setStep(3)}
                   disabled={!step2Valid()}
-                  className="flex-[2] h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-40 text-white dark:text-gray-900 text-sm font-semibold rounded-xl transition-colors"
+                  className="flex-[2] h-12 bg-[#003618] hover:bg-[#004d22] disabled:opacity-40 text-white text-sm font-semibold rounded-xl transition-colors"
                 >
                   Continue
                 </button>
@@ -429,7 +429,7 @@ export default function ConsultantOnboardingPage() {
                 <button
                   onClick={handleFinish}
                   disabled={saving}
-                  className="flex-[2] h-12 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-50 text-white dark:text-gray-900 text-sm font-semibold rounded-xl transition-colors"
+                  className="flex-[2] h-12 bg-[#003618] hover:bg-[#004d22] disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition-colors"
                 >
                   {saving ? "Saving…" : "Complete profile"}
                 </button>

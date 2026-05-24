@@ -103,7 +103,7 @@ function QuestionCard({
                 <button
                   onClick={submit}
                   disabled={sending || !reply.trim()}
-                  className="flex items-center gap-2 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 disabled:opacity-50 text-white dark:text-gray-900 text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
+                  className="flex items-center gap-2 bg-[#003618] hover:bg-[#004d22] disabled:opacity-50 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
                 >
                   {sending
                     ? <><div className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin" /> Sending…</>
@@ -211,7 +211,7 @@ export default function ConsultantQuestionsPage() {
                     onClick={() => setTab(t.value)}
                     className={`flex-1 h-9 rounded-xl text-sm font-semibold transition-all ${
                       tab === t.value
-                        ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm"
+                        ? "bg-[#003618] text-white shadow-sm"
                         : "text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                     }`}
                   >
