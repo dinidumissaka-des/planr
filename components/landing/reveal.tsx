@@ -3,25 +3,27 @@
 import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
 
-export function Reveal({ children, delay = 0, y = 24, className }: { children: ReactNode; delay?: number; y?: number; className?: string }) {
+export const ease = [0.22, 1, 0.36, 1] as const
+
+export function Reveal({ children, delay = 0, className }: { children: ReactNode; delay?: number; className?: string }) {
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y, filter: 'blur(8px)' }}
-      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      viewport={{ once: true, margin: '0px 0px -60px 0px' }}
-      transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '0px 0px -80px 0px' }}
+      transition={{ duration: 0.8, delay, ease }}
     >
       {children}
     </motion.div>
   )
 }
 
-export function SectionLabel({ children }: { children: ReactNode }) {
+export function SectionHead({ index, label }: { index: string; label: string }) {
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-secondary-400/30 bg-secondary-400/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-[#2A6499] dark:text-secondary-400">
-      <span className="h-1.5 w-1.5 rounded-full bg-secondary-400" />
-      {children}
-    </span>
+    <div className="flex items-center gap-4 border-t border-gray-900/15 pt-4 text-[12px] font-medium tracking-wide text-gray-500 dark:border-white/15 dark:text-white/50">
+      <span className="tabular-nums text-gray-900 dark:text-white">{index}</span>
+      <span className="uppercase">{label}</span>
+    </div>
   )
 }

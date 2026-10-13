@@ -1,10 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope } from "next/font/google";
+import { Instrument_Serif, Manrope } from "next/font/google";
 import "./globals.css";
 import { CommandPalette } from "@/components/command-palette";
 
 const manrope = Manrope({
   variable: "--font-manrope",
+  subsets: ["latin"],
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  weight: "400",
+  style: ["normal", "italic"],
   subsets: ["latin"],
 });
 
@@ -35,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${manrope.variable} ${instrumentSerif.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#07111E" />
         {/* Prevent dark mode flash */}
