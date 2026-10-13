@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { AnimatePresence, motion, useScroll, useSpring, useTransform } from 'motion/react'
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, MapPin, Star } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, MapPin } from 'lucide-react'
 import { architects } from '@/lib/architects'
 import { Reveal, SectionHead, ease } from './reveal'
 
@@ -29,8 +29,8 @@ export function How() {
       <SectionHead index="01" label="How it works" />
       <div className="mt-10 grid gap-10 md:grid-cols-12">
         <Reveal className="md:col-span-5">
-          <h2 className="font-serif text-[clamp(38px,4.6vw,64px)] leading-[1] tracking-[-0.01em] text-gray-900 dark:text-white">
-            One place for the whole build, <em>not just the drawings.</em>
+          <h2 className="font-semibold text-[clamp(38px,4.6vw,64px)] leading-[1.02] tracking-[-0.045em] text-gray-900 dark:text-white">
+            One place for the whole build, <em className="font-serif font-normal italic tracking-[-0.02em]">not just the drawings.</em>
           </h2>
         </Reveal>
         <div className="grid gap-px overflow-hidden rounded-[4px] bg-gray-900/10 sm:grid-cols-3 md:col-span-7 dark:bg-white/10">
@@ -75,8 +75,8 @@ export function Tracker() {
         <div className="mt-10 grid gap-14 md:grid-cols-12">
           <div className="md:col-span-5">
             <Reveal>
-              <h2 className="font-serif text-[clamp(38px,4.6vw,64px)] leading-[1] tracking-[-0.01em]">
-                From first sketch to handover, <em className="text-sand-400">stage by stage.</em>
+              <h2 className="font-semibold text-[clamp(38px,4.6vw,64px)] leading-[1.02] tracking-[-0.045em]">
+                From first sketch to handover, <em className="font-serif font-normal italic tracking-[-0.02em] text-sand-400">stage by stage.</em>
               </h2>
             </Reveal>
             <Reveal delay={0.1}>
@@ -87,11 +87,11 @@ export function Tracker() {
             <Reveal delay={0.2}>
               <div className="mt-10 grid max-w-[380px] grid-cols-2 gap-px overflow-hidden rounded-[4px] bg-white/10">
                 <div className="bg-[#07111E] p-5">
-                  <div className="font-serif text-[40px] leading-none">3<span className="text-white/40">/10</span></div>
+                  <div className="text-[40px] font-semibold leading-none tracking-[-0.04em]">3<span className="text-white/40">/10</span></div>
                   <div className="mt-2 text-[12.5px] text-white/50">Stages complete</div>
                 </div>
                 <div className="bg-[#07111E] p-5">
-                  <div className="font-serif text-[40px] leading-none">38%</div>
+                  <div className="text-[40px] font-semibold leading-none tracking-[-0.04em]">38%</div>
                   <div className="mt-2 text-[12.5px] text-white/50">Overall progress</div>
                 </div>
               </div>
@@ -155,18 +155,36 @@ export function Tracker() {
   )
 }
 
-export function Consultants() {
+const DISCIPLINES = [
+  { name: 'Architecture', blurb: 'New homes, villas and extensions designed around your site and the climate.', image: 'photo-1613490493576-7fde63acd811' },
+  { name: 'Interior Design', blurb: 'Layouts, finishes and furniture that make a house feel like home.', image: 'photo-1555041469-a586c61ea9bc' },
+  { name: 'Landscape Architecture', blurb: 'Gardens, pools and outdoor rooms that thrive in the tropics.', image: 'photo-1540541338537-71acf6f14e1a' },
+  { name: 'Structural Engineering', blurb: 'Foundations and frames checked for soil, slope and load.', image: 'photo-1504307651254-35680f356dfd' },
+  { name: 'Construction', blurb: 'Contractors who run the site, the crews and the schedule.', image: 'photo-1541888946425-d81bb19240f5' },
+  { name: 'Quantity Surveying', blurb: 'Cost plans and BOQs, so every quote is checked before you sign.', image: 'photo-1454165804606-c3d57bc86b40' },
+  { name: 'Urban Design', blurb: 'Masterplans and mixed-use schemes for larger sites.', image: 'photo-1477959858617-67f85cf4f1df' },
+].map(d => {
+  const team = architects.filter(a => a.category === d.name)
+  return {
+    ...d,
+    count: team.length,
+    places: [...new Set(team.map(a => a.location.split(',')[0].replace(/ \d+$/, '')))],
+    tags: team.flatMap(a => a.specializations).slice(0, 2),
+  }
+})
+
+export function Expertise() {
   const track = useRef<HTMLDivElement>(null)
   const scroll = (dir: number) => track.current?.scrollBy({ left: dir * track.current.clientWidth * 0.8, behavior: 'smooth' })
 
   return (
-    <section id="consultants" className="py-24 md:py-32">
+    <section id="expertise" className="py-24 md:py-32">
       <div className="mx-auto max-w-[1240px] px-5 md:px-8">
-        <SectionHead index="03" label="Consultants" />
+        <SectionHead index="03" label="Expertise" />
         <div className="mt-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <Reveal>
-            <h2 className="max-w-[640px] font-serif text-[clamp(38px,4.6vw,64px)] leading-[1] tracking-[-0.01em] text-gray-900 dark:text-white">
-              The people who&apos;ll <em>build it with you.</em>
+            <h2 className="max-w-[680px] font-semibold text-[clamp(38px,4.6vw,64px)] leading-[1.02] tracking-[-0.045em] text-gray-900 dark:text-white">
+              Every specialist your build <em className="font-serif font-normal italic tracking-[-0.02em]">will need.</em>
             </h2>
           </Reveal>
           <div className="flex gap-2">
@@ -190,33 +208,31 @@ export function Consultants() {
         ref={track}
         className="mx-auto mt-12 flex max-w-[1240px] snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto scroll-smooth px-5 pb-4 [scrollbar-width:none] md:scroll-px-8 md:px-8 [&::-webkit-scrollbar]:hidden"
       >
-        {architects.map(a => (
-          <a key={a.id} href="/signup" className="group w-[78vw] shrink-0 snap-start sm:w-[340px]">
+        {DISCIPLINES.map((d, i) => (
+          <a key={d.name} href="/signup" className="group w-[78vw] shrink-0 snap-start sm:w-[340px]">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[4px] bg-[#E7E1D7] dark:bg-[#0D1B2E]">
               <img
-                src={img(a.portfolio[0].url, 700)}
-                alt={a.portfolio[0].caption}
+                src={img(`https://images.unsplash.com/${d.image}`, 700)}
+                alt={d.name}
                 loading="lazy"
                 className="h-full w-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
               />
-              <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-gray-900 backdrop-blur">
-                {a.category}
-              </span>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07111E]/75 via-[#07111E]/10 to-transparent" />
+              <span className="absolute top-4 left-4 text-[12px] tabular-nums text-white/80">0{i + 1}</span>
+              <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3 text-white">
+                <h3 className="text-[24px] leading-[1.05] font-semibold tracking-[-0.03em]">{d.name}</h3>
+                <ArrowUpRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </div>
             </div>
-            <div className="mt-4 flex items-start justify-between gap-3">
-              <div>
-                <div className="text-[16px] font-semibold text-gray-900 dark:text-white">{a.name}</div>
-                <div className="mt-0.5 text-[13.5px] text-gray-600 dark:text-white/60">{a.role}, {a.company}</div>
-                <div className="mt-2 flex items-center gap-1 text-[12.5px] text-gray-500 dark:text-white/45">
-                  <MapPin className="h-3.5 w-3.5" />
-                  {a.location.replace(', Sri Lanka', '')}
-                </div>
-              </div>
-              <div className="flex items-center gap-1 text-[13px] font-medium text-gray-900 dark:text-white">
-                <Star className="h-3.5 w-3.5 fill-current" />
-                {a.rating}
-                <span className="font-normal text-gray-400 dark:text-white/40">({a.reviewCount})</span>
-              </div>
+            <p className="mt-4 text-[14px] leading-[1.6] text-gray-600 dark:text-white/60">{d.blurb}</p>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {d.tags.map(t => (
+                <span key={t} className="rounded-full border border-gray-900/15 px-2.5 py-1 text-[11.5px] text-gray-700 dark:border-white/15 dark:text-white/70">{t}</span>
+              ))}
+            </div>
+            <div className="mt-4 flex items-center gap-1 text-[12.5px] text-gray-500 dark:text-white/45">
+              <MapPin className="h-3.5 w-3.5" />
+              {d.count} {d.count === 1 ? 'consultant' : 'consultants'} · {d.places.join(', ')}
             </div>
           </a>
         ))}
@@ -247,7 +263,7 @@ export function ProjectTypes() {
                 <div className="flex items-baseline gap-5">
                   <span className="text-[12px] tabular-nums text-gray-400 dark:text-white/40">0{i + 1}</span>
                   <span
-                    className={`font-serif text-[clamp(32px,4vw,52px)] leading-none transition-colors duration-300 ${
+                    className={`text-[clamp(30px,3.6vw,48px)] font-semibold leading-none tracking-[-0.04em] transition-colors duration-300 ${
                       active === null || active === i ? 'text-gray-900 dark:text-white' : 'text-gray-900/25 dark:text-white/25'
                     }`}
                   >
@@ -289,8 +305,8 @@ export function Ask() {
         <div className="md:col-span-5">
           <SectionHead index="05" label="Ask Planr" />
           <Reveal>
-            <h2 className="mt-10 font-serif text-[clamp(38px,4.6vw,64px)] leading-[1] tracking-[-0.01em] text-gray-900 dark:text-white">
-              Questions don&apos;t wait <em>for meetings.</em>
+            <h2 className="mt-10 font-semibold text-[clamp(38px,4.6vw,64px)] leading-[1.02] tracking-[-0.045em] text-gray-900 dark:text-white">
+              Questions don&apos;t wait <em className="font-serif font-normal italic tracking-[-0.02em]">for meetings.</em>
             </h2>
           </Reveal>
           <Reveal delay={0.1}>
@@ -368,8 +384,8 @@ export function Cta() {
       <div className="absolute inset-0 bg-gradient-to-r from-[#07111E]/85 via-[#07111E]/55 to-[#07111E]/10" />
       <div className="relative mx-auto max-w-[1240px] px-5 py-28 md:px-8 md:py-40">
         <Reveal>
-          <h2 className="max-w-[640px] font-serif text-[clamp(44px,6vw,88px)] leading-[0.95] tracking-[-0.01em] text-white">
-            Start with <em className="text-sand-400">a conversation.</em>
+          <h2 className="max-w-[640px] font-semibold text-[clamp(44px,6vw,88px)] leading-[1.02] tracking-[-0.045em] text-white">
+            Start with <em className="font-serif font-normal italic tracking-[-0.02em] text-sand-400">a conversation.</em>
           </h2>
         </Reveal>
         <Reveal delay={0.1}>
@@ -393,7 +409,7 @@ export function Cta() {
 }
 
 const FOOTER = [
-  { title: 'Product', links: [{ l: 'How it works', h: '#how' }, { l: 'Build tracker', h: '#tracker' }, { l: 'Ask Planr', h: '#ask' }, { l: 'Consultants', h: '#consultants' }] },
+  { title: 'Product', links: [{ l: 'How it works', h: '#how' }, { l: 'Build tracker', h: '#tracker' }, { l: 'Ask Planr', h: '#ask' }, { l: 'Expertise', h: '#expertise' }] },
   { title: 'Account', links: [{ l: 'Log in', h: '/login' }, { l: 'Create account', h: '/signup' }, { l: 'Join as a consultant', h: '/signup' }] },
 ]
 

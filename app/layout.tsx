@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, Manrope } from "next/font/google";
+import { Fraunces, Manrope } from "next/font/google";
 import "./globals.css";
 import { CommandPalette } from "@/components/command-palette";
 
@@ -8,10 +8,10 @@ const manrope = Manrope({
   subsets: ["latin"],
 });
 
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  weight: "400",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   style: ["normal", "italic"],
+  axes: ["opsz", "SOFT"],
   subsets: ["latin"],
 });
 
@@ -42,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} ${instrumentSerif.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${manrope.variable} ${fraunces.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#07111E" />
         {/* Prevent dark mode flash */}

@@ -30,11 +30,11 @@ export function Hero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.1, ease }}
-            className="font-serif text-[clamp(52px,6.4vw,96px)] leading-[0.92] tracking-[-0.02em] text-gray-900 dark:text-white"
+            className="font-semibold text-[clamp(52px,6.4vw,96px)] leading-[1.02] tracking-[-0.045em] text-gray-900 dark:text-white"
           >
             Plan it properly.
             <br />
-            <em className="text-[#8A6A4F] dark:text-sand-400">Build it once.</em>
+            <em className="font-serif font-normal italic tracking-[-0.02em] text-[#8A6A4F] dark:text-sand-400">Build it once.</em>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 16 }}
@@ -105,7 +105,7 @@ export function Hero() {
       <dl className="mt-20 grid gap-8 border-t border-gray-900/15 pt-8 sm:grid-cols-3 md:mt-28 dark:border-white/15">
         {FACTS.map(f => (
           <div key={f.label} className="flex items-baseline gap-4">
-            <dt className="font-serif text-[44px] leading-none text-gray-900 dark:text-white">{f.value}</dt>
+            <dt className="text-[44px] font-semibold leading-none tracking-[-0.04em] text-gray-900 dark:text-white">{f.value}</dt>
             <dd className="max-w-[220px] text-[13.5px] leading-snug text-gray-600 dark:text-white/60">{f.label}</dd>
           </div>
         ))}
