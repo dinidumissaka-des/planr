@@ -278,3 +278,57 @@
     @apply font-sans;
   }
 }
+/* ── Landing page motion + patterns ── */
+@theme {
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-float: float 4s ease-in-out infinite;
+  --animate-spin-slow: spin 6s linear infinite;
+  --animate-shine: shine 3s linear infinite;
+  --animate-grid-pan: grid-pan 20s linear infinite;
+  --animate-pulse-ring: pulse-ring 2s cubic-bezier(.2,.6,.4,1) infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0) }
+    to { transform: translateX(-50%) }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) }
+    50% { transform: translateY(-10px) }
+  }
+  @keyframes shine {
+    from { background-position: 200% center }
+    to { background-position: -200% center }
+  }
+  @keyframes grid-pan {
+    from { background-position: 0 0 }
+    to { background-position: 56px 56px }
+  }
+  @keyframes pulse-ring {
+    0% { transform: scale(1); opacity: .7 }
+    100% { transform: scale(2.4); opacity: 0 }
+  }
+}
+
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(129,185,233,.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(129,185,233,.12) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+@utility bg-dots {
+  background-image: radial-gradient(rgba(129,185,233,.35) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+@utility bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+
+@utility mask-radial {
+  mask-image: radial-gradient(ellipse at center, #000 20%, transparent 72%);
+}
+
+@utility mask-fade-x {
+  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+}
