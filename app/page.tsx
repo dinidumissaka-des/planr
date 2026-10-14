@@ -4,7 +4,8 @@ import { useEffect } from 'react'
 import { MotionConfig } from 'motion/react'
 import { LandingNav } from '@/components/landing/landing-nav'
 import { Hero } from '@/components/landing/hero'
-import { Ask, Expertise, Cta, Footer, How, ProjectTypes, Quote, Tracker } from '@/components/landing/sections'
+import { AiSection } from '@/components/landing/ai'
+import { Cta, Expertise, Footer, How, ProjectTypes, Quote, Tracker } from '@/components/landing/sections'
 
 export default function Home() {
   useEffect(() => {
@@ -24,11 +25,11 @@ export default function Home() {
       <main className="overflow-x-hidden bg-[#F5F2EC] antialiased dark:bg-[#07111E]">
         <LandingNav />
         <Hero />
+        <AiSection />
         <How />
         <Tracker />
         <Expertise />
         <ProjectTypes />
-        <Ask />
         <Quote />
         <Cta />
         <Footer />

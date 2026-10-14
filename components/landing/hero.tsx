@@ -1,115 +1,123 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { ArrowRight, CalendarDays } from 'lucide-react'
+import { ArrowRight, Sparkles } from 'lucide-react'
 import { architects } from '@/lib/architects'
+import { AiConsole } from './ai'
 import { ease } from './reveal'
 
 const lead = architects[0]
 
 const FACTS = [
-  { value: '7', label: 'disciplines, from architects to quantity surveyors' },
+  { value: '24/7', label: 'answers from Planr AI, in seconds' },
   { value: '10', label: 'build stages tracked, planning to handover' },
-  { value: '4', label: 'regions covered — Colombo, Kandy, Galle, Negombo' },
+  { value: '7', label: 'disciplines, from architects to quantity surveyors' },
 ]
 
 export function Hero() {
   return (
-    <section className="mx-auto max-w-[1240px] px-5 pt-28 pb-20 md:px-8 md:pt-36 md:pb-28">
-      <div className="grid gap-12 md:grid-cols-12 md:gap-10">
-        <div className="flex flex-col md:col-span-5 md:pt-6">
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, ease }}
-            className="mb-8 text-[13px] text-gray-500 dark:text-white/50"
-          >
-            Architecture consultation &amp; build tracking — Sri Lanka
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.1, ease }}
-            className="font-semibold text-[clamp(52px,6.4vw,96px)] leading-[1.02] tracking-[-0.045em] text-gray-900 dark:text-white"
-          >
-            Plan it properly.
-            <br />
-            <em className="font-serif font-normal italic tracking-[-0.02em] text-[#8A6A4F] dark:text-sand-400">Build it once.</em>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.25, ease }}
-            className="mt-8 max-w-[440px] text-[17px] leading-[1.6] text-gray-600 dark:text-white/65"
-          >
-            Book a certified Sri Lankan architect, follow every milestone from permits to handover, and get straight answers before the concrete is poured.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.35, ease }}
-            className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4"
-          >
-            <a
-              href="/signup"
-              className="group inline-flex h-12 items-center gap-2 rounded-xl bg-gray-900 px-6 text-[15px] font-semibold text-white transition-opacity hover:opacity-85 dark:bg-white dark:text-gray-900"
+    <section className="relative overflow-hidden bg-[#07111E] text-white">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(129,185,233,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(129,185,233,.08)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_80%_70%_at_30%_40%,#000_30%,transparent_80%)]" />
+      <div className="pointer-events-none absolute top-[-20%] right-[-10%] h-[640px] w-[640px] rounded-full bg-[#3B83BE]/20 blur-[140px]" />
+
+      <div className="relative mx-auto max-w-[1240px] px-5 pt-28 pb-16 md:px-8 md:pt-36 md:pb-24">
+        <div className="grid gap-14 md:grid-cols-12 md:gap-10">
+          <div className="flex flex-col md:col-span-6 md:pt-8">
+            <motion.a
+              href="#ai"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease }}
+              className="group mb-8 inline-flex w-fit items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] py-1 pr-3 pl-1 text-[12.5px] text-white/75 transition-colors hover:border-secondary-400/40"
             >
-              Book a consultation
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </a>
-            <a href="#how" className="text-[15px] font-medium text-gray-900 underline decoration-gray-900/30 underline-offset-4 hover:decoration-gray-900 dark:text-white dark:decoration-white/30 dark:hover:decoration-white">
-              See how it works
-            </a>
-          </motion.div>
-        </div>
+              <span className="inline-flex items-center gap-1 rounded-full bg-secondary-400 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-[#07111E]">
+                <Sparkles className="h-3 w-3" />
+                New
+              </span>
+              Planr AI answers your build questions
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </motion.a>
 
-        <div className="md:col-span-7">
-          <motion.figure
-            initial={{ clipPath: 'inset(0 0 100% 0)' }}
-            animate={{ clipPath: 'inset(0 0 0% 0)' }}
-            transition={{ duration: 1.4, delay: 0.15, ease }}
-            className="relative"
-          >
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[4px] bg-[#E7E1D7] md:aspect-[5/6] dark:bg-[#0D1B2E]">
-              <motion.img
-                src={`${lead.portfolio[0].url.split('?')[0]}?w=1400&q=80&auto=format&fit=crop`}
-                alt={lead.portfolio[0].caption}
-                initial={{ scale: 1.12 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 2, delay: 0.15, ease }}
-                className="h-full w-full object-cover"
-              />
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.2, ease }}
-                className="absolute bottom-4 left-4 flex items-center gap-3 rounded-2xl bg-white/95 p-3 pr-5 shadow-[0_8px_30px_rgba(7,17,30,.18)] backdrop-blur md:bottom-6 md:left-6"
+            <motion.h1
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.1, ease }}
+              className="text-[clamp(52px,6.4vw,96px)] leading-[0.98] font-semibold tracking-[-0.05em]"
+            >
+              Plan it properly.
+              <br />
+              <em className="font-serif font-normal italic tracking-[-0.02em] text-sand-400">Build it once.</em>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.25, ease }}
+              className="mt-8 max-w-[460px] text-[17px] leading-[1.6] text-white/65"
+            >
+              Ask Planr AI anything about your build, book a certified Sri Lankan architect when you need one, and follow every milestone from permits to handover.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.35, ease }}
+              className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4"
+            >
+              <a
+                href="/signup"
+                className="group inline-flex h-12 items-center gap-2 rounded-xl bg-white px-6 text-[15px] font-semibold text-gray-900 shadow-[0_0_40px_-8px_rgba(129,185,233,.6)] transition-transform hover:scale-[1.02]"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F5F2EC]">
-                  <CalendarDays className="h-[18px] w-[18px] text-gray-900" />
-                </span>
-                <div>
-                  <div className="text-[11px] text-gray-500">Next consultation · {lead.available}</div>
-                  <div className="text-[13.5px] font-semibold text-gray-900">{lead.name}, {lead.role}</div>
-                </div>
-              </motion.div>
-            </div>
-            <figcaption className="mt-3 flex justify-between gap-4 text-[12.5px] text-gray-500 dark:text-white/50">
-              <span className="text-gray-900 dark:text-white">{lead.portfolio[0].caption}</span>
-              <span>{lead.name} — {lead.company}</span>
-            </figcaption>
-          </motion.figure>
-        </div>
-      </div>
-
-      <dl className="mt-20 grid gap-8 border-t border-gray-900/15 pt-8 sm:grid-cols-3 md:mt-28 dark:border-white/15">
-        {FACTS.map(f => (
-          <div key={f.label} className="flex items-baseline gap-4">
-            <dt className="text-[44px] font-semibold leading-none tracking-[-0.04em] text-gray-900 dark:text-white">{f.value}</dt>
-            <dd className="max-w-[220px] text-[13.5px] leading-snug text-gray-600 dark:text-white/60">{f.label}</dd>
+                Try Planr AI free
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </a>
+              <a href="/signup" className="text-[15px] font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white">
+                Book a consultation
+              </a>
+            </motion.div>
           </div>
-        ))}
-      </dl>
+
+          <div className="relative md:col-span-6">
+            <motion.figure
+              initial={{ clipPath: 'inset(0 0 100% 0)' }}
+              animate={{ clipPath: 'inset(0 0 0% 0)' }}
+              transition={{ duration: 1.4, delay: 0.15, ease }}
+              className="relative ml-auto w-full md:w-[86%]"
+            >
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[4px] bg-[#0D1B2E]">
+                <motion.img
+                  src={`${lead.portfolio[0].url.split('?')[0]}?w=1200&q=80&auto=format&fit=crop`}
+                  alt={lead.portfolio[0].caption}
+                  initial={{ scale: 1.12 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 2, delay: 0.15, ease }}
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#07111E]/70 via-transparent to-transparent" />
+              </div>
+              <figcaption className="mt-3 flex justify-between gap-4 font-mono text-[11px] text-white/45">
+                <span>{lead.portfolio[0].caption}</span>
+                <span>{lead.company}</span>
+              </figcaption>
+            </motion.figure>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.9, ease }}
+              className="relative -mt-40 md:absolute md:bottom-14 md:left-[-6%] md:mt-0 md:w-[420px]"
+            >
+              <AiConsole />
+            </motion.div>
+          </div>
+        </div>
+
+        <dl className="mt-20 grid gap-8 border-t border-white/15 pt-8 sm:grid-cols-3 md:mt-24">
+          {FACTS.map(f => (
+            <div key={f.label} className="flex items-baseline gap-4">
+              <dt className="text-[40px] leading-none font-semibold tracking-[-0.04em]">{f.value}</dt>
+              <dd className="max-w-[220px] text-[13.5px] leading-snug text-white/55">{f.label}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </section>
   )
 }

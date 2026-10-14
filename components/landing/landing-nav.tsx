@@ -5,10 +5,10 @@ import { Moon, Sun } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const LINKS = [
+  { href: '#ai', label: 'Planr AI' },
   { href: '#how', label: 'How it works' },
   { href: '#tracker', label: 'Build tracker' },
   { href: '#expertise', label: 'Expertise' },
-  { href: '#ask', label: 'Ask Planr' },
 ]
 
 export function LandingNav() {
@@ -33,18 +33,18 @@ export function LandingNav() {
   return (
     <header
       className={cn(
-        'fixed inset-x-0 top-0 z-50 border-b bg-[#F5F2EC]/90 backdrop-blur-md transition-colors dark:bg-[#07111E]/90',
-        scrolled ? 'border-gray-900/10 dark:border-white/10' : 'border-transparent'
+        'fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl transition-colors',
+        scrolled ? 'border-white/10 bg-[#07111E]/85' : 'border-transparent bg-transparent'
       )}
     >
       <nav className="mx-auto flex h-16 max-w-[1240px] items-center justify-between px-5 md:px-8">
         <a href="#" aria-label="Planr home">
-          <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:invert" />
+          <img src="/planr-logo.svg" alt="Planr" className="h-6 invert" />
         </a>
         <ul className="hidden items-center gap-8 md:flex">
           {LINKS.map(l => (
             <li key={l.href}>
-              <a href={l.href} className="text-[14px] text-gray-600 transition-colors hover:text-gray-900 dark:text-white/60 dark:hover:text-white">
+              <a href={l.href} className="text-[14px] text-white/60 transition-colors hover:text-white">
                 {l.label}
               </a>
             </li>
@@ -54,16 +54,16 @@ export function LandingNav() {
           <button
             onClick={toggleTheme}
             aria-label="Toggle theme"
-            className="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 transition-colors hover:text-gray-900 dark:text-white/50 dark:hover:text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-white/50 transition-colors hover:text-white"
           >
             {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
-          <a href="/login" className="hidden px-2 text-[14px] text-gray-600 hover:text-gray-900 sm:block dark:text-white/60 dark:hover:text-white">
+          <a href="/login" className="hidden px-2 text-[14px] text-white/60 hover:text-white sm:block">
             Log in
           </a>
           <a
             href="/signup"
-            className="inline-flex h-9 items-center rounded-xl bg-gray-900 px-4 text-[13.5px] font-semibold text-white transition-opacity hover:opacity-85 dark:bg-white dark:text-gray-900"
+            className="inline-flex h-9 items-center rounded-xl bg-white px-4 text-[13.5px] font-semibold text-gray-900 transition-opacity hover:opacity-90"
           >
             Book a consultation
           </a>

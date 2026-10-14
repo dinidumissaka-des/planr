@@ -18,15 +18,15 @@ const STEPS = [
     body: 'Every project gets a milestone plan — from planning and permits to final inspection. Mark progress, add notes and dates, and always know what comes next.',
   },
   {
-    title: 'Ask as you go',
-    body: 'Not sure about a quote, a permit or a material? Ask a consultant or the Planr assistant and get a clear answer without waiting for the next meeting.',
+    title: 'Ask Planr AI',
+    body: 'Not sure about a quote, a permit or a material? Planr AI answers in seconds, any time — and your consultant is a message away when it needs a professional.',
   },
 ]
 
 export function How() {
   return (
     <section id="how" className="mx-auto max-w-[1240px] px-5 py-24 md:px-8 md:py-32">
-      <SectionHead index="01" label="How it works" />
+      <SectionHead index="02" label="How it works" />
       <div className="mt-10 grid gap-10 md:grid-cols-12">
         <Reveal className="md:col-span-5">
           <h2 className="font-semibold text-[clamp(38px,4.6vw,64px)] leading-[1.02] tracking-[-0.045em] text-gray-900 dark:text-white">
@@ -68,9 +68,9 @@ export function Tracker() {
   return (
     <section id="tracker" className="bg-[#07111E] text-white">
       <div className="mx-auto max-w-[1240px] px-5 py-24 md:px-8 md:py-32">
-        <div className="flex items-center gap-4 border-t border-white/15 pt-4 text-[12px] font-medium tracking-wide text-white/50">
-          <span className="tabular-nums text-white">02</span>
-          <span className="uppercase">Build tracker</span>
+        <div className="flex items-center gap-4 border-t border-white/15 pt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-white/50">
+          <span className="text-secondary-300">03</span>
+          <span>Build tracker</span>
         </div>
         <div className="mt-10 grid gap-14 md:grid-cols-12">
           <div className="md:col-span-5">
@@ -141,6 +141,12 @@ export function Tracker() {
                       <div>
                         <div className={`text-[14.5px] ${m.status === 'pending' ? 'text-white/45' : 'text-white'}`}>{m.title}</div>
                         {'note' in m && <div className="mt-1 text-[12.5px] text-sand-400/90">{m.note}</div>}
+                        {m.status === 'active' && (
+                          <a href="#ai" className="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-secondary-400/30 bg-secondary-400/10 py-1 pr-3 pl-1 text-[12px] text-secondary-300 transition-colors hover:bg-secondary-400/20">
+                            <img src="/ai-icon.svg" alt="" className="h-4 w-4 rounded-full" />
+                            Ask Planr AI about this stage
+                          </a>
+                        )}
                       </div>
                       <span className="text-[12px] tabular-nums text-white/35">{m.date}</span>
                     </div>
@@ -180,7 +186,7 @@ export function Expertise() {
   return (
     <section id="expertise" className="py-24 md:py-32">
       <div className="mx-auto max-w-[1240px] px-5 md:px-8">
-        <SectionHead index="03" label="Expertise" />
+        <SectionHead index="04" label="Expertise" />
         <div className="mt-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <Reveal>
             <h2 className="max-w-[680px] font-semibold text-[clamp(38px,4.6vw,64px)] leading-[1.02] tracking-[-0.045em] text-gray-900 dark:text-white">
@@ -254,7 +260,7 @@ export function ProjectTypes() {
 
   return (
     <section className="mx-auto max-w-[1240px] px-5 pb-24 md:px-8 md:pb-32">
-      <SectionHead index="04" label="What you can build" />
+      <SectionHead index="05" label="What you can build" />
       <div className="mt-10 grid gap-10 md:grid-cols-12">
         <ul className="md:col-span-7" onMouseLeave={() => setActive(null)}>
           {TYPES.map((t, i) => (
@@ -292,57 +298,6 @@ export function ProjectTypes() {
             </AnimatePresence>
           </div>
         </div>
-      </div>
-    </section>
-  )
-}
-
-export function Ask() {
-  const consultant = architects[1]
-  return (
-    <section id="ask" className="border-y border-gray-900/10 bg-[#EDE8DF] dark:border-white/10 dark:bg-[#0A1525]">
-      <div className="mx-auto grid max-w-[1240px] gap-14 px-5 py-24 md:grid-cols-12 md:px-8 md:py-32">
-        <div className="md:col-span-5">
-          <SectionHead index="05" label="Ask Planr" />
-          <Reveal>
-            <h2 className="mt-10 font-semibold text-[clamp(38px,4.6vw,64px)] leading-[1.02] tracking-[-0.045em] text-gray-900 dark:text-white">
-              Questions don&apos;t wait <em className="font-serif font-normal italic tracking-[-0.02em]">for meetings.</em>
-            </h2>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <p className="mt-6 max-w-[420px] text-[16px] leading-[1.65] text-gray-600 dark:text-white/60">
-              Ask about permits, quotes, materials or timelines. A consultant replies in your thread, or the Planr assistant answers straight away.
-            </p>
-          </Reveal>
-        </div>
-        <Reveal delay={0.1} className="md:col-span-7 md:pt-14">
-          <div className="rounded-2xl border border-gray-900/10 bg-white p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] md:p-7 dark:border-white/8 dark:bg-[#0D1B2E]">
-            <div className="flex flex-col gap-5">
-              <div className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-gray-900 px-4 py-3 text-[14.5px] leading-relaxed text-white dark:bg-white dark:text-gray-900">
-                We have two quotes for teak window frames — one is almost 40% cheaper. What should we check before choosing?
-              </div>
-              <div className="flex max-w-[90%] gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sand-400 text-[12px] font-semibold text-gray-900">
-                  {consultant.name.split(' ').map(n => n[0]).join('')}
-                </span>
-                <div>
-                  <div className="mb-1.5 text-[12px] text-gray-500 dark:text-white/50">
-                    <span className="font-semibold text-gray-900 dark:text-white">{consultant.name}</span> · {consultant.role}
-                  </div>
-                  <div className="rounded-2xl rounded-tl-md bg-[#F5F2EC] px-4 py-3 text-[14.5px] leading-relaxed text-gray-800 dark:bg-white/5 dark:text-white/85">
-                    Ask both suppliers whether it&apos;s solid teak or veneer, how the timber was seasoned, and what the price includes — fixing, ironmongery and finish. A big gap usually means one of those is missing. Send me both quotes and I&apos;ll mark them up.
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="mt-6 flex items-center gap-3 rounded-xl border border-gray-900/10 px-4 py-3 text-[14px] text-gray-400 dark:border-white/10 dark:text-white/35">
-              Ask about permits, costs, materials…
-              <span className="ml-auto flex h-8 w-8 items-center justify-center rounded-lg bg-gray-900 text-white dark:bg-white dark:text-gray-900">
-                <ArrowRight className="h-4 w-4" />
-              </span>
-            </div>
-          </div>
-        </Reveal>
       </div>
     </section>
   )
@@ -409,7 +364,7 @@ export function Cta() {
 }
 
 const FOOTER = [
-  { title: 'Product', links: [{ l: 'How it works', h: '#how' }, { l: 'Build tracker', h: '#tracker' }, { l: 'Ask Planr', h: '#ask' }, { l: 'Expertise', h: '#expertise' }] },
+  { title: 'Product', links: [{ l: 'How it works', h: '#how' }, { l: 'Build tracker', h: '#tracker' }, { l: 'Planr AI', h: '#ai' }, { l: 'Expertise', h: '#expertise' }] },
   { title: 'Account', links: [{ l: 'Log in', h: '/login' }, { l: 'Create account', h: '/signup' }, { l: 'Join as a consultant', h: '/signup' }] },
 ]
 

@@ -1,10 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { Fraunces, Geist_Mono, Manrope } from "next/font/google";
 import "./globals.css";
 import { CommandPalette } from "@/components/command-palette";
 
 const manrope = Manrope({
   variable: "--font-manrope",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -42,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} ${fraunces.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${manrope.variable} ${fraunces.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#07111E" />
         {/* Prevent dark mode flash */}

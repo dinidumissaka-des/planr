@@ -21,9 +21,9 @@ export function Reveal({ children, delay = 0, className }: { children: ReactNode
 
 export function SectionHead({ index, label }: { index: string; label: string }) {
   return (
-    <div className="flex items-center gap-4 border-t border-gray-900/15 pt-4 text-[12px] font-medium tracking-wide text-gray-500 dark:border-white/15 dark:text-white/50">
-      <span className="tabular-nums text-gray-900 dark:text-white">{index}</span>
-      <span className="uppercase">{label}</span>
+    <div className="flex items-center gap-4 border-t border-gray-900/15 pt-4 font-mono text-[11px] uppercase tracking-[0.14em] text-gray-500 dark:border-white/15 dark:text-white/50">
+      <span className="text-[#3B83BE] dark:text-secondary-300">{index}</span>
+      <span>{label}</span>
     </div>
   )
 }
