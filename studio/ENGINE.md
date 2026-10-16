@@ -60,10 +60,10 @@ A pill label. `text`, `x`, `y`, `align`, `bg`, `fg`, `outline` (bool), `size` (3
 Horizontal comparison. `items: [{label, value, display, color}]`, `x`, `y`, `width`, `bar_h` (64), `gap`, `max`, `stagger`, `grow`. The first bar is accent by default and the rest are faint.
 
 ### car_side
-F1 car in side profile, nose to the right. `x`, `y` (centre), `scale` (0.8 fills the safe width), `flip`, `in` (`drive` | `fade` | `none`), `highlight` (any of `front_wing`, `rear_wing`, `drs`, `floor`, `diffuser`, `sidepod`, `body`, `beam_wing`, `halo`, `driver`, `tyres`), `show` (any of `airflow`, `airflow_over`, `airflow_under`, `downforce`, `dirty_air`), `downforce: {front, floor, rear}` arrow lengths, `downforce_at`, `drs` (0–1, or `{from, to, at, dur}` to animate the flap), `wheel_spin` (rad/s, 20 looks fast), `rake` (deg), `ground`.
+F1 car in side profile, nose to the right. `x`, `y` (centre), `scale` (0.8 fills the safe width), `flip`, `in` (`drive` | `fade` | `none`), `highlight` (any of `front_wing`, `front_flap`, `rear_wing`, `drs`, `floor`, `diffuser`, `sidepod`, `body`, `beam_wing`, `halo`, `driver`, `tyres`), `show` (any of `airflow`, `airflow_over`, `airflow_under`, `downforce`, `dirty_air`), `downforce: {front, floor, rear}` arrow lengths, `downforce_at`, `drs` (rear flap, 0 closed – 1 open), `front_flap` (front wing upper flaps, 0–1; 2026 cars move both). Both accept a number, `{from, to, at, dur}`, or `{keys: [[t, v], ...]}` for open/close cycles, `wheel_spin` (rad/s, 20 looks fast), `rake` (deg), `ground`.
 
 ### car_top
-F1 car from above, nose up. `x`, `y`, `scale` (0.9), `rot` (deg), `in` (`fade` | `drive`), `move: {x, y, at, dur, ease}`, `highlight` (`front_wing`, `rear_wing`, `floor`, `body`, `cockpit`, `halo`, `driver`, `tyres`), `show` (`slipstream`, `drs`), `compound` (stripe on the tyres), `label`, `wake_length`.
+F1 car from above, nose up. `x`, `y`, `scale` (0.9), `rot` (deg), `in` (`fade` | `drive`), `move: {x, y, at, dur, ease}`, `highlight` (`front_wing`, `rear_wing`, `floor`, `body`, `cockpit`, `halo`, `driver`, `tyres`), `show` (`slipstream`, `drs`), `drs` (slot opening 0–1, animatable like car_side), `compound` (stripe on the tyres), `label`, `wake_length`.
 
 ### tyre
 Side-on tyre. `x`, `y`, `r` (180), `compound`, `spin` (rad/s), `wear` (0–1 graining marks), `brand_text`.

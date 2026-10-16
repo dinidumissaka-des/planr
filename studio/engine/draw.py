@@ -793,18 +793,39 @@ SIDE = {
     "mirror": [(616, 128), (648, 128), (648, 138), (616, 138)],
     "suspension": [[(700, 92), (808, 84)], [(700, 66), (808, 54)], [(262, 84), (165, 84)], [(262, 58), (165, 52)]],
 }
-FLAP_PIVOT = (24, 176)
-FLAP = [(92, 170), (58, 174), (24, 178), (26, 186), (60, 180), (92, 175)]
+FLAP_PIVOT = (26, 187)
+FLAP = [(94, 160), (60, 170), (26, 184), (28, 190), (62, 177), (94, 165)]
 
 
-def _flap(open_frac):
-    ang = math.radians(-22 * open_frac)
-    px, py = FLAP_PIVOT
+def _rotate(points, pivot, deg):
+    ang = math.radians(deg)
+    px, py = pivot
     out = []
-    for x, y in FLAP:
+    for x, y in points:
         dx, dy = x - px, y - py
         out.append((px + dx * math.cos(ang) - dy * math.sin(ang), py + dx * math.sin(ang) + dy * math.cos(ang)))
     return out
+
+
+def _flap(open_frac):
+    return _rotate(FLAP, FLAP_PIVOT, 24 * open_frac)
+
+
+def animated(value, t, default=0.0):
+    """A number, {"from","to","at","dur"}, or {"keys": [[t, v], ...]} eased between keys."""
+    if value is None:
+        return default
+    if not isinstance(value, dict):
+        return value
+    if "keys" in value:
+        keys = value["keys"]
+        if t <= keys[0][0]:
+            return keys[0][1]
+        for (t0, v0), (t1, v1) in zip(keys, keys[1:]):
+            if t <= t1:
+                return lerp(v0, v1, in_out(progress(t, t0, t1 - t0)))
+        return keys[-1][1]
+    return lerp(value.get("from", 0), value.get("to", 1), in_out(progress(t, value.get("at", 0), value.get("dur", 0.4))))
 
 
 def el_car_side(r, c, el, t, scene):
@@ -873,16 +894,16 @@ def el_car_side(r, c, el, t, scene):
     part("beam_wing", SIDE["beam_wing"])
     c.drawLine(*T((58, 70)), *T((58, 152)), paint(ink, stroke=lw))
     part("rear_wing", SIDE["rear_wing_main"])
-    drs_open = el.get("drs", 0.0)
-    if isinstance(drs_open, dict):
-        drs_open = lerp(drs_open.get("from", 0), drs_open.get("to", 1), in_out(progress(t, drs_open.get("at", 0), drs_open.get("dur", 0.4))))
-    part("drs", _flap(drs_open))
+    part("drs", _flap(animated(el.get("drs"), t)))
     ep = P(SIDE["rear_wing_endplate"])
     c.drawPath(ep, paint(brand.color("bg_top", alpha * 0.35)))
     c.drawPath(ep, paint(acc if "rear_wing" in hl else ink, stroke=lw))
     part("front_wing_endplate", SIDE["front_wing_endplate"])
+    front_open = animated(el.get("front_flap"), t)
     for k, fw in enumerate(SIDE["front_wing"]):
-        part("front_wing", fw)
+        if k and front_open:
+            fw = _rotate(fw, fw[0], 9 * k * front_open)
+        part("front_flap" if k and "front_flap" in hl else "front_wing", fw)
     c.drawPath(P(SIDE["mirror"]), paint(ink, stroke=lw * 0.8))
     hx, hy, hr = SIDE["helmet"]
     hp = T((hx, hy))
@@ -1024,7 +1045,7 @@ def el_car_top(r, c, el, t, scene):
     part("front_wing", TOP["front_wing"])
     part("rear_wing", TOP["rear_wing"])
     if "drs" in show:
-        open_frac = el.get("drs", 1.0)
+        open_frac = animated(el.get("drs", 1.0), t)
         gap = 18 * open_frac
         c.drawRect(skia.Rect(-128, 928 - gap / 2, 128, 928 + gap / 2), paint(brand.color("bg", alpha)))
     for (tx, ty), (w, h) in [(p, (54, 128)) for p in TOP["front_tyres"]] + [(p, (72, 128)) for p in TOP["rear_tyres"]]:
