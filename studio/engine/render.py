@@ -30,6 +30,17 @@ def save_png(img, path):
     img.save(path, skia.kPNG)
 
 
+def loudnorm_filter(wav, target="I=-14:TP=-2:LRA=11"):
+    """Two-pass loudnorm: measure first, then apply as a linear gain so the opening hit can't overshoot."""
+    out = subprocess.run(
+        ["ffmpeg", "-hide_banner", "-i", wav, "-af", f"loudnorm={target}:print_format=json", "-f", "null", "-"],
+        capture_output=True, text=True,
+    ).stderr
+    m = json.loads(out[out.rindex("{"):out.rindex("}") + 1])
+    return (f"loudnorm={target}:linear=true:measured_I={m['input_i']}:measured_TP={m['input_tp']}"
+            f":measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}")
+
+
 def render_video(r, out, draft=False):
     music = r.story.get("meta", {}).get("music")
     if music and not os.path.isabs(music):
@@ -38,6 +49,7 @@ def render_video(r, out, draft=False):
         wav = os.path.join(tmp, "mix.wav")
         mix(r.sfx_events(), r.total, wav, music=music,
             music_db=r.story.get("meta", {}).get("music_db", -15), sfx_db=r.story.get("meta", {}).get("sfx_db", -3))
+        loudnorm = loudnorm_filter(wav)
         cmd = [
             "ffmpeg", "-y", "-v", "error",
             "-f", "rawvideo", "-pix_fmt", "bgra", "-s", f"{r.W}x{r.H}", "-r", str(r.fps), "-i", "-",
@@ -47,7 +59,7 @@ def render_video(r, out, draft=False):
             "-pix_fmt", "yuv420p", "-profile:v", "high", "-level", "4.2",
             "-x264-params", "keyint=60:min-keyint=30",
             "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
-            "-af", "loudnorm=I=-14:TP=-1.5:LRA=11,alimiter=limit=0.84:level=false",
+            "-af", loudnorm,
             "-movflags", "+faststart", "-shortest", out,
         ]
         proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
