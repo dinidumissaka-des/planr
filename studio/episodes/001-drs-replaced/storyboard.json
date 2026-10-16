@@ -1,0 +1,994 @@
+{
+  "meta": {
+    "title": "Every car has the flap now",
+    "series": "EP 01",
+    "cover_time": 2.2,
+    "loop": "Last scene ends on 'THE WING ISN'T THE EDGE. BECAUSE…' over the same two-car top view as the hook, flaps open; the hard cut back to the hook slam 'EVERY CAR OPENS ITS WINGS NOW' completes the sentence.",
+    "music": null,
+    "progress": true,
+    "grid": true
+  },
+  "scenes": [
+    {
+      "dur": 3.2,
+      "transition": "none",
+      "camera": "push",
+      "facts": [
+        "F3"
+      ],
+      "elements": [
+        {
+          "type": "text",
+          "text": "EVERY CAR OPENS ITS *WINGS* NOW",
+          "x": 90,
+          "y": 330,
+          "size": 130,
+          "at": 0,
+          "shake": 10,
+          "in": "slam"
+        },
+        {
+          "type": "car_top",
+          "at": 0.1,
+          "scale": 0.55,
+          "show": [
+            "drs"
+          ],
+          "drs": {
+            "from": 0,
+            "to": 1,
+            "at": 0.3,
+            "dur": 0.5
+          },
+          "highlight": [
+            "rear_wing"
+          ],
+          "x": 380,
+          "y": 1130,
+          "in": "fade"
+        },
+        {
+          "type": "car_top",
+          "at": 0.15,
+          "scale": 0.55,
+          "show": [
+            "drs"
+          ],
+          "drs": {
+            "from": 0,
+            "to": 1,
+            "at": 0.25,
+            "dur": 0.5
+          },
+          "highlight": [
+            "rear_wing"
+          ],
+          "x": 700,
+          "y": 1205,
+          "in": "fade"
+        },
+        {
+          "type": "text",
+          "text": "SO WHO PASSES?",
+          "x": 90,
+          "y": 748,
+          "size": 90,
+          "at": 1.5,
+          "shake": 8,
+          "in": "slam"
+        }
+      ]
+    },
+    {
+      "dur": 6.3,
+      "transition": "whip",
+      "camera": "push",
+      "facts": [
+        "F1",
+        "F2"
+      ],
+      "elements": [
+        {
+          "type": "chip",
+          "text": "2011–2025",
+          "x": 90,
+          "y": 400,
+          "outline": true,
+          "bg": "muted",
+          "fg": "ink",
+          "at": 0
+        },
+        {
+          "type": "text",
+          "text": "DRS: 15 SEASONS",
+          "x": 90,
+          "y": 490,
+          "size": 120,
+          "at": 0.15,
+          "in": "rise"
+        },
+        {
+          "type": "car_side",
+          "x": 520,
+          "y": 990,
+          "scale": 0.8,
+          "highlight": [
+            "drs"
+          ],
+          "drs": {
+            "from": 0,
+            "to": 1,
+            "at": 1.5,
+            "dur": 0.45
+          },
+          "front_flap": 0,
+          "wheel_spin": 20,
+          "at": 0.5,
+          "in": "drive"
+        },
+        {
+          "type": "callout",
+          "point": [
+            168,
+            912
+          ],
+          "label_at": [
+            290,
+            812
+          ],
+          "elbow": "v",
+          "text": "REAR FLAP",
+          "size": 34,
+          "at": 2.2
+        },
+        {
+          "type": "text",
+          "text": "Within 1 s, the chaser opened a flap",
+          "x": 90,
+          "y": 1190,
+          "size": 52,
+          "font": "text",
+          "weight": "semibold",
+          "width": 860,
+          "at": 2.6,
+          "in": "words"
+        },
+        {
+          "type": "text",
+          "text": "the leader couldn't.",
+          "x": 199,
+          "y": 1255,
+          "size": 52,
+          "font": "text",
+          "weight": "semibold",
+          "width": 900,
+          "at": 4.3,
+          "in": "words"
+        }
+      ]
+    },
+    {
+      "dur": 5.9,
+      "transition": "push",
+      "camera": "push",
+      "facts": [
+        "F3",
+        "F4"
+      ],
+      "elements": [
+        {
+          "type": "chip",
+          "text": "2026",
+          "x": 90,
+          "y": 400,
+          "outline": true,
+          "bg": "muted",
+          "fg": "ink",
+          "at": 0
+        },
+        {
+          "type": "text",
+          "text": "EVERY CAR. EVERY STRAIGHT. *BOTH* WINGS.",
+          "x": 90,
+          "y": 490,
+          "size": 96,
+          "at": 0.15,
+          "in": "rise"
+        },
+        {
+          "type": "car_side",
+          "x": 520,
+          "y": 1010,
+          "scale": 0.8,
+          "highlight": [
+            "front_flap",
+            "drs"
+          ],
+          "show": [
+            "airflow_over"
+          ],
+          "drs": {
+            "keys": [
+              [
+                0.7,
+                0
+              ],
+              [
+                1.0,
+                1
+              ],
+              [
+                3.2,
+                1
+              ],
+              [
+                3.45,
+                0
+              ]
+            ]
+          },
+          "front_flap": {
+            "keys": [
+              [
+                0.7,
+                0
+              ],
+              [
+                1.0,
+                1
+              ],
+              [
+                3.2,
+                1
+              ],
+              [
+                3.45,
+                0
+              ]
+            ]
+          },
+          "wheel_spin": 20,
+          "at": 0.5,
+          "in": "drive"
+        },
+        {
+          "type": "text",
+          "text": "Straight Mode saves energy.",
+          "x": 90,
+          "y": 1240,
+          "size": 52,
+          "font": "text",
+          "weight": "semibold",
+          "width": 860,
+          "at": 1.8,
+          "in": "words"
+        },
+        {
+          "type": "text",
+          "text": "It isn't a passing aid.",
+          "x": 90,
+          "y": 1305,
+          "size": 52,
+          "font": "text",
+          "weight": "semibold",
+          "width": 860,
+          "at": 3.6,
+          "in": "words"
+        }
+      ]
+    },
+    {
+      "dur": 5.6,
+      "transition": "cut",
+      "camera": "push",
+      "facts": [
+        "F7"
+      ],
+      "elements": [
+        {
+          "type": "text",
+          "text": "THE 1-SECOND GAP SURVIVED",
+          "x": 90,
+          "y": 340,
+          "size": 110,
+          "at": 0,
+          "in": "rise"
+        },
+        {
+          "type": "line",
+          "points": [
+            [
+              90,
+              788
+            ],
+            [
+              950,
+              788
+            ]
+          ],
+          "color": "muted",
+          "width": 3,
+          "draw": 0.5,
+          "at": 0.2
+        },
+        {
+          "type": "line",
+          "points": [
+            [
+              90,
+              1012
+            ],
+            [
+              950,
+              1012
+            ]
+          ],
+          "color": "muted",
+          "width": 3,
+          "draw": 0.5,
+          "at": 0.2
+        },
+        {
+          "type": "car_top",
+          "y": 900,
+          "rot": 90,
+          "scale": 0.32,
+          "x": 790,
+          "show": [
+            "slipstream"
+          ],
+          "wake_length": 900,
+          "at": 0.3,
+          "in": "fade"
+        },
+        {
+          "type": "car_top",
+          "y": 900,
+          "rot": 90,
+          "scale": 0.32,
+          "x": 260,
+          "move": {
+            "x": 330,
+            "at": 0.2,
+            "dur": 1.7,
+            "ease": "in_out_cubic"
+          },
+          "at": 0.5,
+          "in": "fade"
+        },
+        {
+          "type": "line",
+          "points": [
+            [
+              490,
+              760
+            ],
+            [
+              490,
+              1040
+            ]
+          ],
+          "color": "ink",
+          "width": 5,
+          "dash": [
+            18,
+            14
+          ],
+          "draw": 0.4,
+          "at": 0.9
+        },
+        {
+          "type": "line",
+          "points": [
+            [
+              490,
+              1050
+            ],
+            [
+              490,
+              1072
+            ],
+            [
+              643,
+              1072
+            ],
+            [
+              643,
+              1050
+            ]
+          ],
+          "color": "ink",
+          "width": 4,
+          "draw": 0.4,
+          "at": 1.2
+        },
+        {
+          "type": "text",
+          "text": "Within 1 s at the detection line: Overtake Mode, next lap.",
+          "x": 90,
+          "y": 1190,
+          "size": 52,
+          "font": "text",
+          "weight": "semibold",
+          "width": 860,
+          "at": 1.6,
+          "in": "words"
+        },
+        {
+          "type": "car_top",
+          "y": 900,
+          "rot": 90,
+          "scale": 0.32,
+          "x": 330,
+          "highlight": [
+            "body"
+          ],
+          "at": 3.0,
+          "sfx": "beep",
+          "in": "fade"
+        }
+      ]
+    },
+    {
+      "dur": 4.9,
+      "transition": "whip",
+      "camera": "push",
+      "facts": [
+        "F8"
+      ],
+      "elements": [
+        {
+          "type": "chip",
+          "text": "OVERTAKE MODE",
+          "x": 90,
+          "y": 400,
+          "outline": true,
+          "bg": "muted",
+          "fg": "ink",
+          "at": 0
+        },
+        {
+          "type": "counter",
+          "to": 0.5,
+          "decimals": 1,
+          "prefix": "+",
+          "suffix": " MJ",
+          "size": 220,
+          "x": 90,
+          "y": 500,
+          "color": "accent",
+          "at": 0.3
+        },
+        {
+          "type": "text",
+          "text": "The chaser may harvest 0.5 MJ more",
+          "x": 90,
+          "y": 760,
+          "size": 56,
+          "font": "text",
+          "weight": "semibold",
+          "width": 860,
+          "at": 1.4,
+          "in": "words"
+        },
+        {
+          "type": "line",
+          "points": [
+            [
+              90,
+              1078
+            ],
+            [
+              950,
+              1078
+            ]
+          ],
+          "color": "muted",
+          "width": 3,
+          "draw": 0.5,
+          "at": 0.9
+        },
+        {
+          "type": "line",
+          "points": [
+            [
+              90,
+              1302
+            ],
+            [
+              950,
+              1302
+            ]
+          ],
+          "color": "muted",
+          "width": 3,
+          "draw": 0.5,
+          "at": 0.9
+        },
+        {
+          "type": "car_top",
+          "y": 1190,
+          "rot": 90,
+          "scale": 0.32,
+          "x": 790,
+          "show": [
+            "slipstream"
+          ],
+          "at": 1.0,
+          "in": "fade"
+        },
+        {
+          "type": "car_top",
+          "y": 1190,
+          "rot": 90,
+          "scale": 0.32,
+          "x": 330,
+          "at": 1.1,
+          "in": "fade"
+        },
+        {
+          "type": "text",
+          "text": "per lap.",
+          "x": 243,
+          "y": 830,
+          "size": 56,
+          "font": "text",
+          "weight": "semibold",
+          "width": 900,
+          "at": 3.0,
+          "in": "words"
+        }
+      ]
+    },
+    {
+      "dur": 6.6,
+      "transition": "cut",
+      "camera": "none",
+      "facts": [
+        "F9",
+        "F10",
+        "F11"
+      ],
+      "elements": [
+        {
+          "type": "text",
+          "text": "THEN DEPLOY FULL POWER *LONGER*",
+          "x": 90,
+          "y": 330,
+          "size": 84,
+          "at": 0,
+          "in": "rise"
+        },
+        {
+          "type": "chart",
+          "at": 0.4,
+          "x": 100,
+          "y": 600,
+          "w": 840,
+          "h": 640,
+          "xrange": [
+            200,
+            360
+          ],
+          "yrange": [
+            0,
+            400
+          ],
+          "draw": 1.0,
+          "stagger": 1.4,
+          "note": "ILLUSTRATIVE",
+          "series": [
+            {
+              "points": [
+                [
+                  200,
+                  350
+                ],
+                [
+                  290,
+                  350
+                ]
+              ],
+              "color": "muted",
+              "curve": false
+            },
+            {
+              "points": [
+                [
+                  200,
+                  350
+                ],
+                [
+                  337,
+                  350
+                ],
+                [
+                  355,
+                  0
+                ]
+              ],
+              "color": "accent",
+              "curve": false
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": "UP TO 350 KW",
+          "x": 114,
+          "y": 618.0,
+          "size": 34,
+          "font": "mono",
+          "weight": "bold",
+          "color": "ink",
+          "at": 1.1,
+          "in": "fade"
+        },
+        {
+          "type": "line",
+          "points": [
+            [
+              572.5,
+              680.0
+            ],
+            [
+              703.8,
+              880.0
+            ]
+          ],
+          "color": "muted",
+          "width": 5,
+          "dash": [
+            16,
+            12
+          ],
+          "arrow": true,
+          "draw": 0.45,
+          "at": 1.7
+        },
+        {
+          "type": "text",
+          "text": "NORMAL",
+          "x": 629.8,
+          "y": 904.0,
+          "size": 34,
+          "font": "mono",
+          "weight": "bold",
+          "color": "muted",
+          "at": 2.0,
+          "in": "fade"
+        },
+        {
+          "type": "callout",
+          "point": [
+            572.5,
+            680.0
+          ],
+          "label_at": [
+            572.5,
+            1010
+          ],
+          "elbow": "v",
+          "text": "",
+          "color": "muted",
+          "at": 2.2
+        },
+        {
+          "type": "text",
+          "text": "290 KM/H",
+          "x": 556.5,
+          "y": 990,
+          "align": "right",
+          "size": 34,
+          "font": "mono",
+          "weight": "bold",
+          "color": "ink",
+          "at": 2.5500000000000003,
+          "in": "fade"
+        },
+        {
+          "type": "text",
+          "text": "OVERTAKE MODE",
+          "x": 940,
+          "y": 618.0,
+          "align": "right",
+          "size": 34,
+          "font": "mono",
+          "weight": "bold",
+          "color": "accent",
+          "at": 3.1,
+          "in": "fade"
+        },
+        {
+          "type": "callout",
+          "point": [
+            819.2,
+            680.0
+          ],
+          "label_at": [
+            819.2,
+            1100
+          ],
+          "elbow": "v",
+          "text": "",
+          "color": "accent",
+          "at": 3.7
+        },
+        {
+          "type": "text",
+          "text": "ABOUT 337 KM/H",
+          "x": 803.2,
+          "y": 1080,
+          "align": "right",
+          "size": 34,
+          "font": "mono",
+          "weight": "bold",
+          "color": "ink",
+          "at": 4.05,
+          "in": "fade"
+        },
+        {
+          "type": "text",
+          "text": "SPEED",
+          "x": 940,
+          "y": 1258,
+          "align": "right",
+          "size": 34,
+          "font": "mono",
+          "weight": "bold",
+          "color": "muted",
+          "at": 0.5,
+          "in": "fade"
+        }
+      ]
+    },
+    {
+      "dur": 4.9,
+      "transition": "cut",
+      "camera": "none",
+      "facts": [
+        "F9",
+        "F10"
+      ],
+      "elements": [
+        {
+          "type": "shape",
+          "shape": "rect",
+          "x": 572.5,
+          "y": 680.0,
+          "w": 246.7,
+          "h": 560.0,
+          "fill": "faint",
+          "stroke": "accent",
+          "stroke_width": 4,
+          "dash": [
+            14,
+            10
+          ],
+          "radius": 0,
+          "grow": "right",
+          "in_dur": 0.8,
+          "at": 0.8
+        },
+        {
+          "type": "chart",
+          "at": -2,
+          "x": 100,
+          "y": 600,
+          "w": 840,
+          "h": 640,
+          "xrange": [
+            200,
+            360
+          ],
+          "yrange": [
+            0,
+            400
+          ],
+          "draw": 0.4,
+          "stagger": 0,
+          "note": "ILLUSTRATIVE",
+          "series": [
+            {
+              "points": [
+                [
+                  200,
+                  350
+                ],
+                [
+                  290,
+                  350
+                ]
+              ],
+              "color": "muted",
+              "curve": false
+            },
+            {
+              "points": [
+                [
+                  200,
+                  350
+                ],
+                [
+                  337,
+                  350
+                ],
+                [
+                  355,
+                  0
+                ]
+              ],
+              "color": "accent",
+              "curve": false
+            }
+          ]
+        },
+        {
+          "type": "line",
+          "points": [
+            [
+              572.5,
+              680.0
+            ],
+            [
+              703.8,
+              880.0
+            ]
+          ],
+          "color": "muted",
+          "width": 5,
+          "dash": [
+            16,
+            12
+          ],
+          "arrow": true,
+          "draw": 0,
+          "at": -2
+        },
+        {
+          "type": "callout",
+          "point": [
+            572.5,
+            680.0
+          ],
+          "label_at": [
+            572.5,
+            1010
+          ],
+          "elbow": "v",
+          "text": "",
+          "color": "muted",
+          "at": -2
+        },
+        {
+          "type": "text",
+          "text": "290 KM/H",
+          "x": 556.5,
+          "y": 990,
+          "align": "right",
+          "size": 34,
+          "font": "mono",
+          "weight": "bold",
+          "color": "ink",
+          "at": -2,
+          "in": "none"
+        },
+        {
+          "type": "text",
+          "text": "OVERTAKE MODE",
+          "x": 940,
+          "y": 618.0,
+          "align": "right",
+          "size": 34,
+          "font": "mono",
+          "weight": "bold",
+          "color": "accent",
+          "at": -2,
+          "in": "none"
+        },
+        {
+          "type": "callout",
+          "point": [
+            819.2,
+            680.0
+          ],
+          "label_at": [
+            819.2,
+            1100
+          ],
+          "elbow": "v",
+          "text": "",
+          "color": "accent",
+          "at": -2
+        },
+        {
+          "type": "text",
+          "text": "ABOUT 337 KM/H",
+          "x": 803.2,
+          "y": 1080,
+          "align": "right",
+          "size": 34,
+          "font": "mono",
+          "weight": "bold",
+          "color": "ink",
+          "at": -2,
+          "in": "none"
+        },
+        {
+          "type": "text",
+          "text": "ONLY THE CHASER KEEPS FULL ELECTRIC POWER",
+          "x": 90,
+          "y": 326,
+          "size": 78,
+          "at": 0,
+          "in": "slam"
+        },
+        {
+          "type": "text",
+          "text": "Between 290 and about 337 km/h.",
+          "x": 90,
+          "y": 1372,
+          "size": 48,
+          "font": "text",
+          "weight": "semibold",
+          "width": 860,
+          "at": 2.0,
+          "in": "words"
+        }
+      ]
+    },
+    {
+      "dur": 2.6,
+      "transition": "push",
+      "camera": "push",
+      "facts": [
+        "F3",
+        "F4"
+      ],
+      "elements": [
+        {
+          "type": "text",
+          "text": "THE WING ISN'T THE EDGE.",
+          "x": 90,
+          "y": 330,
+          "size": 130,
+          "at": 0,
+          "in": "rise"
+        },
+        {
+          "type": "car_top",
+          "at": 0,
+          "scale": 0.55,
+          "show": [
+            "drs"
+          ],
+          "drs": 1,
+          "x": 380,
+          "y": 1130,
+          "in": "fade"
+        },
+        {
+          "type": "car_top",
+          "at": 0,
+          "scale": 0.55,
+          "show": [
+            "drs"
+          ],
+          "drs": 1,
+          "x": 700,
+          "y": 1205,
+          "in": "fade"
+        },
+        {
+          "type": "text",
+          "text": "*BECAUSE…*",
+          "x": 90,
+          "y": 748,
+          "size": 90,
+          "at": 1.1,
+          "in": "words"
+        }
+      ]
+    }
+  ]
+}

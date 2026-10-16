@@ -42,3 +42,33 @@ The one-second gap survived. Within it at the detection line, you get Overtake M
 The chaser may harvest half a megajoule more per lap, and deploy full power longer.
 Between 290 and about 337 kilometres an hour, only the chaser keeps full electric power.
 So the wing isn't the edge. Because…
+
+## Art direction notes
+Storyboard: `storyboard.json`, 8 scenes, 40.0 s, lint 0 errors / 0 warnings. Durations follow the rule of words ÷ 3 + 0.6 s, so the cut runs 40.0 s, not 36 s. That is the top of the 25–40 s band.
+
+| # | Time | Dur | Transition | Facts |
+|---|---|---|---|---|
+| 1 Hook | 0.0–3.2 | 3.2 | none | F3 |
+| 2 DRS era | 3.2–9.5 | 6.3 | whip | F1, F2 |
+| 3 Straight Mode | 9.5–15.4 | 5.9 | push | F3, F4 |
+| 4 1-second gap | 15.4–21.0 | 5.6 | cut | F7 |
+| 5 +0.5 MJ | 21.0–25.9 | 4.9 | whip | F8 |
+| 6 Deploy longer | 25.9–32.5 | 6.6 | cut | F9, F10, F11 |
+| 7 Payoff band | 32.5–37.4 | 4.9 | cut (camera none) | F9, F10 |
+| 8 Loop | 37.4–40.0 | 2.6 | push | F3, F4 |
+
+Changes from the script, and why:
+- **Hook is 3.2 s, not 3.6 s.** The timing rule gives 3.6 s, but the hook is capped at 3.2 s. "SO WHO PASSES?" slams at 1.5 s, which still leaves 1.7 s to read it. Cover frame: 2.2 s.
+- **Beat 2 gets a "REAR FLAP" callout** (2 words, +0.7 s). On its own the flap was a 60 px sliver, so the frame had no clear focal point. Naming the part also sets up "BOTH WINGS" in beat 3. I dropped the accent on "15" so that the flap is the one accent. The body line comes in two pieces ("...opened a flap" / "the leader couldn't.") set on one line, so something new lands every 2–3 s.
+- **Beat 3:** the body is split into its two sentences, for the same reason. Both flaps open at about 1.2 s and shut together at about 3.9 s. In the stills, closed is steep and open is flat for both the front and rear elements.
+- **Beat 4:** the track is drawn horizontally (`rot: 90`, noses pointing right) so the two cars, the detection line and the gap bracket all fit at a readable size. **The slipstream is drawn on the leader, not the chaser.** The engine draws a wake behind the car that carries it, and the chaser sits inside the leader's wake. The gap is an unlabelled dimension bracket made from a `line`, under the track. The chaser turns accent (with a beep) once its nose reaches the detection line. "1-SECOND" lost its accent so the highlighted chaser is the one focal point.
+- **Beat 5: I cut the headline "HARVEST MORE".** It repeated the body line, and dropping it pays for the beat-2 callout and keeps the total at 40 s. The counter is now 220 px, because at 300 px "+0.5 MJ" ran off the right edge. The S4 track pair sits under the stat so the lower half isn't empty. Both cars are plain there, so the counter is the one accent. "per lap." comes in as a second beat at the end of the body line.
+- **Beat 6:** the series are plotted with `curve: false`, using only the sourced points. The normal stub is a dashed `line` with an arrowhead and no end value. Labels are 34 px mono text elements: UP TO 350 KW, OVERTAKE MODE (accent), NORMAL, SPEED. The two km/h values are drop lines (a `callout` with no text) with right-aligned labels to their left, because a callout label always sits to the right of its anchor and would run past x 950 at 337 km/h.
+- **Beat 7 holds the chart with no redraw.** The chart, the stub and the labels are re-declared with `at: -2`, so they are fully drawn on the first frame of the scene. The 32.6 s still confirms there is no blink. Scenes 6 and 7 both use `camera: none`, so there is no zoom jump at the cut. The headline slams (payoff) with no shake, so the chart doesn't wobble. Words on screen came to 26 (the lint warned that it's too much to read), so UP TO 350 KW, NORMAL and SPEED drop out at this cut.
+- **Beat 8 is 2.6 s, not 2.2 s** (timing rule). The rear wings are plain there, as opposed to accent in the hook, because "the wing isn't the edge". BECAUSE… lands at 1.1 s.
+
+Engine limitations (I designed around them and did not edit the engine):
+- **No opacity on `shape` or `line`.** `alpha` is not a documented key. The payoff band is a faint fill with a dashed accent outline instead of a low-opacity accent fill. The normal stub can't dim either, because "faint" vanished on the band, so it stays muted. The S7 cut removes the NORMAL label instead.
+- **The chart's `note` (ILLUSTRATIVE) is drawn at 24 px,** under the 34 px minimum, and there is no key to change that. The chart's own `xlabel` and series labels are also 24 px, so I left them out and used 34 px text elements.
+- **`car_top` has no front-wing movement and only draws the rear slot.** That is fine for the top view.
+- **Highlight on a car can't be animated.** For the chaser turning accent in beat 4, I lay a second highlighted `car_top` over the first one, fading in at the same position.
