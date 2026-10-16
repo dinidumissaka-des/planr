@@ -6,7 +6,7 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
-from draw import ELEMENTS, Brand, text_bbox  # noqa: E402
+from draw import CAMERA_MAX_ZOOM, ELEMENTS, Brand, text_bbox  # noqa: E402
 
 STUDIO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -34,6 +34,14 @@ def element_texts(el):
     if el["type"] == "bars":
         for it in el["items"]:
             yield it["label"]
+
+
+def zoomed(box, camera, w=1080, h=1920):
+    z = CAMERA_MAX_ZOOM.get(camera, 1.0)
+    pad = 10 if camera == "drift" else 0
+    x0, y0, x1, y1 = box
+    return (w / 2 + (x0 - w / 2) * z - pad, h / 2 + (y0 - h / 2) * z,
+            w / 2 + (x1 - w / 2) * z + pad, h / 2 + (y1 - h / 2) * z)
 
 
 def lint(path):
@@ -89,7 +97,7 @@ def lint(path):
                 visible = min(el.get("until", s["dur"]), s["dur"]) - el.get("at", 0.0)
                 if visible > 0 and n / visible > MAX_WPS:
                     errors.append(f"{w_el}: {n} words visible for {visible:.2f}s = {n / visible:.1f} words/s (max {MAX_WPS})")
-                x0, y0, x1, y1 = text_bbox(brand, el)
+                x0, y0, x1, y1 = zoomed(text_bbox(brand, el), s.get("camera", "push"))
                 if x0 < safe["left"] - 2 or x1 > safe["right"] + 2 or y0 < safe["top"] + 60 or y1 > safe["bottom"]:
                     errors.append(f"{w_el}: text box ({x0:.0f},{y0:.0f})-({x1:.0f},{y1:.0f}) leaves the safe zone {safe}")
                 if el.get("size", 96) < 34:

@@ -234,6 +234,9 @@ class Scene:
         self.elements = data.get("elements", [])
 
 
+CAMERA_MAX_ZOOM = {"push": 1.025, "pull": 1.03, "drift": 1.02, "none": 1.0}
+
+
 def window(el, scene_dur):
     t0 = el.get("at", 0.0)
     t1 = el.get("until", scene_dur + 10)
@@ -310,9 +313,9 @@ class Renderer:
         p = clamp(t / scene.dur)
         z, dx, dy = 1.0, 0.0, 0.0
         if cam == "push":
-            z = lerp(1.0, 1.035, p)
+            z = lerp(1.0, CAMERA_MAX_ZOOM["push"], p)
         elif cam == "pull":
-            z = lerp(1.05, 1.0, out_cubic(p))
+            z = lerp(CAMERA_MAX_ZOOM["pull"], 1.0, out_cubic(p))
         elif cam == "drift":
             z = 1.02
             dx = lerp(-10, 10, p)
@@ -1253,7 +1256,7 @@ def el_chart(r, c, el, t, scene):
     axis = paint(brand.color("muted", a), stroke=2.5)
     c.drawLine(x, y + h, x + w, y + h, axis)
     c.drawLine(x, y, x, y + h, axis)
-    lf = brand.font("mono", "bold", 24)
+    lf = brand.font("mono", "bold", el.get("label_size", 28))
     if el.get("xlabel"):
         s = el["xlabel"].upper()
         draw_tracked(c, s, x + w - sum(lf.measureText(ch) + 2 for ch in s), y + h + 44, lf, 2, paint(brand.color("muted", a)))
@@ -1271,7 +1274,8 @@ def el_chart(r, c, el, t, scene):
             if sr.get("label") and p > 0.98:
                 draw_tracked(c, sr["label"].upper(), pos[0] - sum(lf.measureText(ch) + 2 for ch in sr["label"]) , pos[1] - 26, lf, 2, paint(col))
     if el.get("note"):
-        draw_tracked(c, el["note"].upper(), x, y + h + 84, lf, 2, paint(brand.color("muted", a * 0.8)))
+        nf = brand.font("mono", "bold", el.get("note_size", 34))
+        draw_tracked(c, el["note"].upper(), x, y + h + 96, nf, 2, paint(brand.color("muted", a)))
 
 
 ELEMENTS = {

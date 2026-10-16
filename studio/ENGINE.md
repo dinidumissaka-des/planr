@@ -35,7 +35,7 @@ Add `--draft` for a fast, lower-quality encode while iterating. Run `studio/setu
 **Scene keys**
 - `dur` — 0.8–7 s.
 - `transition` — how this scene enters: `cut` (default), `whip` (vertical motion blur and whoosh), `push` (horizontal), `zoom` (scale and crossfade), `flash`.
-- `camera` — `push` (slow zoom in, default), `pull`, `drift`, `none`.
+- `camera` — `push` (slow zoom in to 1.025×, default), `pull`, `drift`, `none`. Zoom scales around the frame centre, so pushed text drifts outward; lint checks the zoomed position. Left-aligned text at x=90 fails under `push`: use x ≥ 102, or `camera: none` on dense frames.
 - `sfx` — a sound at scene start: `hit`, `thump`, `whoosh`, `swipe`, `pop`, `tick`, `beep`, `riser`.
 
 **Keys every element accepts**
@@ -75,19 +75,19 @@ A 90° corner from above with the racing line. `x`, `y`, `size` (860 px box), `m
 Race strategy stints. `laps`, `rows: [{label, stints: [{compound, from, to}]}]`, `markers: [{lap, label, color}]`, `x`, `y`, `width`, `draw` (seconds to reveal), `tick`.
 
 ### chart
-Line chart. `x`, `y`, `w`, `h`, `xrange`, `yrange`, `series: [{points, color, label, curve}]`, `xlabel`, `ylabel`, `draw`, `stagger`. **Requires** `note` (e.g. `"illustrative"`) or `source`.
+Line chart. `x`, `y`, `w`, `h`, `xrange`, `yrange`, `series: [{points, color, label, curve}]`, `xlabel`, `ylabel`, `label_size` (28), `note_size` (34), `draw`, `stagger`. **Requires** `note` (e.g. `"illustrative"`) or `source`.
 
 ### arrow
 `from: [x,y]`, `to: [x,y]`, `bend` (px), `width`, `color`, `head`, `draw`, `dash`, `flow`, `label`, `label_x`, `label_y`.
 
 ### line
-`points`, `curve`, `width`, `color`, `draw`, `dash`, `flow` (dash speed), `arrow`.
+`points`, `curve`, `width`, `color`, `alpha`, `draw`, `dash`, `flow` (dash speed), `arrow`.
 
 ### callout
 A pulsing point with a leader line and a label. `point: [x,y]`, `label_at: [x,y]`, `text`, `elbow` (`h` | `v`), `color`, `size`.
 
 ### shape
-`shape` (`rect` | `circle` | `ring` | `arc`), `x`, `y`, `w`, `h` / `r`, `fill`, `stroke`, `stroke_width`, `radius`, `grow` (`right` | `up`), `value` (arc 0–1), `dash`.
+`shape` (`rect` | `circle` | `ring` | `arc`), `x`, `y`, `w`, `h` / `r`, `fill`, `stroke`, `stroke_width`, `radius`, `grow` (`right` | `up`), `value` (arc 0–1), `dash`, `alpha` (fill opacity 0–1).
 
 ### image
 Only for images the owner has rights to. `src` (path relative to the storyboard), `x`, `y`, `w`, `h`, `radius`, `zoom`.
