@@ -72,3 +72,39 @@ Engine limitations (I designed around them and did not edit the engine):
 - **The chart's `note` (ILLUSTRATIVE) is drawn at 24 px,** under the 34 px minimum, and there is no key to change that. The chart's own `xlabel` and series labels are also 24 px, so I left them out and used 34 px text elements.
 - **`car_top` has no front-wing movement and only draws the rear slot.** That is fine for the top view.
 - **Highlight on a car can't be animated.** For the chaser turning accent in beat 4, I lay a second highlighted `car_top` over the first one, fading in at the same position.
+
+## Edit notes
+Final runtime: **36.4 s** (was 40.0 s), 8 scenes, 1092 frames. Lint: 0 errors, 0 warnings. Master: H.264 High 1080×1920, 30 fps, AAC 48 kHz. Integrated loudness −13.6 LUFS, true peak −0.6 dBFS. Cover at 2.2 s.
+
+Retimed (only `dur` changed; no `at` values moved). Each scene keeps every text block at or under 3.6 words/s, with at least 1.3 s on its last line:
+
+| # | Scene | Dur | Time | Last text in → hold |
+|---|---|---|---|---|
+| 1 | Hook | 3.2 → 2.9 | 0.0–2.9 | SO WHO PASSES? 1.5 → 1.4 s |
+| 2 | DRS era | 6.3 → 5.6 | 2.9–8.5 | "the leader couldn't." 4.3 → 1.3 s |
+| 3 | Straight Mode | 5.9 → 5.3 | 8.5–13.8 | "It isn't a passing aid." 3.6 → 1.7 s (flaps shut at 3.45 s, still on screen) |
+| 4 | 1-second gap | 5.6 → 5.1 | 13.8–18.9 | body 11 words over 3.5 s = 3.1 w/s; beep at 3.0 → 2.1 s |
+| 5 | +0.5 MJ | 4.9 → 4.3 | 18.9–23.2 | "per lap." 3.0 → 1.3 s |
+| 6 | Deploy longer | 6.6 → 6.0 | 23.2–29.2 | ABOUT 337 KM/H 4.05 → 1.95 s |
+| 7 | Payoff band | 4.9 → 4.8 | 29.2–34.0 | body 2.0 → 2.8 s payoff hold. 20 words on screen, so 4.8 s is the floor before the "a lot to read" warning |
+| 8 | Loop | 2.6 → 2.4 | 34.0–36.4 | BECAUSE… 1.1 → 1.3 s, then hard cut to the hook |
+
+- The S6→S7 hold still works. Stills at 29.10, 29.20 and 29.25 s show the chart, stub and km/h labels fully drawn on the first frame of S7 with no blink. Only UP TO 350 KW, NORMAL and SPEED drop, as designed. The negative-`at` elements carry no SFX, so nothing leaks into S6.
+- No dead stretches over 3 s; the longest static gap is 2.8 s (the payoff hold).
+- The hook headline is 6 words and needs about 1.7 s to read at 3.6 w/s. It runs over the 1 s read target, but the cars opening at 0.3 s say it visually first. Shortening it is a content call for the writer, so it is not changed here.
+
+SFX map (master timeline):
+
+| t (s) | Sound | Visual event |
+|---|---|---|
+| 0.0 | hit | Hook slam (shake 10) |
+| 1.5 | thump (was hit) | SO WHO PASSES? slam; changed so there is only one hit per 4 s |
+| 2.9 | whoosh + pop | Whip into S2, 2011–2025 chip |
+| 8.5 | whoosh + pop | Push into S3, 2026 chip |
+| 16.8 | beep | Chaser crosses detection line, turns accent |
+| 18.9 | whoosh | Whip into S5 (OVERTAKE MODE chip muted, `sfx: none`) |
+| 19.2–20.0 | pop + 15 ticks | +0.5 MJ counter |
+| 29.2 | hit | Payoff headline slam |
+| 34.0 | whoosh | Push into loop scene |
+
+Hits fall at 0.0 and 29.2 s (7.2 s apart across the loop). Scene 6 has no sound, so the chart draw has room under a music track.

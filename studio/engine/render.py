@@ -42,11 +42,12 @@ def render_video(r, out, draft=False):
             "ffmpeg", "-y", "-v", "error",
             "-f", "rawvideo", "-pix_fmt", "bgra", "-s", f"{r.W}x{r.H}", "-r", str(r.fps), "-i", "-",
             "-i", wav,
-            "-c:v", "libx264", "-preset", "veryfast" if draft else "slow", "-crf", "26" if draft else "16",
+            "-c:v", "libx264", "-preset", "veryfast" if draft else "slow", "-crf", "26" if draft else "18",
+            "-maxrate", "12M", "-bufsize", "24M",
             "-pix_fmt", "yuv420p", "-profile:v", "high", "-level", "4.2",
             "-x264-params", "keyint=60:min-keyint=30",
             "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
-            "-af", "loudnorm=I=-14:TP=-1.5:LRA=11",
+            "-af", "loudnorm=I=-14:TP=-1.5:LRA=11,alimiter=limit=0.84:level=false",
             "-movflags", "+faststart", "-shortest", out,
         ]
         proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)

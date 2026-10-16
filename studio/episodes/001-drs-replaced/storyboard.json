@@ -10,7 +10,7 @@
   },
   "scenes": [
     {
-      "dur": 3.2,
+      "dur": 2.9,
       "transition": "none",
       "camera": "push",
       "facts": [
@@ -75,12 +75,13 @@
           "size": 90,
           "at": 1.5,
           "shake": 8,
-          "in": "slam"
+          "in": "slam",
+          "sfx": "thump"
         }
       ]
     },
     {
-      "dur": 6.3,
+      "dur": 5.6,
       "transition": "whip",
       "camera": "push",
       "facts": [
@@ -168,7 +169,7 @@
       ]
     },
     {
-      "dur": 5.9,
+      "dur": 5.3,
       "transition": "push",
       "camera": "push",
       "facts": [
@@ -278,7 +279,7 @@
       ]
     },
     {
-      "dur": 5.6,
+      "dur": 5.1,
       "transition": "cut",
       "camera": "push",
       "facts": [
@@ -430,7 +431,7 @@
       ]
     },
     {
-      "dur": 4.9,
+      "dur": 4.3,
       "transition": "whip",
       "camera": "push",
       "facts": [
@@ -445,7 +446,8 @@
           "outline": true,
           "bg": "muted",
           "fg": "ink",
-          "at": 0
+          "at": 0,
+          "sfx": "none"
         },
         {
           "type": "counter",
@@ -541,7 +543,7 @@
       ]
     },
     {
-      "dur": 6.6,
+      "dur": 6.0,
       "transition": "cut",
       "camera": "none",
       "facts": [
@@ -743,7 +745,7 @@
       ]
     },
     {
-      "dur": 4.9,
+      "dur": 4.8,
       "transition": "cut",
       "camera": "none",
       "facts": [
@@ -938,7 +940,7 @@
       ]
     },
     {
-      "dur": 2.6,
+      "dur": 2.4,
       "transition": "push",
       "camera": "push",
       "facts": [

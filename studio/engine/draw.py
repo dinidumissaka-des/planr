@@ -289,7 +289,7 @@ class Renderer:
     def _make_grain(self, seed):
         rng = np.random.default_rng(seed)
         n = rng.integers(0, 255, (self.H // 2, self.W // 2), dtype=np.uint8)
-        arr = np.stack([n, n, n, np.full_like(n, 16)], axis=-1)
+        arr = np.stack([n, n, n, np.full_like(n, 9)], axis=-1)
         img = skia.Image.fromarray(arr, colorType=skia.ColorType.kRGBA_8888_ColorType)
         return img
 
@@ -424,7 +424,7 @@ class Renderer:
         if trans == "flash" and t < 0.12:
             c.drawRect(skia.Rect(0, 0, self.W, self.H), paint(self.brand.color("ink", 0.55 * (1 - t / 0.12))))
         self.draw_hud(c, T)
-        g = self._grain[int(T * self.fps) % len(self._grain)]
+        g = self._grain[int(T * self.fps / 4) % len(self._grain)]
         c.drawImageRect(g, skia.Rect(0, 0, self.W, self.H), skia.SamplingOptions())
         return self.main.makeImageSnapshot()
 
