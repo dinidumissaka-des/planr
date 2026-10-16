@@ -119,3 +119,8 @@ Runtime 36.4 → **37.3 s** (S5 4.3 → 5.2 s for the new bars). Lint: 0 errors,
 - **ILLUSTRATIVE.** Kept as the chart `note`, now 34 px through the engine's `note_size` default. The lint rule requires a `note` or `source` on a chart, so the separate text element QA suggested isn't needed. It sits at y≈1310 in S6 and S7, clear of SPEED and of the S7 body line.
 - **S7 band.** `h` 560 → 330. The band ends at y=1010, level with the bottom of the 290 drop line, and no longer cuts "ABOUT". Fill is now `accent` at `alpha: 0.18` with the dashed accent outline, which reads as the region instead of an outline box.
 - Not changed: the S4 slipstream taper (the engine has no key to reverse it), and the S3 wheel slow-down (`wheel_spin` isn't animatable in ENGINE.md). Old stills, including the stale t39.10.png, were deleted and replaced with the current set.
+
+## Revision 2 (producer)
+- QA round 2 blocker: S1 and S8 `car_top` moved up 30 px (y 1170→1140, 1245→1215) so the accent wing clears the y 1480 UI line. Lint now checks car, bar and text extents after camera zoom.
+- S5: bars `at` 2.6, `stagger` 0.25, scene 5.2→5.6 s; label "MIAMI RACE: NORMAL LIMIT".
+- Final master: 37.7 s, 1131 frames, −14.4 LUFS, −1.9 dBTP. (Supersedes the runtime and loudness in the Edit notes above.)

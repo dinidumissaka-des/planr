@@ -41,7 +41,7 @@
             "dur": 0.3
           },
           "x": 380,
-          "y": 1170,
+          "y": 1140,
           "in": "none"
         },
         {
@@ -58,7 +58,7 @@
             "dur": 0.3
           },
           "x": 700,
-          "y": 1245,
+          "y": 1215,
           "in": "none"
         },
         {
@@ -78,7 +78,7 @@
             "rear_wing"
           ],
           "x": 380,
-          "y": 1170,
+          "y": 1140,
           "in": "none",
           "sfx": "pop"
         },
@@ -99,7 +99,7 @@
             "rear_wing"
           ],
           "x": 700,
-          "y": 1245,
+          "y": 1215,
           "in": "none",
           "sfx": "none"
         },
@@ -467,7 +467,7 @@
       ]
     },
     {
-      "dur": 5.2,
+      "dur": 5.6,
       "transition": "whip",
       "camera": "none",
       "facts": [
@@ -527,11 +527,11 @@
           "y": 1040,
           "width": 860,
           "max": 9.0,
-          "stagger": 0.4,
-          "at": 2.9,
+          "stagger": 0.25,
+          "at": 2.6,
           "items": [
             {
-              "label": "MIAMI: NORMAL LIMIT",
+              "label": "MIAMI RACE: NORMAL LIMIT",
               "value": 8.5,
               "display": "8.5 MJ",
               "color": "muted"
@@ -998,7 +998,7 @@
             ]
           },
           "x": 380,
-          "y": 1170,
+          "y": 1140,
           "in": "none"
         },
         {
@@ -1025,7 +1025,7 @@
             ]
           },
           "x": 700,
-          "y": 1245,
+          "y": 1215,
           "in": "none"
         },
         {

@@ -1,68 +1,63 @@
 # QA — EP 01   Verdict: REVISE
 
-Reviewed: `publish/master.mp4` (frames pulled from the master at full size), `review/qa-sheet.png` (111 frames, 0.33 s), `publish/cover.jpg`, `storyboard.json`, `01-research.md`, `02-script.md`.
+Round 1 (36.4 s cut): REVISE. 3 blockers (the S7 band cut through "ABOUT 337 KM/H", ILLUSTRATIVE at 24 px, the camera push put text at x 77–79). Hook, Clarity and Readability were 7 and Visual craft was 6.
+
+Round 2 reviewed: `publish/master.mp4` (37.30 s, 1119 frames; full-size frames pulled from the master at 0.0, 0.033, 0.5, 0.8, 0.9, 1.2, 2.2, 2.8, 22.5, 28.5, 33.5, 35.0, 36.0, 36.6 s and the last frame), a new `review/qa-sheet.png` (113 frames, 0.33 s), `publish/cover.jpg`, `storyboard.json` (lint: 0 errors, 0 warnings), `01-research.md`, `02-script.md` including Revision 1.
 
 | Axis | Score | Evidence |
 |---|---|---|
-| Hook | 7 | The flat claim lands on frame 5 at 130 px, and fans will feel the contradiction. But the only motion is each rear-wing bar splitting into two lines, about 150×35 px, at 0.3–0.8 s, while the eye is still on the headline. Muted, nothing in the picture *happens*. |
-| Clarity | 7 | DRS → Straight Mode → 1 s → Overtake is a clean chain. It breaks at 18.9–23.2 s: "harvest" is jargon for this audience, and "+0.5 MJ" has no scale. A casual fan can't tell whether that is a lot. In the S6 chart (23.2 s) the y-axis has no label, so "power" has to be inferred. |
-| Accuracy | 8 | Every on-screen line maps to a research row and its safe wording (table below). 290, 337, 0.5 MJ and 1 s are corroborated against FIA document extracts. Small overreach: "EVERY STRAIGHT" when Monaco had 0 zones (F5). |
-| Visual craft | 6 | The payoff frame has text struck through by a line ("ABOUT 337 KM/H", 30.0–34.0 s). The camera push puts headlines at x 77–79, outside the safe zone. ILLUSTRATIVE is 24 px. "SO WHO PASSES?" sits about 30 px above the car's front wing (2.2–2.9 s). |
-| Pacing | 8 | Something new appears at least every 2.8 s. The longest static hold is the 2.8 s payoff (31.2–34.0 s), and it earns it. The BECAUSE… → hook loop reads as one sentence. The loop seam blinks: both cars vanish at 0.0 s and fade back in. |
-| Originality | 8 | The line-art system, the real taper formulas and the "BECAUSE…" loop feel authored. The S5 car pair (19.9–23.2 s) is a re-use of S4 as filler. |
-| Readability | 7 | Body text is 48–56 px and labels 34 px, at about 3.1 w/s overall. The ILLUSTRATIVE note is 24 px, under the 34 px minimum. The hook needs 4 w/s locally (6 words before 1.5 s), which is acceptable (see notes). |
+| Hook | 8 | The slam lands at 0.0 s. At 0.7 s both rear wings turn accent with a pop, they open by 1.0 s, and SO WHO PASSES? slams at 1.5 s. That is three visible beats in 1.5 s, and it works muted. The wing beat is still a small element (about 150×20 px per car), so this is an 8, not a 9. |
+| Clarity | 8 | "Recover" replaces "harvest". The S5 bars give 0.5 MJ a scale (8.5 vs 9.0 MJ). S6 names its y-axis "ELECTRIC POWER". DRS → Straight Mode → 1 s → Overtake → deploy longer is a chain a casual fan could repeat. The remaining gap: at 30.1 s the S7 payoff drops the NORMAL label, so the grey dashed arrow inside the band is unnamed. |
+| Accuracy | 8 | Every on-screen line traces to a row and stays within its safe wording (table below). I re-checked the new S5 bar figures today: search extracts of the FIA Miami PU document give 8.5 MJ (race, Overtake off) and 9.0 MJ (Overtake on). One soft spot: the label omits "race", and Miami qualifying was 8.0 MJ (see notes). |
+| Visual craft | 7 | All three round-1 blockers are fixed. Text sits at x 96–104 throughout, the S7 band stops at y 1010 and clears "ABOUT", and ILLUSTRATIVE is 34 px. But the hook's one accent element now crosses the bottom of the safe zone (blocker 1), and it sits on the cover too. |
+| Pacing | 8 | Something new appears at least every 2.8 s. The longest hold is the payoff, 32.1 → 34.9 s, and it earns it. The loop seam is clean (below). S5 is tight: the 9.0 MJ bar finishes growing at about 22.6 s and the whip comes at 24.1 s, which leaves about 1.5 s to read the comparison. |
+| Originality | 8 | The filler car pair in S5 is gone, replaced by a real FIA comparison. The taper formulas, the "rear only → both wings" contrast and the BECAUSE… loop all feel authored. |
+| Readability | 8 | Body text is 48–56 px, labels 34–38 px, contrast is high and ILLUSTRATIVE is 34 px. S5 is dense: the lint counts 18 words, but with the counter and the bar values there are 22 visible tokens in 5.2 s, about 4.2 per second. See notes. |
 
-Pass bar not met. Four axes are under 8, and there are 3 blockers.
+Pass bar not met. One blocker remains, and Visual craft is 7 because of it. Fix the blocker and this passes.
 
 ## Blockers
-- [owner: art-director] at 30.0–34.0 s (S7 +0.8 s onward): "ABOUT 337 KM/H". The payoff band's dashed left edge (rect x=572.5, running y 680→1240) cuts through the word "ABOUT" between the O and the U. This is on the payoff frame, which the viewer holds for 2.8 s. Fix: in S7, change the `shape` rect `h` from 560.0 to 330 so the band ends at y=1010, level with the bottom of the 290 km/h drop line. That clears the label, whose glyph tops sit at about y 1085. It also brings the band closer to the true advantage region, the area between the two curves, instead of everything down to 0 kW.
-- [owner: art-director] at 23.6–34.0 s (S6, S7): "ILLUSTRATIVE". It is drawn at 24 px by the chart `note`, which breaks the STYLE minimum of 34 px. The art director's notes show this was known, but it still breaks the rule. Fix: remove `note` from both `chart` elements. Add a `text` element "ILLUSTRATIVE", `font: mono`, `weight: bold`, `size: 34`, `color: muted`, x=100, y=1262. In S6 use `at: 0.4`. In S7 use `at: -2` with `in: none`. It doesn't collide with SPEED, which is right-aligned at 940, or with the S7 body at y=1372. Re-run lint to confirm that rule 9 still passes without the `note`.
-- [owner: art-director] at 0.0–23.2 s and 34.0–36.4 s (S1–S5, S8, all `camera: push`): every block at x=90. The push scales the frame, so the leftmost text ink measures x=79 at 2.6 s, x=78 at 13.5 s, x=77 at 18.6 s and x=78 at 36.3 s. The counter reaches x=951 at 22.8 s. The safe zone is x 90–950. S6 and S7 (`camera: none`) measure 92, so the problem is the camera. Fix: set `"camera": "none"` on S2, S3, S4 and S5. In S1 and S8, keep the push and move both text blocks from x=90 to x=104 so the loop frames still match. Update the cover after the change.
+- [owner: art-director] at 0.9–2.9 s (S1) and on the cover (2.2 s): the accented open rear wing of the right-hand car (x 700, y 1245). Its lowest accent pixel measures y 1479 at 0.9 s, 1484 at 2.2 s (the cover) and 1487 at 2.8 s as the push zooms in. STYLE's fixed safe zone ends at y 1480, and below that line the app caption and UI sit. This is the hook's one accent, the beat added in Revision 1. The lint checks only text, so it didn't catch it. S8 has the same problem: the plain car reaches y 1488 at 35.0 s (S8 starts at 1.025× during the push transition). Fix: move every `car_top` in S1 and S8 up by 30 px. That is all four S1 cars (y 1170 → 1140, 1245 → 1215) and both S8 cars (same values), so the loop seam still matches. Measured gap from "SO WHO PASSES?" (ink bottom y 850) to the left car's front wing (ink top y 929) is 79 px today and will be 49 px after the move, which is still clear. Re-render the master and the cover afterwards.
 
 ### Fact check (every on-screen line)
 | t (s) | On screen | Row | Status |
 |---|---|---|---|
-| 0.0 | EVERY CAR OPENS ITS WINGS NOW | F3 | OK, matches the safe wording "every car… both wings open". See note on Monaco/low grip |
+| 0.0 | EVERY CAR OPENS ITS WINGS NOW | F3 | OK. "Opens" doesn't claim automatic. Top view animates only the rear wing; S3 shows both |
 | 1.5 | SO WHO PASSES? | — | Question, no claim |
 | 2.9 | 2011–2025 / DRS: 15 SEASONS | F1 | OK |
 | 5.1 | REAR FLAP | F2 | OK (rear wing only) |
-| 5.5 / 7.2 | Within 1 s, the chaser opened a flap / the leader couldn't. | F2 | OK, matches the safe wording |
-| 8.5 | 2026 / EVERY CAR. EVERY STRAIGHT. BOTH WINGS. | F3 | OK, matches the safe wording |
+| 5.5 / 7.2 | Within 1 s, the chaser opened a flap / the leader couldn't. | F2 | OK, the safe wording |
+| 8.5 | 2026 / EVERY CAR. EVERY ZONE. BOTH WINGS. | F3, F5 | OK. "Every zone" now matches F3's "designated zones" exactly. The low-grip partial activation (F6) is an exception, but the research rules it out of scope and the safe wording says "both wings open" |
 | 10.3 / 12.1 | Straight Mode saves energy. / It isn't a passing aid. | F4 | OK, word for word |
-| 13.8 | THE 1-SECOND GAP SURVIVED | F7 | OK. Describes 2026 practice and doesn't claim "the rules say 1 s" |
-| 15.4 | Within 1 s at the detection line: Overtake Mode, next lap. | F7 | OK, matches the safe wording |
-| 18.9–21.9 | OVERTAKE MODE / +0.5 MJ / The chaser may harvest 0.5 MJ more / per lap. | F8 | OK |
-| 23.2 | THEN DEPLOY FULL POWER LONGER | F10 | OK ("harvest more, deploy longer") |
-| 24.3 | UP TO 350 KW | F11 | OK, the safe phrase |
-| 25.2–27.3 | NORMAL / 290 KM/H / OVERTAKE MODE / ABOUT 337 KM/H / SPEED | F9, F10 | OK |
-| 29.2 / 31.2 | ONLY THE CHASER KEEPS FULL ELECTRIC POWER / Between 290 and about 337 km/h. | F9+F10 | OK, matches the payoff safe wording |
-| 34.0 / 35.1 | THE WING ISN'T THE EDGE. / BECAUSE… | F3, F4 | OK, a conclusion drawn from the misconception |
-
-### Re-check of the figures the writer asked about (WebSearch, extended; WebFetch to fia.com fails with ENOTFOUND here too)
-- **0.5 MJ: acceptable.** Search extracts of 4 separate FIA Power Unit Information documents show Overtake raising the race recharge limit by 0.5 MJ: Melbourne 8.0→8.5, Miami 8.5→9.0, Zandvoort 8.5→9.0, and Monza 7.0→7.5 (Monza is the research's own extract). RaceFans and Total Motorsport report the same Melbourne and Miami figures from those documents. Corroborated by ≥2 independent extracts that quote primary FIA documents.
-- **290 km/h: acceptable.** The PU Technical Regulations Issue 6 extract shows "1800 – 5 * car speed (kph) when the car speed is below 340kph" (with 1850 struck out), and the Issue 7 (11 Jun 2024) extract shows the same 1800 formula cleanly. 1800 − 5v = 350 kW at exactly 290 km/h. An explainer of Issue 18 describes the same shape: 5 kW per km/h, four times as steep from 340, zero at 345. Caveat: the Issue 1, 3 and 5 drafts used 1850, which gives 300 km/h, so the 290 figure holds only from Issue 6 onwards. Corroborated by ≥2 FIA extracts.
-- **About 337 km/h: acceptable.** The Issue 6 extract and RaceFans both quote the override as "7100 – 20 × car speed below 355 kph", zero at 355. That gives 350 kW at 337.5 km/h, and "ABOUT 337" is honest rounding. No extract showed the override clause in an issue later than 7, so the formula is corroborated through Issue 7 only, and no change has been reported.
-- **1-second detection rule: acceptable as 2026 practice.** Search extracts of the FIA China and Japan PU documents show "Detection Gap 1.0 s". Total Motorsport quotes the FIA Miami document (1 s, detection line 4,908 m, activation line 5,057 m). The Canada report gives 1.0 s. Sportrules (Sporting Regs Issue 08) confirms that the gap is set per event, not fixed in the rules. The video never says "the rules say 1 s", so no change is needed.
+| 13.8 | THE 1-SECOND GAP SURVIVED | F7 | OK as 2026 practice; doesn't say "the rules say 1 s" |
+| 15.4 | Within 1 s at the detection line: Overtake Mode, next lap. | F7 | OK, the safe wording |
+| 18.9–21.3 | OVERTAKE MODE / +0.5 MJ / The chaser may recover 0.5 MJ more energy / per lap. | F8 | OK. "May recover … more" describes a raised limit, not a top-up, as the research asks |
+| 21.8 / 22.2 | MIAMI: NORMAL LIMIT 8.5 MJ / IN OVERTAKE MODE 9.0 MJ | F8 | OK. These are the FIA Miami PU document's race figures, re-confirmed by search extract today (the WebFetch to fia.com still fails with ENOTFOUND). See the note on "race" |
+| 24.1 | THEN DEPLOY FULL POWER LONGER | F10 | OK ("harvest more, deploy longer") |
+| 24.5 / 25.2 | ELECTRIC POWER / UP TO 350 KW | F9–F11 | OK. Axis name, plus F11's safe phrase |
+| 25.4–28.2 | NORMAL / OVERTAKE MODE / 290 KM/H / ABOUT 337 KM/H / SPEED / ILLUSTRATIVE | F9, F10 | OK. Only sourced points are plotted, with no zero on the normal line |
+| 30.1 / 32.1 | ONLY THE CHASER KEEPS FULL ELECTRIC POWER / Between 290 and about 337 km/h. | F9+F10 | OK, the payoff safe wording |
+| 34.9 / 36.0 | THE WING ISN'T THE EDGE. / BECAUSE… | F3, F4 | OK, a conclusion from the misconception section |
 
 ### Diagram truth
-- S2: the side view faces right. Only the rear flap opens and turns accent, and the front flap stays shut. Correct.
-- S3: both elements are steep when closed and flat when open, front and rear, and they open and close together. Correct.
-- S4: the noses point right (front wing at the right end, rear wing block at the left), and the chaser moves right toward the detection line. The chaser turns accent only once its front wing reaches the line. The bracket runs from the line to the leader's rear wing. Correct.
-- S6: the scale positions are exact (290→x 572.5, 337→x 819.2, 350 kW→y 680). The NORMAL stub's slope, 350→225 kW over 290→315 km/h, matches 1800 − 5v, and it has no zero point, as the research asks. Correct.
-- S7: the band's x-range is right, but its height is not (see blocker 1).
+- S1/S8: the cars point nose up and the rear wing sits at the bottom. The accent and the opening are on the rear wing. Correct.
+- S2: only the rear flap opens and turns accent; the front flap stays shut. S3: front and rear open together (flat) and shut together (steep). Correct.
+- S4: the noses point right, the chaser turns accent only once its nose reaches the detection line, and the bracket runs from the line to the leader's rear. Correct.
+- S5 bars: the scale starts at zero with `max: 9.0`. At rest the bars measure about 808 and 856 px, a ratio of 0.944, which equals 8.5/9.0. **The scale is honest.** For about 0.3 s while it grows (22.2–22.5 s) the 9.0 bar is shorter than the 8.5 bar, but that is the animation, not a data error. It is clear enough to read as "a small raise in the limit", which matches the research's "not a free battery" framing.
+- S6: the axis label is placed correctly, above the y-axis at x 114. 290 → x 572.5, 337 → x 819.2 and 350 kW → y 680 are exact. The normal stub's slope matches 1800 − 5v. The OVERTAKE MODE label now arrives with its line (26.1 s). Correct.
+- S7 band: x runs 572.5–819.2 (290 to about 337 km/h), the top is the 350 kW line and the bottom is y 1010. It doesn't touch "ABOUT 337 KM/H" (glyph tops at about y 1085). The 0.18-alpha fill reads as a region. The rectangle's bottom edge (about 144 kW) is a framing choice, not data, and the ILLUSTRATIVE note covers it. Correct.
+- **Loop seam (last frame 37.27 s vs frame 0):** same car positions, same scale (S8 `pull` ends at 1.0×, S1 `push` starts at 1.0×), wings closed and plain in both. A pixel diff of the car region shows only grain-level differences. Frame 0 has no headline yet (the slam starts transparent), and the ghosted slam is visible from frame 1. The progress bar resetting from full to empty is expected. **The seam is clean, and the blink is gone.**
 
-### Master (ffprobe/ebur128 on `publish/master.mp4`)
-H.264 High at level 4.2, 1080×1920, 30 fps, 1092 frames, 36.40 s, about 9.9 Mb/s. AAC LC 48 kHz stereo. Integrated −14.4 LUFS, true peak −2.4 dBFS, LRA 13.6 LU. All match the stated re-export and the spec.
+### Master (ffprobe / ebur128 on `publish/master.mp4`)
+H.264 High at level 4.2, 1080×1920, 30 fps, 1119 frames, 37.30 s, about 9.5 Mb/s. AAC LC 48 kHz stereo. Integrated −14.3 LUFS, true peak −1.0 dBFS, LRA 13.6 LU. All match the stated re-export and the spec.
 
-## Notes (non-blocking; but Hook, Clarity and Readability must reach 8 to pass)
-- **Editor's hook-reading concern: not a real problem.** STYLE caps reading at 3.6 w/s and sets no 1 s target. S1 carries 9 words in 2.9 s, which is 3.1 w/s. The 6-word headline gets 1.5 s before the second slam (4 w/s locally), but they are short, common words at 130 px with one accent word. A glance reader gets "EVERY CAR… WINGS" in under 1 s. Don't cut words. The hook's real weakness is the visual (next note).
-- [art-director] Hook at 0.25–0.8 s: the wing opening is too small to read as an event, and it plays while the eye is on the slam. Move both `drs.at` values to 0.7 and 0.75, set `dur` to 0.3 and add `sfx: "click"` to the first car_top. The opening then becomes a second beat between the headline (0.0 s) and SO WHO PASSES? (1.5 s). It also needs a clear gap: either drop both car_top `scale` from 0.55 to 0.5, or move SO WHO PASSES? up from y=748 to y=730. The gap from the text to the front wing is about 30 px at 2.2 s (cover) and is nearly touching at 2.6 s.
-- [writer] at 20.3 s: "The chaser may harvest 0.5 MJ more per lap." Change "harvest" to "recover", which is plain English for this audience, giving "The chaser may recover 0.5 MJ more energy per lap." That is 10 words, and it keeps "per lap." as the second beat. [art-director] at 19.9–23.2 s: replace the decorative S4 car pair (y 1078–1302) with two 34 px-labelled bars, "MIAMI: 8.5 MJ" (muted) and "OVERTAKE: 9.0 MJ" (accent), so the 0.5 MJ has a scale. Both figures are in F8, from the FIA Miami document. This fixes the Clarity score.
-- [art-director] at 23.6 s: the S6 y-axis has no name. Add "ELECTRIC POWER" in 34 px mono muted at x=114, y=574, in S6 only, since the S7 headline needs that space. Also, the Overtake series is drawn over the normal series from 200 to 290, so for 23.6–26.3 s the viewer sees an unlabelled red line, and the grey "normal" line reads as only the dashed stub. Move the OVERTAKE MODE label from `at: 3.1` to `at: 1.6` so the label arrives with its line.
-- [writer] at 8.5 s: "EVERY STRAIGHT". F3's own wording is "every designated zone", and Monaco had 0 zones (F5). It is within the research's safe wording, so it is not a blocker. If you want it watertight, "EVERY CAR. EVERY ZONE. *BOTH* WINGS." costs no words.
-- [art-director] at 0.0–2.9 s and 34.0–36.4 s: the headline says "WINGS" (plural), but the top view animates only the rear wing (an engine limit). S3 then shows both, so this is acceptable, but don't add front-wing claims to the top-view scenes.
-- [editor] Loop seam at 36.4 → 0.0 s: S8 ends with both cars fully drawn, then the hook's frame 0 has no cars (`at: 0.1/0.15`, `in: fade`). On replay that reads as a blink. Set both S1 car_top elements to `at: 0`, `in: "none"`. The closed→open wing animation still plays.
-- [art-director] at 13.8–18.9 s: the leader's slipstream cone is widest at the leader's rear and narrows toward the chaser, so it can read as a beam coming *from* the chaser. If the engine allows, reverse the taper. Otherwise leave it.
-- [art-director] at 11.7–11.95 s: the flaps snap shut mid-straight with the wheels still spinning and no braking cue. That's fine without the "under braking" wording, but a `wheel_spin` slow-down at 3.2 s would make the shut motivated.
-- [editor] `02-script.md` → Edit notes still say "−13.6 LUFS, true peak −0.6 dBFS". Update them to −14.4 LUFS and −2.4 dBTP to match the re-exported master. `stills/` still holds t39.10.png from the 40 s cut; delete it so nobody reviews a stale frame.
-- [researcher] The "current Section C text" item under Unverified can be narrowed: 1800 − 5v is confirmed through Issue 7, and the Issue 18 description is consistent with it. The override (7100 − 20v) is confirmed only through Issue 7. Record that in the sheet.
+## Notes (non-blocking)
+- [art-director] S5 at 21.8–24.1 s: the bars come in at local 2.9 s and 3.3 s, and the scene ends at 5.2 s, so the finished comparison stays on screen for only about 1.5 s. Set the bars to `at: 2.6` and `stagger: 0.25`, and give S5 +0.4 s (5.2 → 5.6; runtime 37.7 s). That gives the comparison about 2.2 s at rest.
+- [writer] at 21.8 s: "MIAMI: NORMAL LIMIT". Miami qualifying ran at 8.0 MJ; the 8.5 is the race figure. Change it to "MIAMI RACE: NORMAL LIMIT" (+1 word; bar labels are 38 px with room on the line). If you want the scene's word count back, "IN OVERTAKE MODE" can become "OVERTAKE MODE", because the chip above already says it.
+- [art-director] S5: the bar labels render in Inter SemiBold (the engine default `label_size` 38). STYLE sets mono for labels and data, and every other label in the episode is mono. It's not a rule break worth a blocker, but S5 is the odd scene out.
+- [art-director] S7 at 30.1–34.9 s: the NORMAL label is dropped at the cut, so the grey dashed arrow inside the band is unnamed on the payoff frame. If the word budget allows, keep NORMAL at (629.8, 904), `at: -2`, `in: none`. It sits inside the band and is muted, so it doesn't compete with the accent. Otherwise leave it.
+- [art-director] at 0.0–0.1 s: on frames 1–3 the slam overscale puts the headline's leftmost ink at about x 36. It's a 3-frame transient, as in round 1, and acceptable.
+- [art-director] at 36.6–37.3 s: the S8 wings close with no cue, so that the seam can match. It works for the loop and reads as "the wing goes away" under BECAUSE…. Leave it.
+- [researcher] F8: PlanetF1's piece on the FIA clarification quotes the FIA as saying "up to 9 MJ in practice and the race", and PlanetF1 itself flags that this sits oddly with the Miami PU document's 8.5 MJ without Overtake. The document is primary, and Melbourne, Zandvoort, Monaco and Monza documents all show the same 0.5 MJ gap, so the on-screen figures stand. Record the discrepancy in the sheet.
+- [editor] `02-script.md` → the Edit notes still say 36.4 s, −13.6 LUFS and −0.6 dBFS, and the scene table is the pre-Revision-1 timing. Update them to 37.3 s, −14.3 LUFS and −1.0 dBTP, with the current start times (S5 18.9, S6 24.1, S7 30.1, S8 34.9 s).
+- [art-director / engine] The lint checks the safe zone for text only. Blocker 1 would have been caught if it also checked the bounding boxes of `car_top`, `car_side` and `bars`. Suggest adding that check.

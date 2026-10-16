@@ -44,6 +44,24 @@ def zoomed(box, camera, w=1080, h=1920):
             w / 2 + (x1 - w / 2) * z + pad, h / 2 + (y1 - h / 2) * z)
 
 
+def drawing_bbox(el):
+    """Approximate extents of non-text drawings, from the engine's unit geometry."""
+    kind = el["type"]
+    if kind == "car_top" and not el.get("rot") and not el.get("move") and "slipstream" not in el.get("show", []):
+        s, cx, cy = el.get("scale", 0.9), el.get("x", 540), el.get("y", 900)
+        return cx - 180 * s, cy - 500 * s, cx + 180 * s, cy + 465 * s
+    if kind == "car_side" and not el.get("rake"):
+        s, cx, cy = el.get("scale", 0.8), el.get("x", 540), el.get("y", 900)
+        bottom = cy + 90 * s + (190 * s if "downforce" in el.get("show", []) else 0)
+        return cx - 500 * s, cy - 100 * s, cx + 500 * s, bottom
+    if kind == "bars":
+        n = len(el["items"])
+        y = el.get("y", 700)
+        h = n * (el.get("bar_h", 64) + 56) + (n - 1) * (el.get("gap", 70) - 4)
+        return el.get("x", 90), y, el.get("x", 90) + el.get("width", 860), y + h
+    return None
+
+
 def lint(path):
     with open(os.path.join(STUDIO, "brand", "brand.json")) as f:
         brand = Brand(json.load(f))
@@ -102,6 +120,11 @@ def lint(path):
                     errors.append(f"{w_el}: text box ({x0:.0f},{y0:.0f})-({x1:.0f},{y1:.0f}) leaves the safe zone {safe}")
                 if el.get("size", 96) < 34:
                     errors.append(f"{w_el}: text size {el.get('size')} is unreadable on a phone (min 34)")
+            box = drawing_bbox(el)
+            if box:
+                x0, y0, x1, y1 = zoomed(box, s.get("camera", "push"))
+                if x0 < safe["left"] - 40 or x1 > safe["right"] + 40 or y0 < safe["top"] + 60 or y1 > safe["bottom"]:
+                    errors.append(f"{w_el}: drawing ({x0:.0f},{y0:.0f})-({x1:.0f},{y1:.0f}) leaves the safe zone {safe}")
             if el["type"] == "chart" and not el.get("note") and not el.get("source"):
                 errors.append(f"{w_el}: chart needs a 'note' (e.g. 'illustrative') or a 'source'")
         if scene_words / s["dur"] > MAX_WPS + 0.6:
