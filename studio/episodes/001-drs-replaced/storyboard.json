@@ -20,8 +20,8 @@
         {
           "type": "text",
           "text": "EVERY CAR OPENS ITS *WINGS* NOW",
-          "x": 90,
-          "y": 330,
+          "x": 104,
+          "y": 356,
           "size": 130,
           "at": 0,
           "shake": 10,
@@ -29,49 +29,85 @@
         },
         {
           "type": "car_top",
-          "at": 0.1,
-          "scale": 0.55,
+          "at": 0,
+          "scale": 0.5,
           "show": [
             "drs"
           ],
           "drs": {
             "from": 0,
             "to": 1,
-            "at": 0.3,
-            "dur": 0.5
+            "at": 0.7,
+            "dur": 0.3
+          },
+          "x": 380,
+          "y": 1170,
+          "in": "none"
+        },
+        {
+          "type": "car_top",
+          "at": 0,
+          "scale": 0.5,
+          "show": [
+            "drs"
+          ],
+          "drs": {
+            "from": 0,
+            "to": 1,
+            "at": 0.7,
+            "dur": 0.3
+          },
+          "x": 700,
+          "y": 1245,
+          "in": "none"
+        },
+        {
+          "type": "car_top",
+          "at": 0.7,
+          "scale": 0.5,
+          "show": [
+            "drs"
+          ],
+          "drs": {
+            "from": 0,
+            "to": 1,
+            "at": 0,
+            "dur": 0.3
           },
           "highlight": [
             "rear_wing"
           ],
           "x": 380,
-          "y": 1130,
-          "in": "fade"
+          "y": 1170,
+          "in": "none",
+          "sfx": "pop"
         },
         {
           "type": "car_top",
-          "at": 0.15,
-          "scale": 0.55,
+          "at": 0.7,
+          "scale": 0.5,
           "show": [
             "drs"
           ],
           "drs": {
             "from": 0,
             "to": 1,
-            "at": 0.25,
-            "dur": 0.5
+            "at": 0,
+            "dur": 0.3
           },
           "highlight": [
             "rear_wing"
           ],
           "x": 700,
-          "y": 1205,
-          "in": "fade"
+          "y": 1245,
+          "in": "none",
+          "sfx": "none"
         },
         {
           "type": "text",
           "text": "SO WHO PASSES?",
-          "x": 90,
-          "y": 748,
+          "x": 104,
+          "y": 765,
           "size": 90,
           "at": 1.5,
           "shake": 8,
@@ -83,7 +119,7 @@
     {
       "dur": 5.6,
       "transition": "whip",
-      "camera": "push",
+      "camera": "none",
       "facts": [
         "F1",
         "F2"
@@ -171,7 +207,7 @@
     {
       "dur": 5.3,
       "transition": "push",
-      "camera": "push",
+      "camera": "none",
       "facts": [
         "F3",
         "F4"
@@ -189,7 +225,7 @@
         },
         {
           "type": "text",
-          "text": "EVERY CAR. EVERY STRAIGHT. *BOTH* WINGS.",
+          "text": "EVERY CAR. EVERY ZONE. *BOTH* WINGS.",
           "x": 90,
           "y": 490,
           "size": 96,
@@ -281,7 +317,7 @@
     {
       "dur": 5.1,
       "transition": "cut",
-      "camera": "push",
+      "camera": "none",
       "facts": [
         "F7"
       ],
@@ -431,9 +467,9 @@
       ]
     },
     {
-      "dur": 4.3,
+      "dur": 5.2,
       "transition": "whip",
-      "camera": "push",
+      "camera": "none",
       "facts": [
         "F8"
       ],
@@ -463,82 +499,50 @@
         },
         {
           "type": "text",
-          "text": "The chaser may harvest 0.5 MJ more",
+          "text": "The chaser may recover 0.5 MJ more energy",
           "x": 90,
           "y": 760,
           "size": 56,
           "font": "text",
           "weight": "semibold",
           "width": 860,
-          "at": 1.4,
-          "in": "words"
-        },
-        {
-          "type": "line",
-          "points": [
-            [
-              90,
-              1078
-            ],
-            [
-              950,
-              1078
-            ]
-          ],
-          "color": "muted",
-          "width": 3,
-          "draw": 0.5,
-          "at": 0.9
-        },
-        {
-          "type": "line",
-          "points": [
-            [
-              90,
-              1302
-            ],
-            [
-              950,
-              1302
-            ]
-          ],
-          "color": "muted",
-          "width": 3,
-          "draw": 0.5,
-          "at": 0.9
-        },
-        {
-          "type": "car_top",
-          "y": 1190,
-          "rot": 90,
-          "scale": 0.32,
-          "x": 790,
-          "show": [
-            "slipstream"
-          ],
-          "at": 1.0,
-          "in": "fade"
-        },
-        {
-          "type": "car_top",
-          "y": 1190,
-          "rot": 90,
-          "scale": 0.32,
-          "x": 330,
           "at": 1.1,
-          "in": "fade"
+          "in": "words"
         },
         {
           "type": "text",
           "text": "per lap.",
-          "x": 243,
+          "x": 447,
           "y": 830,
           "size": 56,
           "font": "text",
           "weight": "semibold",
-          "width": 900,
-          "at": 3.0,
+          "width": 860,
+          "at": 2.4,
           "in": "words"
+        },
+        {
+          "type": "bars",
+          "x": 90,
+          "y": 1040,
+          "width": 860,
+          "max": 9.0,
+          "stagger": 0.4,
+          "at": 2.9,
+          "items": [
+            {
+              "label": "MIAMI: NORMAL LIMIT",
+              "value": 8.5,
+              "display": "8.5 MJ",
+              "color": "muted"
+            },
+            {
+              "label": "IN OVERTAKE MODE",
+              "value": 9.0,
+              "display": "9.0 MJ",
+              "color": "ink"
+            }
+          ]
         }
       ]
     },
@@ -577,7 +581,7 @@
             400
           ],
           "draw": 1.0,
-          "stagger": 1.4,
+          "stagger": 1.6,
           "note": "ILLUSTRATIVE",
           "series": [
             {
@@ -616,6 +620,18 @@
         },
         {
           "type": "text",
+          "text": "ELECTRIC POWER",
+          "x": 114,
+          "y": 574,
+          "color": "muted",
+          "at": 0.4,
+          "in": "fade",
+          "font": "mono",
+          "weight": "bold",
+          "size": 34
+        },
+        {
+          "type": "text",
           "text": "UP TO 350 KW",
           "x": 114,
           "y": 618.0,
@@ -646,7 +662,7 @@
           ],
           "arrow": true,
           "draw": 0.45,
-          "at": 1.7
+          "at": 1.3
         },
         {
           "type": "text",
@@ -657,7 +673,7 @@
           "font": "mono",
           "weight": "bold",
           "color": "muted",
-          "at": 2.0,
+          "at": 1.5,
           "in": "fade"
         },
         {
@@ -673,7 +689,7 @@
           "elbow": "v",
           "text": "",
           "color": "muted",
-          "at": 2.2
+          "at": 2.6
         },
         {
           "type": "text",
@@ -685,7 +701,7 @@
           "font": "mono",
           "weight": "bold",
           "color": "ink",
-          "at": 2.5500000000000003,
+          "at": 2.9,
           "in": "fade"
         },
         {
@@ -698,7 +714,7 @@
           "font": "mono",
           "weight": "bold",
           "color": "accent",
-          "at": 3.1,
+          "at": 2.0,
           "in": "fade"
         },
         {
@@ -759,8 +775,8 @@
           "x": 572.5,
           "y": 680.0,
           "w": 246.7,
-          "h": 560.0,
-          "fill": "faint",
+          "h": 330,
+          "fill": "accent",
           "stroke": "accent",
           "stroke_width": 4,
           "dash": [
@@ -770,7 +786,8 @@
           "radius": 0,
           "grow": "right",
           "in_dur": 0.8,
-          "at": 0.8
+          "at": 0.8,
+          "alpha": 0.18
         },
         {
           "type": "chart",
@@ -942,7 +959,7 @@
     {
       "dur": 2.4,
       "transition": "push",
-      "camera": "push",
+      "camera": "pull",
       "facts": [
         "F3",
         "F4"
@@ -951,8 +968,8 @@
         {
           "type": "text",
           "text": "THE WING ISN'T THE EDGE.",
-          "x": 90,
-          "y": 330,
+          "x": 104,
+          "y": 356,
           "size": 130,
           "at": 0,
           "in": "rise"
@@ -960,32 +977,62 @@
         {
           "type": "car_top",
           "at": 0,
-          "scale": 0.55,
+          "scale": 0.5,
           "show": [
             "drs"
           ],
-          "drs": 1,
+          "drs": {
+            "keys": [
+              [
+                0,
+                1
+              ],
+              [
+                1.7,
+                1
+              ],
+              [
+                2.0,
+                0
+              ]
+            ]
+          },
           "x": 380,
-          "y": 1130,
-          "in": "fade"
+          "y": 1170,
+          "in": "none"
         },
         {
           "type": "car_top",
           "at": 0,
-          "scale": 0.55,
+          "scale": 0.5,
           "show": [
             "drs"
           ],
-          "drs": 1,
+          "drs": {
+            "keys": [
+              [
+                0,
+                1
+              ],
+              [
+                1.7,
+                1
+              ],
+              [
+                2.0,
+                0
+              ]
+            ]
+          },
           "x": 700,
-          "y": 1205,
-          "in": "fade"
+          "y": 1245,
+          "in": "none"
         },
         {
           "type": "text",
           "text": "*BECAUSE…*",
-          "x": 90,
-          "y": 748,
+          "x": 104,
+          "y": 765,
           "size": 90,
           "at": 1.1,
           "in": "words"
