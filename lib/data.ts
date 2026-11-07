@@ -266,7 +266,7 @@ export type ProjectMilestone = {
 
 // ─── Project Board Data ─────────────────────────────────────
 
-const DEFAULT_MILESTONES: Record<ProjectType, string[]> = {
+export const DEFAULT_MILESTONES: Record<ProjectType, string[]> = {
   home: [
     "Planning & Design",
     "Permits & Approvals",

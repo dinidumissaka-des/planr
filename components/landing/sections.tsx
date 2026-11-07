@@ -1,445 +1,378 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { AnimatePresence, motion, useScroll, useSpring, useTransform } from 'motion/react'
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, MapPin } from 'lucide-react'
+import { AnimatePresence, motion } from 'motion/react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronRight, Mail, MessageCircle } from 'lucide-react'
 import { architects } from '@/lib/architects'
-import { Reveal, SectionHead, ease } from './reveal'
+import { cn } from '@/lib/utils'
+import { CATEGORY_ICON } from './hero'
+import { Container, OutlinePill, Reveal, ease } from './reveal'
 
-const img = (url: string, w: number) => `${url.split('?')[0]}?w=${w}&q=80&auto=format&fit=crop`
+const STORIES = [
+  { a: architects[0], p: architects[0].portfolio[0] },
+  { a: architects[2], p: architects[2].portfolio[0] },
+  { a: architects[1], p: architects[1].portfolio[1] },
+]
 
-const STEPS = [
+function Stories() {
+  return (
+    <div id="stories" className="scroll-mt-20 pb-16 pt-16 lg:pb-20 lg:pt-24">
+      <Container>
+        <Reveal>
+          <h2 className="text-[32px] font-light leading-[1.15] tracking-[-0.02em] text-gray-900 lg:text-[40px] dark:text-white">
+            Work by the people
+            <span className="block lg:pl-[72px]">you can book on Planr</span>
+          </h2>
+        </Reveal>
+        <div className="-mx-5 mt-10 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] lg:mx-0 lg:mt-14 lg:grid lg:grid-cols-[1.08fr_1fr_1fr] lg:gap-4 lg:overflow-visible lg:px-0 lg:pb-0">
+          {STORIES.map(({ a, p }, i) => {
+            const Icon = CATEGORY_ICON[a.category]
+            return (
+              <Reveal key={p.caption} delay={i * 0.08} className="w-[80%] shrink-0 snap-start lg:w-auto">
+                <article className="group relative h-[400px] overflow-hidden rounded-xl bg-gray-300 lg:h-[480px] dark:bg-white/10">
+                  <img
+                    src={p.url}
+                    alt={p.caption}
+                    className={cn('absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]', i > 0 && 'grayscale')}
+                  />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,17,30,0.45)_0%,transparent_30%,transparent_55%,rgba(7,17,30,0.75)_100%)]" />
+                  <p className="absolute left-5 top-5 flex items-center gap-2 text-[17px] font-semibold tracking-[-0.01em] text-white">
+                    <Icon className="h-5 w-5" /> {a.company}
+                  </p>
+                  <div className="absolute inset-x-5 bottom-5 text-white">
+                    <p className="text-[26px] font-light leading-tight">{p.caption}</p>
+                    <p className="mt-1 text-[15px] text-white/80">
+                      {p.category} · {a.role} {a.name}
+                    </p>
+                  </div>
+                </article>
+              </Reveal>
+            )
+          })}
+        </div>
+        <div className="mt-6 flex flex-col items-start gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <p className="text-[15px] leading-6 text-[#505050] dark:text-white/60">Every consultant keeps a portfolio on Planr, so you can see their past work before you book.</p>
+          <OutlinePill href="/signup">
+            See all projects <ArrowRight className="h-3.5 w-3.5" />
+          </OutlinePill>
+        </div>
+      </Container>
+    </div>
+  )
+}
+
+const STARTS = [
   {
-    title: 'Book a consultation',
-    body: 'Pick an architect, engineer or surveyor by speciality and location, choose a time that suits you, and talk through the site, the budget and what is actually possible.',
+    q: 'Just bought land?',
+    a: 'Begin with a consultation before anyone draws a line. An architect can tell you what the plot allows, then Planr lays out the stages ahead.',
+    img: architects[4].portfolio[0],
   },
   {
-    title: 'Track the build',
-    body: 'Every project gets a milestone plan — from planning and permits to final inspection. Mark progress, add notes and dates, and always know what comes next.',
+    q: 'Already have drawings?',
+    a: 'Add your project, mark the stages you have finished and get a second opinion from an engineer or quantity surveyor before work goes to tender.',
+    img: architects[6].portfolio[0],
   },
   {
-    title: 'Ask as you go',
-    body: 'Not sure about a quote, a permit or a material? Ask a consultant or the Planr assistant and get a clear answer without waiting for the next meeting.',
+    q: 'Mid-build and losing track?',
+    a: 'Put the build into Planr, tick off what is done and keep notes and dates on what remains, so you and your team work from one list.',
+    img: architects[7].portfolio[0],
   },
 ]
 
-export function How() {
+function Starting() {
+  const [open, setOpen] = useState(0)
   return (
-    <section id="how" className="mx-auto max-w-[1240px] px-5 py-24 md:px-8 md:py-32">
-      <SectionHead index="01" label="How it works" />
-      <div className="mt-10 grid gap-10 md:grid-cols-12">
-        <Reveal className="md:col-span-5">
-          <h2 className="font-semibold text-[clamp(38px,4.6vw,64px)] leading-[1.02] tracking-[-0.045em] text-gray-900 dark:text-white">
-            One place for the whole build, <em className="font-serif font-normal italic tracking-[-0.02em]">not just the drawings.</em>
+    <div id="start" className="scroll-mt-20 border-t border-gray-200/80 py-16 dark:border-white/8">
+      <Container className="lg:grid lg:grid-cols-[400px_minmax(0,1fr)] lg:gap-0">
+        <Reveal>
+          <h2 className="text-[32px] font-light leading-[1.15] tracking-[-0.02em] text-gray-900 lg:text-[40px] dark:text-white">
+            Starting
+            <span className="block lg:pl-[72px]">with Planr</span>
           </h2>
         </Reveal>
-        <div className="grid gap-px overflow-hidden rounded-[4px] bg-gray-900/10 sm:grid-cols-3 md:col-span-7 dark:bg-white/10">
-          {STEPS.map((s, i) => (
-            <Reveal key={s.title} delay={i * 0.08} className="bg-[#F5F2EC] p-6 dark:bg-[#07111E]">
-              <div className="mb-6 text-[13px] tabular-nums sm:mb-14 text-gray-400 dark:text-white/40">0{i + 1}</div>
-              <h3 className="mb-3 text-[17px] font-semibold text-gray-900 dark:text-white">{s.title}</h3>
-              <p className="text-[14px] leading-[1.65] text-gray-600 dark:text-white/60">{s.body}</p>
-            </Reveal>
-          ))}
+        <div className="mt-10 lg:-mr-6 lg:mt-0">
+          {STARTS.map((s, i) => {
+            const isOpen = open === i
+            return (
+              <div key={s.q} className={cn('border-gray-200/80 dark:border-white/8', i > 0 && !isOpen && open !== i - 1 && 'border-t')}>
+                <button
+                  onClick={() => setOpen(i)}
+                  aria-expanded={isOpen}
+                  className={cn(
+                    'grid w-full gap-x-10 rounded-[18px] px-0 py-6 text-left transition-colors lg:grid-cols-2 lg:px-6',
+                    isOpen ? 'bg-[#EDEDED] px-5 py-6 dark:bg-white/[0.06]' : 'hover:bg-gray-900/[0.02]',
+                  )}
+                >
+                  <span>
+                    <span className="block text-[18px] leading-7 text-gray-900 lg:text-[20px] dark:text-white">{s.q}</span>
+                    {isOpen && <span className="mt-1 block text-[18px] leading-7 text-[#757575] lg:text-[20px] dark:text-white/55">{s.a}</span>}
+                  </span>
+                  {isOpen ? (
+                    <motion.span
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, ease }}
+                      className="relative mt-5 block h-[190px] overflow-hidden rounded-xl bg-gray-300 shadow-[0_8px_24px_-8px_rgba(7,17,30,0.35)] lg:mt-0 lg:h-[196px] dark:bg-white/10"
+                    >
+                      <img src={s.img.url} alt="" className="h-full w-full object-cover" />
+                      <span className="absolute inset-0 bg-[linear-gradient(180deg,transparent_40%,rgba(7,17,30,0.6))]" />
+                      <span className="absolute bottom-4 left-4 text-[17px] leading-6 text-white">
+                        {s.img.caption}
+                        <span className="block text-[13px] text-white/75">{s.img.category}</span>
+                      </span>
+                    </motion.span>
+                  ) : (
+                    <span className="mt-2 hidden text-[14px] leading-[22px] text-[#757575] lg:mt-1 lg:block dark:text-white/50">{s.a}</span>
+                  )}
+                </button>
+              </div>
+            )
+          })}
         </div>
+      </Container>
+    </div>
+  )
+}
+
+export function StoriesPanel() {
+  return (
+    <section className="sm:px-2 lg:px-4">
+      <div className="rounded-[20px] border border-gray-200/70 bg-[#F9F9F9] dark:border-white/8 dark:bg-[#0A1525]">
+        <Stories />
+        <Starting />
       </div>
     </section>
   )
 }
 
-const MILESTONES = [
-  { title: 'Planning & Design', date: 'Jan 12', status: 'done' },
-  { title: 'Permits & Approvals', date: 'Feb 28', status: 'done' },
-  { title: 'Site Preparation', date: 'Mar 15', status: 'done' },
-  { title: 'Foundation', date: 'Apr 30', status: 'active', note: 'Footings poured — curing until 6 May' },
-  { title: 'Framing & Structure', date: 'Jun 20', status: 'pending' },
-  { title: 'Roofing', date: 'Jul 18', status: 'pending' },
-  { title: 'Electrical & Plumbing', date: 'Aug 22', status: 'pending' },
-  { title: 'Interior Finishing', date: 'Oct 10', status: 'pending' },
-  { title: 'Exterior & Landscaping', date: 'Nov 14', status: 'pending' },
-  { title: 'Final Inspection & Handover', date: 'Dec 05', status: 'pending' },
-] as const
+const TRUST = [
+  { label: 'Verified consultants', text: "Profiles show each professional's discipline, practice and past work, so you know who you are booking." },
+  { label: 'Shared milestone plan', text: 'Every project starts with a stage-by-stage plan for its type, from first drawings to handover.' },
+  { label: 'Private by default', text: 'Your projects, notes and questions belong to your account. They are not published for other users.' },
+  { label: 'Notes & dates', text: 'Decisions and deadlines sit against the stage they belong to, not scattered across chats.' },
+  { label: 'Planr AI guardrails', text: 'It will not guess at prices or approve structural work. When you need a professional, it tells you.' },
+]
 
-export function Tracker() {
+export function Trust() {
   const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 75%', 'end 60%'] })
-  const fill = useSpring(useTransform(scrollYProgress, [0, 1], [0, 0.38]), { stiffness: 120, damping: 30 })
+  const [atStart, setAtStart] = useState(true)
+  const [atEnd, setAtEnd] = useState(false)
+
+  const onScroll = () => {
+    const el = ref.current
+    if (!el) return
+    setAtStart(el.scrollLeft < 8)
+    setAtEnd(el.scrollLeft + el.clientWidth > el.scrollWidth - 8)
+  }
+  const go = (dir: 1 | -1) => ref.current?.scrollBy({ left: dir * 376, behavior: 'smooth' })
 
   return (
-    <section id="tracker" className="bg-[#07111E] text-white">
-      <div className="mx-auto max-w-[1240px] px-5 py-24 md:px-8 md:py-32">
-        <div className="flex items-center gap-4 border-t border-white/15 pt-4 text-[12px] font-medium tracking-wide text-white/50">
-          <span className="tabular-nums text-white">02</span>
-          <span className="uppercase">Build tracker</span>
-        </div>
-        <div className="mt-10 grid gap-14 md:grid-cols-12">
-          <div className="md:col-span-5">
+    <section className="sm:px-2 lg:px-4">
+      <div className="overflow-hidden rounded-[20px] bg-[#07111E] py-16 text-white lg:py-24 dark:border dark:border-white/10">
+        <Container>
+          <div className="flex items-end justify-between gap-6">
             <Reveal>
-              <h2 className="font-semibold text-[clamp(38px,4.6vw,64px)] leading-[1.02] tracking-[-0.045em]">
-                From first sketch to handover, <em className="font-serif font-normal italic tracking-[-0.02em] text-sand-400">stage by stage.</em>
+              <h2 className="text-[32px] font-light leading-[1.15] tracking-[-0.02em] lg:text-[40px]">
+                Built for serious builds.
+                <span className="block lg:pl-[72px]">Careful with what matters.</span>
               </h2>
             </Reveal>
-            <Reveal delay={0.1}>
-              <p className="mt-6 max-w-[420px] text-[16px] leading-[1.65] text-white/60">
-                Start a home build, renovation, restaurant, hotel or commercial project and Planr lays out the milestones for you. Adjust them to fit your site, set dates, and keep everyone working from the same plan.
-              </p>
-            </Reveal>
-            <Reveal delay={0.2}>
-              <div className="mt-10 grid max-w-[380px] grid-cols-2 gap-px overflow-hidden rounded-[4px] bg-white/10">
-                <div className="bg-[#07111E] p-5">
-                  <div className="text-[40px] font-semibold leading-none tracking-[-0.04em]">3<span className="text-white/40">/10</span></div>
-                  <div className="mt-2 text-[12.5px] text-white/50">Stages complete</div>
-                </div>
-                <div className="bg-[#07111E] p-5">
-                  <div className="text-[40px] font-semibold leading-none tracking-[-0.04em]">38%</div>
-                  <div className="mt-2 text-[12.5px] text-white/50">Overall progress</div>
-                </div>
-              </div>
-            </Reveal>
-          </div>
-
-          <Reveal delay={0.1} className="md:col-span-7">
-            <div ref={ref} className="rounded-2xl border border-white/10 bg-[#0D1B2E] p-5 md:p-7">
-              <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-5">
-                <div>
-                  <div className="text-[12px] text-white/45">Home build · Nugegoda</div>
-                  <div className="text-[17px] font-semibold">Two-storey family house</div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="h-1.5 w-32 overflow-hidden rounded-full bg-white/10">
-                    <motion.div style={{ scaleX: fill }} className="h-full w-full origin-left rounded-full bg-secondary-400" />
-                  </div>
-                  <span className="text-[12px] tabular-nums text-white/60">38%</span>
-                </div>
-              </div>
-              <ol className="relative">
-                {MILESTONES.map((m, i) => (
-                  <motion.li
-                    key={m.title}
-                    initial={{ opacity: 0, x: -8 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: '0px 0px -40px 0px' }}
-                    transition={{ duration: 0.5, delay: i * 0.04, ease }}
-                    className="relative flex gap-4 pb-5 last:pb-0"
-                  >
-                    {i < MILESTONES.length - 1 && (
-                      <span className={`absolute top-6 left-[11px] h-[calc(100%-16px)] w-px ${m.status === 'done' ? 'bg-secondary-400/60' : 'bg-white/10'}`} />
-                    )}
-                    <span
-                      className={
-                        m.status === 'done'
-                          ? 'relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary-400 text-[#07111E]'
-                          : m.status === 'active'
-                            ? 'relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-sand-400 bg-[#0D1B2E]'
-                            : 'relative z-10 h-6 w-6 shrink-0 rounded-full border border-white/15 bg-[#0D1B2E]'
-                      }
-                    >
-                      {m.status === 'done' && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
-                      {m.status === 'active' && <span className="h-2 w-2 animate-pulse rounded-full bg-sand-400" />}
-                    </span>
-                    <div className="flex flex-1 items-start justify-between gap-4 pt-0.5">
-                      <div>
-                        <div className={`text-[14.5px] ${m.status === 'pending' ? 'text-white/45' : 'text-white'}`}>{m.title}</div>
-                        {'note' in m && <div className="mt-1 text-[12.5px] text-sand-400/90">{m.note}</div>}
-                      </div>
-                      <span className="text-[12px] tabular-nums text-white/35">{m.date}</span>
-                    </div>
-                  </motion.li>
-                ))}
-              </ol>
-            </div>
-          </Reveal>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-const DISCIPLINES = [
-  { name: 'Architecture', blurb: 'New homes, villas and extensions designed around your site and the climate.', image: 'photo-1613490493576-7fde63acd811' },
-  { name: 'Interior Design', blurb: 'Layouts, finishes and furniture that make a house feel like home.', image: 'photo-1555041469-a586c61ea9bc' },
-  { name: 'Landscape Architecture', blurb: 'Gardens, pools and outdoor rooms that thrive in the tropics.', image: 'photo-1540541338537-71acf6f14e1a' },
-  { name: 'Structural Engineering', blurb: 'Foundations and frames checked for soil, slope and load.', image: 'photo-1504307651254-35680f356dfd' },
-  { name: 'Construction', blurb: 'Contractors who run the site, the crews and the schedule.', image: 'photo-1541888946425-d81bb19240f5' },
-  { name: 'Quantity Surveying', blurb: 'Cost plans and BOQs, so every quote is checked before you sign.', image: 'photo-1454165804606-c3d57bc86b40' },
-  { name: 'Urban Design', blurb: 'Masterplans and mixed-use schemes for larger sites.', image: 'photo-1477959858617-67f85cf4f1df' },
-].map(d => {
-  const team = architects.filter(a => a.category === d.name)
-  return {
-    ...d,
-    count: team.length,
-    places: [...new Set(team.map(a => a.location.split(',')[0].replace(/ \d+$/, '')))],
-    tags: team.flatMap(a => a.specializations).slice(0, 2),
-  }
-})
-
-export function Expertise() {
-  const track = useRef<HTMLDivElement>(null)
-  const scroll = (dir: number) => track.current?.scrollBy({ left: dir * track.current.clientWidth * 0.8, behavior: 'smooth' })
-
-  return (
-    <section id="expertise" className="py-24 md:py-32">
-      <div className="mx-auto max-w-[1240px] px-5 md:px-8">
-        <SectionHead index="03" label="Expertise" />
-        <div className="mt-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <Reveal>
-            <h2 className="max-w-[680px] font-semibold text-[clamp(38px,4.6vw,64px)] leading-[1.02] tracking-[-0.045em] text-gray-900 dark:text-white">
-              Every specialist your build <em className="font-serif font-normal italic tracking-[-0.02em]">will need.</em>
-            </h2>
-          </Reveal>
-          <div className="flex gap-2">
-            {[
-              { dir: -1, icon: ArrowLeft, label: 'Previous' },
-              { dir: 1, icon: ArrowRight, label: 'Next' },
-            ].map(b => (
-              <button
-                key={b.label}
-                onClick={() => scroll(b.dir)}
-                aria-label={b.label}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-900/15 text-gray-900 transition-colors hover:bg-gray-900 hover:text-white dark:border-white/20 dark:text-white dark:hover:bg-white dark:hover:text-gray-900"
-              >
-                <b.icon className="h-4 w-4" />
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div
-        ref={track}
-        className="mx-auto mt-12 flex max-w-[1240px] snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto scroll-smooth px-5 pb-4 [scrollbar-width:none] md:scroll-px-8 md:px-8 [&::-webkit-scrollbar]:hidden"
-      >
-        {DISCIPLINES.map((d, i) => (
-          <a key={d.name} href="/signup" className="group w-[78vw] shrink-0 snap-start sm:w-[340px]">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[4px] bg-[#E7E1D7] dark:bg-[#0D1B2E]">
-              <img
-                src={img(`https://images.unsplash.com/${d.image}`, 700)}
-                alt={d.name}
-                loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#07111E]/75 via-[#07111E]/10 to-transparent" />
-              <span className="absolute top-4 left-4 text-[12px] tabular-nums text-white/80">0{i + 1}</span>
-              <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3 text-white">
-                <h3 className="text-[24px] leading-[1.05] font-semibold tracking-[-0.03em]">{d.name}</h3>
-                <ArrowUpRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </div>
-            </div>
-            <p className="mt-4 text-[14px] leading-[1.6] text-gray-600 dark:text-white/60">{d.blurb}</p>
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {d.tags.map(t => (
-                <span key={t} className="rounded-full border border-gray-900/15 px-2.5 py-1 text-[11.5px] text-gray-700 dark:border-white/15 dark:text-white/70">{t}</span>
+            <div className="hidden gap-2 sm:flex">
+              {([-1, 1] as const).map((d) => (
+                <button
+                  key={d}
+                  onClick={() => go(d)}
+                  disabled={d === -1 ? atStart : atEnd}
+                  aria-label={d === -1 ? 'Previous' : 'Next'}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-white transition-colors hover:bg-white/10 disabled:border-transparent disabled:text-white/30 disabled:hover:bg-transparent"
+                >
+                  {d === -1 ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
+                </button>
               ))}
             </div>
-            <div className="mt-4 flex items-center gap-1 text-[12.5px] text-gray-500 dark:text-white/45">
-              <MapPin className="h-3.5 w-3.5" />
-              {d.count} {d.count === 1 ? 'consultant' : 'consultants'} · {d.places.join(', ')}
+          </div>
+        </Container>
+        <div
+          ref={ref}
+          onScroll={onScroll}
+          className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-5 px-5 [scrollbar-width:none] lg:mt-14 lg:scroll-px-[max(40px,calc((100vw-1280px)/2-16px))] lg:px-[max(40px,calc((100vw-1280px)/2-16px))]"
+        >
+          {TRUST.map((t) => (
+            <div key={t.label} className="flex h-[300px] w-[82%] shrink-0 snap-start flex-col justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-8 sm:w-[360px]">
+              <p className="text-[13px] text-white/60">{t.label}</p>
+              <p className="text-[21px] leading-[1.35] text-white">{t.text}</p>
             </div>
-          </a>
-        ))}
+          ))}
+          <span className="w-px shrink-0" />
+        </div>
+        <Container className="mt-14 lg:mt-20">
+          <p className="text-[16px] text-white">Your data</p>
+          <div className="mt-2 flex gap-5 text-[13px] text-white/60">
+            <a href="#" className="inline-flex items-center gap-0.5 underline underline-offset-4 hover:text-white">
+              Privacy policy <ArrowUpRight className="h-3 w-3" />
+            </a>
+            <a href="#" className="inline-flex items-center gap-0.5 underline underline-offset-4 hover:text-white">
+              Terms of service <ArrowUpRight className="h-3 w-3" />
+            </a>
+          </div>
+        </Container>
       </div>
     </section>
   )
 }
 
-const TYPES = [
-  { name: 'Home build', note: 'New houses, from the ground up', image: architects[4].portfolio[1].url },
-  { name: 'Renovation', note: 'Extensions, restorations, heritage homes', image: architects[3].portfolio[0].url },
-  { name: 'Restaurant', note: 'Dining spaces and kitchens', image: architects[1].portfolio[3].url },
-  { name: 'Hotel', note: 'Villas, boutique stays and resorts', image: architects[0].portfolio[1].url },
-  { name: 'Commercial', note: 'Offices, retail and mixed-use', image: architects[7].portfolio[2].url },
+const FAQS = [
+  {
+    q: 'What is Planr?',
+    a: 'Planr helps homeowners, developers and businesses in Sri Lanka plan and build with professional help. You can book consultations with certified architects and building specialists, track your project stage by stage, and ask questions of consultants or Planr AI, all from one account.',
+  },
+  {
+    q: 'How much does a consultation cost?',
+    a: 'Consultants set their own rates. You will see the price for a session before you confirm a booking, and plan options are shown when you sign up.',
+  },
+  {
+    q: 'How does Planr AI work, and what will it not do?',
+    a: 'Planr AI answers questions about design, permits, materials, construction and budgeting. It gives practical guidance and realistic ranges, but it does not make up prices and it is not a substitute for a professional. When a question needs someone to look at your site or drawings, it will suggest booking a consultation.',
+  },
+  {
+    q: 'Who are the consultants?',
+    a: 'Building professionals across seven disciplines: architecture, interior design, landscape architecture, urban design, structural engineering, construction and quantity surveying. Each has a profile showing their practice, location, specialisations and past projects.',
+  },
+  {
+    q: 'What kinds of projects can I track?',
+    a: 'Home builds, restaurants, hotels, commercial spaces, renovations and anything else. Each type starts with its own milestone plan, which you can follow from planning through to handover.',
+  },
+  {
+    q: 'Is my project information private?',
+    a: 'Your projects, notes and questions are tied to your account and are not shown to other clients. Consultants see what you share with them through bookings and questions.',
+  },
+  {
+    q: 'Can I use Planr on my phone?',
+    a: 'Yes. Planr works in your phone browser, with navigation built for small screens, and you can add it to your home screen.',
+  },
+  {
+    q: 'Do I need a consultation before I can track a project?',
+    a: 'No. You can create a project and start tracking milestones straight away, then book a consultant whenever you need one.',
+  },
+  {
+    q: 'I am an architect or engineer. Can I join?',
+    a: 'Yes. Choose the consultant option when you sign up. You get your own workspace to manage bookings, answer client questions and keep your profile current.',
+  },
 ]
 
-export function ProjectTypes() {
-  const [active, setActive] = useState<number | null>(null)
-
+export function Faq() {
+  const [open, setOpen] = useState<number | null>(0)
   return (
-    <section className="mx-auto max-w-[1240px] px-5 pb-24 md:px-8 md:pb-32">
-      <SectionHead index="04" label="What you can build" />
-      <div className="mt-10 grid gap-10 md:grid-cols-12">
-        <ul className="md:col-span-7" onMouseLeave={() => setActive(null)}>
-          {TYPES.map((t, i) => (
-            <li key={t.name} onMouseEnter={() => setActive(i)} className="border-b border-gray-900/15 dark:border-white/15">
-              <a href="/signup" className="group flex items-center justify-between gap-6 py-6 md:py-7">
-                <div className="flex items-baseline gap-5">
-                  <span className="text-[12px] tabular-nums text-gray-400 dark:text-white/40">0{i + 1}</span>
-                  <span
-                    className={`text-[clamp(30px,3.6vw,48px)] font-semibold leading-none tracking-[-0.04em] transition-colors duration-300 ${
-                      active === null || active === i ? 'text-gray-900 dark:text-white' : 'text-gray-900/25 dark:text-white/25'
-                    }`}
-                  >
-                    {t.name}
-                  </span>
-                </div>
-                <span className="hidden text-[13.5px] text-gray-500 sm:block dark:text-white/50">{t.note}</span>
-                <ArrowUpRight className="h-5 w-5 shrink-0 text-gray-900 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 dark:text-white" />
-              </a>
-            </li>
-          ))}
-        </ul>
-        <div className="relative hidden md:col-span-5 md:block">
-          <div className="sticky top-28 aspect-[4/5] overflow-hidden rounded-[4px] bg-[#E7E1D7] dark:bg-[#0D1B2E]">
-            <AnimatePresence initial={false}>
-              <motion.img
-                key={active ?? 0}
-                src={img(TYPES[active ?? 0].image, 900)}
-                alt={TYPES[active ?? 0].name}
-                initial={{ opacity: 0, scale: 1.04 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.6, ease }}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </AnimatePresence>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-export function Ask() {
-  const consultant = architects[1]
-  return (
-    <section id="ask" className="border-y border-gray-900/10 bg-[#EDE8DF] dark:border-white/10 dark:bg-[#0A1525]">
-      <div className="mx-auto grid max-w-[1240px] gap-14 px-5 py-24 md:grid-cols-12 md:px-8 md:py-32">
-        <div className="md:col-span-5">
-          <SectionHead index="05" label="Ask Planr" />
-          <Reveal>
-            <h2 className="mt-10 font-semibold text-[clamp(38px,4.6vw,64px)] leading-[1.02] tracking-[-0.045em] text-gray-900 dark:text-white">
-              Questions don&apos;t wait <em className="font-serif font-normal italic tracking-[-0.02em]">for meetings.</em>
-            </h2>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <p className="mt-6 max-w-[420px] text-[16px] leading-[1.65] text-gray-600 dark:text-white/60">
-              Ask about permits, quotes, materials or timelines. A consultant replies in your thread, or the Planr assistant answers straight away.
-            </p>
-          </Reveal>
-        </div>
-        <Reveal delay={0.1} className="md:col-span-7 md:pt-14">
-          <div className="rounded-2xl border border-gray-900/10 bg-white p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] md:p-7 dark:border-white/8 dark:bg-[#0D1B2E]">
-            <div className="flex flex-col gap-5">
-              <div className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-gray-900 px-4 py-3 text-[14.5px] leading-relaxed text-white dark:bg-white dark:text-gray-900">
-                We have two quotes for teak window frames — one is almost 40% cheaper. What should we check before choosing?
-              </div>
-              <div className="flex max-w-[90%] gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sand-400 text-[12px] font-semibold text-gray-900">
-                  {consultant.name.split(' ').map(n => n[0]).join('')}
-                </span>
-                <div>
-                  <div className="mb-1.5 text-[12px] text-gray-500 dark:text-white/50">
-                    <span className="font-semibold text-gray-900 dark:text-white">{consultant.name}</span> · {consultant.role}
-                  </div>
-                  <div className="rounded-2xl rounded-tl-md bg-[#F5F2EC] px-4 py-3 text-[14.5px] leading-relaxed text-gray-800 dark:bg-white/5 dark:text-white/85">
-                    Ask both suppliers whether it&apos;s solid teak or veneer, how the timber was seasoned, and what the price includes — fixing, ironmongery and finish. A big gap usually means one of those is missing. Send me both quotes and I&apos;ll mark them up.
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="mt-6 flex items-center gap-3 rounded-xl border border-gray-900/10 px-4 py-3 text-[14px] text-gray-400 dark:border-white/10 dark:text-white/35">
-              Ask about permits, costs, materials…
-              <span className="ml-auto flex h-8 w-8 items-center justify-center rounded-lg bg-gray-900 text-white dark:bg-white dark:text-gray-900">
-                <ArrowRight className="h-4 w-4" />
-              </span>
-            </div>
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  )
-}
-
-export function Quote() {
-  const a = architects[0]
-  const review = a.reviews[0]
-  return (
-    <section className="mx-auto max-w-[1240px] px-5 py-24 md:px-8 md:py-36">
-      <Reveal>
-        <figure className="mx-auto max-w-[920px] text-center">
-          <blockquote className="font-serif text-[clamp(30px,3.8vw,52px)] leading-[1.12] text-gray-900 dark:text-white">
-            &ldquo;{review.text}&rdquo;
-          </blockquote>
-          <figcaption className="mt-8 text-[14px] text-gray-500 dark:text-white/50">
-            <span className="text-gray-900 dark:text-white">{review.name}</span> — worked with {a.name}, {a.company}
-          </figcaption>
-        </figure>
-      </Reveal>
-    </section>
-  )
-}
-
-export function Cta() {
-  const ref = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const y = useTransform(scrollYProgress, [0, 1], ['-8%', '8%'])
-
-  return (
-    <section ref={ref} className="relative overflow-hidden bg-[#07111E]">
-      <motion.img
-        style={{ y }}
-        src={img(architects[0].portfolio[3].url, 2000)}
-        alt=""
-        loading="lazy"
-        className="absolute inset-x-0 top-[-12%] h-[124%] w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#07111E]/85 via-[#07111E]/55 to-[#07111E]/10" />
-      <div className="relative mx-auto max-w-[1240px] px-5 py-28 md:px-8 md:py-40">
+    <section id="faq" className="scroll-mt-20 border-t border-gray-200/80 pb-8 pt-16 lg:pt-24 dark:border-white/8">
+      <Container className="max-w-[928px]">
         <Reveal>
-          <h2 className="max-w-[640px] font-semibold text-[clamp(44px,6vw,88px)] leading-[1.02] tracking-[-0.045em] text-white">
-            Start with <em className="font-serif font-normal italic tracking-[-0.02em] text-sand-400">a conversation.</em>
-          </h2>
+          <h2 className="text-[28px] font-normal tracking-[-0.01em] text-gray-900 lg:text-center lg:text-[32px] dark:text-white">Frequently asked questions</h2>
         </Reveal>
-        <Reveal delay={0.1}>
-          <p className="mt-6 max-w-[440px] text-[16.5px] leading-[1.65] text-white/75">
-            Tell a consultant about your plot, your budget and how you want to live. You&apos;ll leave with a clear next step.
-          </p>
-          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <a href="/signup" className="group inline-flex h-12 items-center gap-2 rounded-xl bg-white px-6 text-[15px] font-semibold text-gray-900 transition-opacity hover:opacity-90">
-              Book a consultation
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </a>
-            <a href="/signup" className="text-[15px] font-medium text-white underline decoration-white/40 underline-offset-4 hover:decoration-white">
-              Create a free account
-            </a>
+        <div className="mt-10 lg:mt-14">
+          {FAQS.map((f, i) => {
+            const isOpen = open === i
+            return (
+              <div key={f.q} className="border-b border-gray-200/80 last:border-0 dark:border-white/8">
+                <button
+                  onClick={() => setOpen(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-center justify-between gap-6 py-6 text-left text-[18px] leading-7 text-gray-900 lg:text-[20px] dark:text-white"
+                >
+                  {f.q}
+                  <ChevronRight className={cn('h-4 w-4 shrink-0 text-gray-500 transition-transform duration-300', isOpen && 'rotate-90')} />
+                </button>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.35, ease }}
+                      className="overflow-hidden"
+                    >
+                      <p className="max-w-[820px] pb-7 text-[15px] leading-6 text-[#505050] dark:text-white/60">{f.a}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )
+          })}
+        </div>
+      </Container>
+    </section>
+  )
+}
+
+export function FinalCta() {
+  return (
+    <section className="pb-16 pt-12 lg:pb-0 lg:pt-14">
+      <Container>
+        <Reveal>
+          <div className="relative overflow-hidden rounded-[20px] border border-gray-200/60 bg-[#F7F5F8] px-6 py-16 text-center lg:h-[362px] lg:py-0">
+            <div className="pointer-events-none absolute -left-20 -top-24 h-[420px] w-[360px] rotate-[25deg] rounded-full bg-[radial-gradient(closest-side,#3B83BE,#81B9E9_50%,transparent)] opacity-80 blur-2xl" />
+            <div className="pointer-events-none absolute -bottom-32 -right-16 h-[360px] w-[360px] rounded-full bg-[radial-gradient(closest-side,#81B9E9,transparent)] opacity-80 blur-2xl" />
+            <div className="pointer-events-none absolute -top-20 right-1/4 h-[260px] w-[420px] rounded-full bg-[radial-gradient(closest-side,#F2E2D4,transparent)] opacity-90 blur-2xl" />
+            <div className="relative flex h-full flex-col items-center justify-center">
+              <h2 className="font-serif text-[34px] font-light leading-[1.08] tracking-[-0.02em] text-gray-900 lg:text-[48px]">
+                Every good build
+                <br /> starts with a proper plan.
+              </h2>
+              <p className="mt-5 text-[15px] text-[#505050]">Talk it through with a professional first.</p>
+              <a href="/signup" className="mt-8 inline-flex h-10 items-center rounded-full bg-gray-900 px-5 text-[14px] text-white transition-colors hover:bg-gray-700">
+                Book a consultation
+              </a>
+            </div>
           </div>
         </Reveal>
-        <p className="mt-16 text-[12px] text-white/50">{architects[0].portfolio[3].caption} — {architects[0].company}</p>
-      </div>
+      </Container>
     </section>
   )
 }
 
 const FOOTER = [
-  { title: 'Product', links: [{ l: 'How it works', h: '#how' }, { l: 'Build tracker', h: '#tracker' }, { l: 'Ask Planr', h: '#ask' }, { l: 'Expertise', h: '#expertise' }] },
-  { title: 'Account', links: [{ l: 'Log in', h: '/login' }, { l: 'Create account', h: '/signup' }, { l: 'Join as a consultant', h: '/signup' }] },
+  { title: 'Product', links: [['Consultations', '#plan'], ['Build tracker', '#track'], ['Ask Planr', '#ask'], ['Planr AI', '#ai'], ['Consultants', '#find']] },
+  { title: 'Resources', links: [['Getting started', '#start'], ['Project stories', '#stories'], ['FAQ', '#faq'], ['Help centre', '#']] },
+  { title: 'Company', links: [['About', '#'], ['Become a consultant', '/signup'], ['Contact', '#']] },
+  { title: 'Legal', links: [['Privacy', '#'], ['Terms of service', '#'], ['Cookie settings', '#']] },
 ]
 
 export function Footer() {
   return (
-    <footer className="mx-auto max-w-[1240px] px-5 pt-20 pb-10 md:px-8">
-      <div className="grid gap-12 border-t border-gray-900/15 pt-10 md:grid-cols-12 dark:border-white/15">
-        <div className="md:col-span-6">
-          <img src="/planr-logo.svg" alt="Planr" className="h-7 dark:invert" />
-          <p className="mt-5 max-w-[340px] text-[14px] leading-relaxed text-gray-600 dark:text-white/55">
-            Architecture consultation and build tracking for homeowners, developers and businesses in Sri Lanka.
-          </p>
-        </div>
-        {FOOTER.map(col => (
-          <div key={col.title} className="md:col-span-3">
-            <div className="mb-4 text-[12px] uppercase tracking-wide text-gray-400 dark:text-white/40">{col.title}</div>
-            <ul className="flex flex-col gap-2.5">
-              {col.links.map(link => (
-                <li key={link.l}>
-                  <a href={link.h} className="text-[14px] text-gray-900 hover:underline dark:text-white">{link.l}</a>
-                </li>
-              ))}
-            </ul>
+    <footer className="pt-16 lg:pt-[120px]">
+      <Container>
+        <div className="grid gap-12 lg:grid-cols-[324px_repeat(4,minmax(0,1fr))] lg:gap-0">
+          <a href="/" aria-label="Planr home">
+            <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:invert" />
+          </a>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:contents">
+            {FOOTER.map((col) => (
+              <div key={col.title}>
+                <p className="text-[13px] text-[#505050] dark:text-white/70">{col.title}</p>
+                <ul className="mt-6 space-y-5">
+                  {col.links.map(([label, href]) => (
+                    <li key={label}>
+                      <a href={href} className="text-[14px] text-[#757575] transition-colors hover:text-gray-900 dark:text-white/50 dark:hover:text-white">
+                        {label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div className="mt-16 flex flex-col justify-between gap-2 text-[12.5px] text-gray-500 sm:flex-row dark:text-white/40">
-        <span>© {new Date().getFullYear()} Planr. Colombo, Sri Lanka.</span>
-        <span>Every great build starts with a plan.</span>
-      </div>
+        </div>
+        <div className="mt-20 flex items-center justify-between border-t border-gray-200/80 py-8 lg:mt-[110px] dark:border-white/8">
+          <div className="flex gap-4 text-[#757575] dark:text-white/50">
+            <a href="#" aria-label="Email us" className="hover:text-gray-900 dark:hover:text-white">
+              <Mail className="h-4 w-4" />
+            </a>
+            <a href="#" aria-label="Message us" className="hover:text-gray-900 dark:hover:text-white">
+              <MessageCircle className="h-4 w-4" />
+            </a>
+          </div>
+          <p className="text-[12px] text-[#757575] dark:text-white/50">© {new Date().getFullYear()} Planr</p>
+        </div>
+      </Container>
     </footer>
   )
 }

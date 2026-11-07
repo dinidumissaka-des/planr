@@ -2,6 +2,7 @@
 
 import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
+import { cn } from '@/lib/utils'
 
 export const ease = [0.22, 1, 0.36, 1] as const
 
@@ -19,11 +20,34 @@ export function Reveal({ children, delay = 0, className }: { children: ReactNode
   )
 }
 
-export function SectionHead({ index, label }: { index: string; label: string }) {
+export function Container({ children, className }: { children: ReactNode; className?: string }) {
+  return <div className={cn('mx-auto w-full max-w-[1360px] px-5 lg:px-10', className)}>{children}</div>
+}
+
+export function OutlinePill({ href, children, className }: { href: string; children: ReactNode; className?: string }) {
   return (
-    <div className="flex items-center gap-4 border-t border-gray-900/15 pt-4 text-[12px] font-medium tracking-wide text-gray-500 dark:border-white/15 dark:text-white/50">
-      <span className="tabular-nums text-gray-900 dark:text-white">{index}</span>
-      <span className="uppercase">{label}</span>
-    </div>
+    <a
+      href={href}
+      className={cn(
+        'inline-flex h-9 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 text-[13px] text-gray-800 shadow-[0_1px_2px_rgba(7,17,30,0.06)] transition-colors hover:border-gray-300 hover:bg-gray-50 dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:bg-white/10',
+        className,
+      )}
+    >
+      {children}
+    </a>
+  )
+}
+
+export function DarkPill({ href, children, className }: { href: string; children: ReactNode; className?: string }) {
+  return (
+    <a
+      href={href}
+      className={cn(
+        'inline-flex h-10 items-center rounded-full bg-gray-900 px-5 text-[14px] text-white transition-colors hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100',
+        className,
+      )}
+    >
+      {children}
+    </a>
   )
 }
