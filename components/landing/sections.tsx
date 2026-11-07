@@ -163,7 +163,7 @@ export function StoriesPanel() {
 const TRUST = [
   { label: 'Consultant profiles', text: 'Each profile shows specialisations, experience, past projects and client reviews, so you know who you are booking.' },
   { label: 'Shared milestone plan', text: 'Every project starts with a stage-by-stage plan for its type, from first drawings to handover.' },
-  { label: 'Your plan, your account', text: "Your project plan and notes stay in your account and aren't shown to other clients. Questions go to Planr's consultants." },
+  { label: 'Your plan, your account', text: "Your project plan and notes stay in your account and aren't shown to other clients. Questions you post are answered by Planr's consultants." },
   { label: 'Notes & dates', text: 'Decisions and deadlines sit against the stage they belong to, not scattered across chats.' },
   { label: 'Planr AI guardrails', text: "It gives practical guidance, doesn't make up prices, and suggests a professional when a question needs a hands-on look." },
 ]
@@ -243,7 +243,7 @@ const FAQS = [
   },
   {
     q: 'How much does Planr cost?',
-    a: "Planr is a monthly subscription. You'll see the current plan and price before you're charged, and you can manage it any time from Billing.",
+    a: 'Planr is a monthly subscription. Current pricing is shown on the Billing page.',
   },
   {
     q: 'How does Planr AI work, and what will it not do?',
@@ -300,7 +300,7 @@ export function Faq() {
                   <ChevronRight className={cn('h-4 w-4 shrink-0 text-gray-500 transition-transform duration-300', isOpen && 'rotate-90')} />
                 </button>
                 </h3>
-                <div id={`faq-a-${i}`} role="region" aria-labelledby={`faq-q-${i}`}>
+                <div id={`faq-a-${i}`} role={isOpen ? 'region' : undefined} aria-labelledby={isOpen ? `faq-q-${i}` : undefined}>
                 <AnimatePresence initial={false}>
                   {isOpen && (
                     <motion.div

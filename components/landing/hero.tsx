@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { motion } from 'motion/react'
+import { motion, useInView } from 'motion/react'
 import { ChevronRight, Landmark, Sparkles, X } from 'lucide-react'
 import { architects } from '@/lib/architects'
 import { CATEGORY_ICON, DarkPill, ease } from './ui'
@@ -54,6 +54,8 @@ function makeDots(w: number, h: number): Dot[] {
 
 function ParticleField() {
   const ref = useRef<HTMLCanvasElement>(null)
+  const wrap = useRef<HTMLDivElement>(null)
+  const inView = useInView(wrap)
 
   useEffect(() => {
     const canvas = ref.current
@@ -112,7 +114,7 @@ function ParticleField() {
   }, [])
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] [mask-image:linear-gradient(to_bottom,transparent,black_35%)]">
+    <div ref={wrap} className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] [mask-image:linear-gradient(to_bottom,transparent,black_35%)]">
       <canvas ref={ref} className="h-full w-full" aria-hidden />
       {CLUSTERS.map((cl, i) => (
         <motion.div
@@ -120,8 +122,8 @@ function ParticleField() {
           className="absolute hidden items-center gap-1 text-[10px] text-gray-600 sm:flex dark:text-white/70"
           style={{ left: `${cl.x * 100}%`, top: `${cl.y * 100}%` }}
           initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: [0, -6, 0] }}
-          transition={{ opacity: { delay: 0.8 + i * 0.2, duration: 0.6 }, y: { duration: 5 + i, repeat: Infinity, ease: 'easeInOut' } }}
+          animate={inView ? { opacity: 1, y: [0, -6, 0] } : { opacity: 1, y: 0 }}
+          transition={{ opacity: { delay: 0.8 + i * 0.2, duration: 0.6 }, y: inView ? { duration: 5 + i, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 } }}
         >
           <span className="relative -mt-8 flex items-center gap-1 rounded-full bg-white/80 px-1.5 py-0.5 shadow-[0_1px_3px_rgba(7,17,30,0.08)] backdrop-blur dark:bg-[#0D1B2E]/80">
             <span className="h-1.5 w-1.5 rounded-full bg-[#3B83BE]" />
@@ -196,7 +198,7 @@ export function Hero() {
           transition={{ duration: 0.9, delay: 0.25, ease }}
           className="mt-6 max-w-[580px] text-[17px] lg:mx-auto font-light leading-7 text-[#505050] lg:text-[18px] dark:text-white/65"
         >
-          Book a Sri Lankan architect or engineer, follow every stage from permits to handover, and get a clear answer whenever a question comes up.
+          Book an architect or engineer, follow every stage from permits to handover, and get a clear answer whenever a question comes up.
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 14 }}
@@ -239,13 +241,15 @@ function SpecialismRow({ hidden }: { hidden?: boolean }) {
 }
 
 export function SpecialismMarquee() {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref)
   return (
-    <div className="relative overflow-hidden py-6 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+    <div ref={ref} className="relative overflow-hidden py-6 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
       <p className="sr-only">Specialisms offered by Planr consultants</p>
       <motion.div
         className="flex w-max items-center"
-        animate={{ x: ['0%', '-50%'] }}
-        transition={{ duration: 90, ease: 'linear', repeat: Infinity }}
+        animate={inView ? { x: ['0%', '-50%'] } : { x: '0%' }}
+        transition={inView ? { duration: 90, ease: 'linear', repeat: Infinity } : { duration: 0 }}
       >
         <SpecialismRow />
         <SpecialismRow hidden />

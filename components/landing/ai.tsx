@@ -135,7 +135,7 @@ export function AiSection() {
             <br className="hidden lg:block" /> in your own words
           </h2>
           <p className="mt-6 max-w-[540px] text-[15px] lg:mx-auto leading-6 text-[#505050] dark:text-white/60">
-            Planr AI gives practical answers on the spot. It doesn&apos;t make up prices, and it recommends booking a professional when a question needs a hands-on assessment.
+            Planr AI gives practical answers on the spot. It doesn&apos;t make up prices, and it suggests a professional when a question needs a hands-on look.
           </p>
         </Reveal>
         <Reveal delay={0.1} className="mx-auto mt-12 max-w-[864px]">

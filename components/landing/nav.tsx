@@ -44,12 +44,19 @@ function Dropdown({ label, items }: { label: string; items: MenuItem[] }) {
   const [open, setOpen] = useState(false)
   const id = useId()
   const btn = useRef<HTMLButtonElement>(null)
+  const hovering = useRef(false)
 
   return (
     <div
       className="relative"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={() => {
+        hovering.current = true
+        setOpen(true)
+      }}
+      onMouseLeave={() => {
+        hovering.current = false
+        setOpen(false)
+      }}
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOpen(false)
       }}
@@ -66,7 +73,11 @@ function Dropdown({ label, items }: { label: string; items: MenuItem[] }) {
         aria-expanded={open}
         aria-haspopup="true"
         aria-controls={id}
-        onClick={() => setOpen((v) => !v)}
+        onClick={(e) => {
+          const fromHover = hovering.current && e.detail > 0
+          hovering.current = false
+          setOpen((v) => (fromHover ? true : !v))
+        }}
         className="flex h-8 items-center gap-1 px-3 text-[14px] text-[#666666] transition-colors hover:text-gray-900 dark:text-white/60 dark:hover:text-white"
       >
         {label}
@@ -173,14 +184,14 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
           </div>
         ))}
         <div className="py-4">
-          {LINKS.map((l) => (
+          {LINKS.filter((l) => l.label !== 'Planr AI').map((l) => (
             <a key={l.label} href={l.href} onClick={onClose} className="flex items-center justify-between py-2.5 text-[17px] text-gray-900 dark:text-white">
               {l.label}
               <ChevronRight className="h-4 w-4 text-gray-400" />
             </a>
           ))}
         </div>
-        <div className="mt-4 flex flex-col gap-3">
+        <div className="mt-4 flex flex-col gap-3 sm:max-w-[420px]">
           <a href="/signup" className="flex h-12 items-center justify-center rounded-full bg-gray-900 text-[15px] text-white dark:bg-white dark:text-gray-900">
             Book a consultation
           </a>
@@ -261,7 +272,7 @@ export function LandingHeader() {
             onClick={() => setOpen(true)}
             aria-label="Open menu"
             aria-expanded={open}
-            aria-controls="mobile-menu"
+            aria-controls={open ? 'mobile-menu' : undefined}
             className="-mr-2 flex h-10 w-10 items-center justify-center text-gray-900 lg:hidden dark:text-white"
           >
             <Menu className="h-5 w-5" />

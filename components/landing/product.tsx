@@ -326,7 +326,7 @@ const CARD = 'relative overflow-hidden rounded-[20px] border border-gray-900/[0.
 function WideCard({ id, lead, rest, children }: { id: string; lead: string; rest: string; children: ReactNode }) {
   return (
     <Reveal>
-      <div id={id} className={cn(CARD, 'flex scroll-mt-28 flex-col xl:grid xl:h-[450px] xl:grid-cols-[minmax(0,1fr)_54%] xl:gap-8')}>
+      <div id={id} className={cn(CARD, 'flex scroll-mt-28 flex-col xl:grid xl:h-[450px] xl:grid-cols-[minmax(0,1fr)_56%] xl:gap-4')}>
         <Faded className="relative h-[280px] overflow-hidden px-5 pt-6 lg:h-[320px] lg:px-10 lg:pt-10 xl:col-start-2 xl:row-start-1 xl:h-[450px] xl:pl-0 xl:pr-6 xl:pt-6">{children}</Faded>
         <Caption lead={lead} rest={rest} className="px-6 pb-7 lg:max-w-[560px] lg:px-10 lg:pb-10 xl:col-start-1 xl:row-start-1 xl:max-w-[340px] xl:self-end xl:pr-0" />
       </div>
