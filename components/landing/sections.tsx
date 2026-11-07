@@ -243,7 +243,7 @@ const FAQS = [
   },
   {
     q: 'How much does Planr cost?',
-    a: 'Planr is a monthly subscription. Current pricing is shown on the Billing page.',
+    a: 'Planr is a monthly subscription. You can see the current price on the Billing page once you have an account.',
   },
   {
     q: 'How does Planr AI work, and what will it not do?',
