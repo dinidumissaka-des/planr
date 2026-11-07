@@ -9,9 +9,9 @@ import {
   Check,
   Circle,
   FolderOpen,
-  Hammer,
   Home,
   LayoutGrid,
+  MapPin,
   MessagesSquare,
   Plus,
   Sparkles,
@@ -68,18 +68,18 @@ function DashboardMock() {
           ))}
         </ul>
       </div>
-      <div className="flex flex-col bg-gray-50/60 p-4 dark:bg-white/[0.02]">
-        <p className="flex items-center gap-1.5 text-[12px] text-gray-900 dark:text-white">
-          <Sparkles className="h-3.5 w-3.5" /> Planr AI
-        </p>
-        <div className="mt-3 ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-white px-3 py-2 text-[11px] text-gray-600 shadow-sm dark:bg-white/10 dark:text-white/70">
-          What should I check before a foundation pour?
+      <div className="flex flex-col gap-3 bg-gray-50/60 p-4 dark:bg-white/[0.02]">
+        <div className="rounded-2xl bg-[linear-gradient(to_right,#1A3050,#81B9E9)] p-4 text-white">
+          <img src="/ai-icon.svg" alt="" className="h-7 w-7 rounded-full" />
+          <p className="mt-3 text-[13px] font-semibold">Need guidance?</p>
+          <p className="mt-1 text-[11px] leading-[17px] text-white/60">Ask Planr AI about permits, costs, materials, and what to expect at each phase.</p>
+          <span className="mt-4 block rounded-xl border border-white/20 bg-white/10 py-2 text-center text-[11px] font-semibold">Ask Planr AI</span>
         </div>
-        <div className="mt-3 space-y-1 text-[11px] leading-[18px] text-gray-500 dark:text-white/55">
-          <p>Before the pour, confirm:</p>
-          <p>· Excavation depth matches the drawings</p>
-          <p>· Reinforcement is inspected and signed off</p>
-          <p>· Your engineer has seen the soil report</p>
+        <div className="rounded-xl border border-gray-100 bg-white px-3 py-2.5 text-[11px] dark:border-white/8 dark:bg-white/5">
+          <p className="text-gray-400">Next stage</p>
+          <p className="mt-0.5 flex items-center justify-between text-gray-700 dark:text-white/80">
+            {HOME[3]} <span className="text-[10px] text-gray-400">This week</span>
+          </p>
         </div>
       </div>
     </div>
@@ -146,8 +146,8 @@ export function AiSection() {
             <div className="relative flex h-full items-center">
               <div className="w-full rounded-2xl border border-white/80 bg-white/55 p-5 shadow-[0_8px_40px_-12px_rgba(7,17,30,0.18)] backdrop-blur-xl lg:p-6">
                 <p className="text-[17px] leading-[1.75] text-gray-900 lg:text-[20px] lg:leading-[1.65]">
-                  We&apos;re at <InlineChip icon={Hammer}>Foundation</InlineChip> on <InlineChip icon={Home}>Kandy family home</InlineChip>. What should I check with our
-                  <InlineChip icon={Building2}>structural engineer</InlineChip> before the pour?
+                  We&apos;re building a <InlineChip icon={Home}>two-storey house</InlineChip> in <InlineChip icon={MapPin}>Kandy</InlineChip>. What should I check with our
+                  <InlineChip icon={Building2}>structural engineer</InlineChip> before the foundation pour?
                 </p>
                 <div className="mt-5 flex items-center justify-between text-gray-600">
                   <Plus className="h-4 w-4" />

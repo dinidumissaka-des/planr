@@ -335,7 +335,7 @@ export function FinalCta() {
 }
 
 const FOOTER = [
-  { title: 'Product', links: [['Consultations', '#plan'], ['Build tracker', '#track'], ['Ask Planr', '#ask'], ['Planr AI', '#ai'], ['Consultants', '#find']] },
+  { title: 'Product', links: [['Consultations', '#plan'], ['Build tracker', '#track'], ['Ask Planr', '#ask'], ['Planr AI', '#ai'], ['Consultants', '#specialists']] },
   { title: 'Resources', links: [['Getting started', '#start'], ['Project stories', '#stories'], ['FAQ', '#faq'], ['Help centre', '#']] },
   { title: 'Company', links: [['About', '#'], ['Become a consultant', '/signup'], ['Contact', '#']] },
   { title: 'Legal', links: [['Privacy', '#'], ['Terms of service', '#']] },

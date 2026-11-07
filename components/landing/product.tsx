@@ -31,9 +31,9 @@ export function StatsPanel() {
       <div className="rounded-[20px] border border-gray-200/70 bg-[#F9F9F9] py-16 lg:py-24 dark:border-white/8 dark:bg-[#0A1525]">
         <Container>
           <Reveal>
-            <h2 className="max-w-[760px] text-[24px] font-light leading-[1.4] text-gray-900 lg:text-[28px] dark:text-white">
+            <h2 className="max-w-[820px] text-[24px] font-light leading-[1.4] text-gray-900 lg:text-[28px] dark:text-white">
               Planr puts your consultant, your build plan and your questions side by side.{' '}
-              <span className="text-[#757575] dark:text-white/50">So decisions get made early, while they are still cheap to change.</span>
+              <span className="text-[#757575] dark:text-white/50">So nothing important gets lost between site visits.</span>
             </h2>
           </Reveal>
           <Reveal delay={0.1}>
@@ -416,7 +416,7 @@ const BLOCKS: Block[] = [
     title: 'Find',
     items: [
       { label: 'Consultant profiles', href: '#find-profiles' },
-      { label: 'Disciplines', href: '#find-profiles' },
+      { label: 'Disciplines', href: '#specialists' },
     ],
     heading: 'The right specialist for each stage',
     body: (
@@ -469,18 +469,16 @@ export function StatementPanel() {
       <Container>
         <Reveal>
           <div className="relative overflow-hidden rounded-[20px] border border-[#81B9E9]/30 bg-[#F4F8FC] px-6 py-14 text-center lg:h-[473px] lg:px-24 lg:py-0">
-            <div className="pointer-events-none absolute -left-24 -top-10 h-[140%] w-[180px] lg:w-[300px] rotate-[18deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#3B83BE)] opacity-90 blur-md" />
+            <div className="pointer-events-none absolute -left-24 -top-10 h-[140%] w-[180px] lg:w-[300px] rotate-[18deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#3B83BE)] opacity-90 blur-md max-lg:opacity-60" />
             <div className="pointer-events-none absolute -right-28 top-1/3 h-[120%] w-[240px] -rotate-[20deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#E1C1A6)] opacity-60 blur-md" />
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#3B83BE_1px,transparent_1px)] [background-size:6px_6px] opacity-[0.12] [mask-image:linear-gradient(90deg,black,transparent_25%,transparent_75%,black)]" />
             <div className="relative flex h-full flex-col items-center justify-center">
               <img src="/planr-logo.svg" alt="Planr" className="h-6" />
-              <div className="relative mt-8 max-w-[760px]">
-                <Quote className="absolute -left-7 -top-1 hidden h-5 w-5 rotate-180 text-gray-300 lg:block" />
-                <p className="text-[22px] leading-[1.45] text-gray-900 lg:text-[28px]">
-                  An hour with the right professional early on costs far less than fixing a decision once the walls are up. Planr is built around that idea.
-                </p>
-                <Quote className="absolute -bottom-1 -right-7 hidden h-5 w-5 text-gray-300 lg:block" />
-              </div>
+              <p className="mt-8 max-w-[760px] text-[22px] leading-[1.45] text-gray-900 lg:text-[28px]">
+                <Quote className="mr-2 hidden h-4 w-4 -translate-y-2 rotate-180 text-gray-300 lg:inline" />
+                An hour with the right professional early on costs far less than fixing a decision once the walls are up. Planr is built around that idea.
+                <Quote className="ml-2 hidden h-4 w-4 -translate-y-2 text-gray-300 lg:inline" />
+              </p>
               <p className="mt-8 text-[14px] text-gray-900">Why Planr exists</p>
               <p className="text-[12px] text-[#757575]">From the Planr team</p>
             </div>
