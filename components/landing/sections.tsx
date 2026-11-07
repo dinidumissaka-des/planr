@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronRight } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react'
 import { architects } from '@/lib/architects'
 import { cn } from '@/lib/utils'
 import { CATEGORY_ICON, Container, OutlinePill, Reveal, ease } from './ui'
@@ -23,11 +23,12 @@ function Stories() {
             <span className="block lg:pl-[72px]">you can book on Planr</span>
           </h2>
         </Reveal>
+        <Reveal>
         <div className="-mx-5 mt-10 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] lg:mx-0 lg:mt-14 lg:grid lg:grid-cols-[1.08fr_1fr_1fr] lg:gap-4 lg:overflow-visible lg:px-0 lg:pb-0">
           {STORIES.map(({ a, p }, i) => {
             const Icon = CATEGORY_ICON[a.category]
             return (
-              <Reveal key={p.caption} delay={i * 0.08} className="w-[80%] shrink-0 snap-start lg:w-auto">
+              <div key={p.caption} className="w-[80%] shrink-0 snap-start lg:w-auto">
                 <article className="group relative h-[400px] overflow-hidden rounded-xl bg-gray-300 lg:h-[480px] dark:bg-white/10">
                   <img
                     src={p.url}
@@ -45,10 +46,11 @@ function Stories() {
                     </p>
                   </div>
                 </article>
-              </Reveal>
+              </div>
             )
           })}
         </div>
+        </Reveal>
         <div className="mt-6 flex flex-col items-start gap-4 lg:flex-row lg:items-center lg:justify-between">
           <p className="text-[15px] leading-6 text-[#505050] dark:text-white/60">Every consultant keeps a portfolio on Planr, so you can see their past work before you book.</p>
           <OutlinePill href="/signup">
@@ -94,27 +96,35 @@ function Starting() {
             const isOpen = open === i
             return (
               <div key={s.q} className={cn('border-gray-200/80 dark:border-white/8', i > 0 && !isOpen && open !== i - 1 && 'border-t')}>
-                <button
-                  onClick={() => setOpen(i)}
-                  aria-expanded={isOpen}
+                <div
                   className={cn(
-                    'grid w-full gap-x-10 rounded-[18px] px-0 py-6 text-left transition-colors lg:grid-cols-2 lg:px-6',
-                    isOpen ? 'bg-[#EDEDED] px-5 py-6 dark:bg-white/[0.06]' : 'hover:bg-gray-900/[0.02]',
+                    'relative grid gap-x-10 rounded-[18px] py-6 transition-colors lg:grid-cols-2 lg:px-6',
+                    isOpen ? 'bg-[#EDEDED] px-5 dark:bg-white/[0.06]' : 'hover:bg-gray-900/[0.02]',
                   )}
                 >
-                  <span>
-                    <span className="flex items-center justify-between gap-4 text-[18px] leading-7 text-gray-900 lg:text-[20px] dark:text-white">
-                      {s.q}
-                      {!isOpen && <ChevronRight className="h-4 w-4 shrink-0 text-gray-500 lg:hidden" />}
-                    </span>
-                    {isOpen && <span className="mt-1 block text-[18px] leading-7 text-[#757575] lg:text-[20px] dark:text-white/55">{s.a}</span>}
-                  </span>
+                  <div>
+                    <h3>
+                      <button
+                        id={`start-q-${i}`}
+                        onClick={() => setOpen(i)}
+                        aria-expanded={isOpen}
+                        aria-controls={`start-a-${i}`}
+                        className="flex w-full items-center justify-between gap-4 text-left text-[18px] leading-7 text-gray-900 after:absolute after:inset-0 after:rounded-[18px] lg:text-[20px] dark:text-white"
+                      >
+                        {s.q}
+                        {!isOpen && <ChevronRight className="h-4 w-4 shrink-0 text-gray-500 lg:hidden" />}
+                      </button>
+                    </h3>
+                    <p id={`start-a-${i}`} role="region" aria-labelledby={`start-q-${i}`} hidden={!isOpen} className="mt-1 text-[18px] leading-7 text-[#666666] lg:text-[20px] dark:text-white/60">
+                      {s.a}
+                    </p>
+                  </div>
                   {isOpen ? (
-                    <motion.span
+                    <motion.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, ease }}
-                      className="relative mt-5 block h-[190px] overflow-hidden rounded-xl bg-gray-300 shadow-[0_8px_24px_-8px_rgba(7,17,30,0.35)] lg:mt-0 lg:h-[196px] dark:bg-white/10"
+                      className="relative mt-5 h-[190px] overflow-hidden rounded-xl bg-gray-300 shadow-[0_8px_24px_-8px_rgba(7,17,30,0.35)] lg:mt-0 lg:h-[196px] dark:bg-white/10"
                     >
                       <img src={s.img.url} alt="" className="h-full w-full object-cover" />
                       <span className="absolute inset-0 bg-[linear-gradient(180deg,transparent_40%,rgba(7,17,30,0.6))]" />
@@ -122,14 +132,14 @@ function Starting() {
                         {s.img.caption}
                         <span className="block text-[13px] text-white/75">{s.img.category}</span>
                       </span>
-                    </motion.span>
+                    </motion.div>
                   ) : (
-                    <span className="mt-2 hidden items-start justify-between gap-6 text-[14px] leading-[22px] text-[#757575] lg:mt-1 lg:flex dark:text-white/50">
+                    <p aria-hidden className="mt-1 hidden items-start justify-between gap-6 text-[14px] leading-[22px] text-[#666666] lg:flex dark:text-white/60">
                       {s.a}
                       <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-gray-500" />
-                    </span>
+                    </p>
                   )}
-                </button>
+                </div>
               </div>
             )
           })}
@@ -151,11 +161,11 @@ export function StoriesPanel() {
 }
 
 const TRUST = [
-  { label: 'Verified consultants', text: "Profiles show each professional's discipline, practice and past work, so you know who you are booking." },
+  { label: 'Consultant profiles', text: 'Each profile shows specialisations, experience, past projects and client reviews, so you know who you are booking.' },
   { label: 'Shared milestone plan', text: 'Every project starts with a stage-by-stage plan for its type, from first drawings to handover.' },
-  { label: 'Private by default', text: 'Your projects, notes and questions belong to your account. They are not published for other users.' },
+  { label: 'Your plan, your account', text: "Your project plan and notes stay in your account and aren't shown to other clients. Questions go to Planr's consultants." },
   { label: 'Notes & dates', text: 'Decisions and deadlines sit against the stage they belong to, not scattered across chats.' },
-  { label: 'Planr AI guardrails', text: 'It will not guess at prices or approve structural work. When you need a professional, it tells you.' },
+  { label: 'Planr AI guardrails', text: "It gives practical guidance, doesn't make up prices, and suggests a professional when a question needs a hands-on look." },
 ]
 
 export function Trust() {
@@ -173,7 +183,7 @@ export function Trust() {
 
   return (
     <section className="sm:px-2 lg:px-4">
-      <div className="overflow-hidden rounded-[20px] bg-[#07111E] py-16 text-white lg:pb-28 lg:pt-24 dark:border dark:border-white/10">
+      <div className="overflow-hidden rounded-[20px] bg-[#07111E] py-16 text-white lg:pb-28 lg:pt-24 dark:border dark:border-white/10 dark:bg-[#0A1525]">
         <Container>
           <div className="flex items-end justify-between gap-6">
             <Reveal>
@@ -214,10 +224,10 @@ export function Trust() {
           <p className="text-[16px] text-white">Your data</p>
           <div className="mt-2 flex gap-5 text-[13px] text-white/60">
             <a href="#" className="inline-flex items-center gap-0.5 underline underline-offset-4 hover:text-white">
-              Privacy policy <ArrowUpRight className="h-3 w-3" />
+              Privacy policy
             </a>
             <a href="#" className="inline-flex items-center gap-0.5 underline underline-offset-4 hover:text-white">
-              Terms of service <ArrowUpRight className="h-3 w-3" />
+              Terms of service
             </a>
           </div>
         </Container>
@@ -229,11 +239,11 @@ export function Trust() {
 const FAQS = [
   {
     q: 'What is Planr?',
-    a: 'Planr helps homeowners, developers and businesses in Sri Lanka plan and build with professional help. You can book consultations with certified architects and building specialists, track your project stage by stage, and ask questions of consultants or Planr AI, all from one account.',
+    a: 'Planr helps homeowners, developers and businesses in Sri Lanka plan and build with professional help. You can book consultations with Sri Lankan architects and building professionals, track your project stage by stage, and ask questions of consultants or Planr AI, all from one account.',
   },
   {
-    q: 'How much does a consultation cost?',
-    a: "You'll see the full price for a session, including any platform fee, before you confirm a booking. Plan options are shown when you sign up.",
+    q: 'How much does Planr cost?',
+    a: "Planr is a monthly subscription. You'll see the current plan and price before you're charged, and you can manage it any time from Billing.",
   },
   {
     q: 'How does Planr AI work, and what will it not do?',
@@ -249,7 +259,7 @@ const FAQS = [
   },
   {
     q: 'Is my project information private?',
-    a: 'Your projects, notes and questions are tied to your account and are not shown to other clients. Consultants see what you share with them through bookings and questions.',
+    a: "Your project plan and notes stay in your account and aren't shown to other clients. Questions you post go to Planr's consultants so they can answer them.",
   },
   {
     q: 'Can I use Planr on my phone?',
@@ -278,14 +288,19 @@ export function Faq() {
             const isOpen = open === i
             return (
               <div key={f.q} className="border-b border-gray-200/80 last:border-0 dark:border-white/8">
+                <h3>
                 <button
+                  id={`faq-q-${i}`}
                   onClick={() => setOpen(isOpen ? null : i)}
                   aria-expanded={isOpen}
+                  aria-controls={`faq-a-${i}`}
                   className="flex w-full items-center justify-between gap-6 py-8 text-left text-[18px] leading-7 text-gray-900 lg:text-[20px] dark:text-white"
                 >
                   {f.q}
                   <ChevronRight className={cn('h-4 w-4 shrink-0 text-gray-500 transition-transform duration-300', isOpen && 'rotate-90')} />
                 </button>
+                </h3>
+                <div id={`faq-a-${i}`} role="region" aria-labelledby={`faq-q-${i}`}>
                 <AnimatePresence initial={false}>
                   {isOpen && (
                     <motion.div
@@ -299,6 +314,7 @@ export function Faq() {
                     </motion.div>
                   )}
                 </AnimatePresence>
+                </div>
               </div>
             )
           })}
@@ -356,7 +372,7 @@ export function Footer() {
                 <ul className="mt-6 space-y-5">
                   {col.links.map(([label, href]) => (
                     <li key={label}>
-                      <a href={href} className="text-[14px] text-[#757575] transition-colors hover:text-gray-900 dark:text-white/50 dark:hover:text-white">
+                      <a href={href} className="text-[14px] text-[#666666] transition-colors hover:text-gray-900 dark:text-white/50 dark:hover:text-white">
                         {label}
                       </a>
                     </li>
@@ -367,7 +383,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-20 flex items-center border-t border-gray-200/80 py-8 lg:mt-[110px] dark:border-white/8">
-          <p className="text-[12px] text-[#757575] dark:text-white/50">© {new Date().getFullYear()} Planr</p>
+          <p className="text-[12px] text-[#666666] dark:text-white/50">© {new Date().getFullYear()} Planr</p>
         </div>
       </Container>
     </footer>

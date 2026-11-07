@@ -18,7 +18,7 @@ type Dot = { x: number; y: number; r: number; a: number; c: string; p: number; s
 
 function makeDots(w: number, h: number): Dot[] {
   const dots: Dot[] = []
-  const count = Math.round((w * h) / 90)
+  const count = Math.min(7000, Math.round((w * h) / 90))
   for (let i = 0; i < count; i++) {
     const x = Math.random()
     const y = Math.pow(Math.random(), 0.7)
@@ -64,7 +64,6 @@ function ParticleField() {
     let w = 0
     let h = 0
     let raf = 0
-    let visible = true
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, w, h)
@@ -80,7 +79,7 @@ function ParticleField() {
     }
 
     const loop = (t: number) => {
-      if (visible) draw(t)
+      draw(t)
       raf = requestAnimationFrame(loop)
     }
 
@@ -100,10 +99,10 @@ function ParticleField() {
     const ro = new ResizeObserver(resize)
     ro.observe(canvas)
     const io = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting
+      cancelAnimationFrame(raf)
+      if (entry.isIntersecting && !reduce) raf = requestAnimationFrame(loop)
     })
     io.observe(canvas)
-    if (!reduce) raf = requestAnimationFrame(loop)
 
     return () => {
       cancelAnimationFrame(raf)
@@ -179,7 +178,7 @@ export function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, ease }}
-          className="text-[12px] uppercase leading-[1.8] tracking-[0.1em] text-[#757575] dark:text-white/50"
+          className="text-[12px] uppercase leading-[1.8] tracking-[0.1em] text-[#666666] dark:text-white/50"
         >
           For homeowners building in Sri Lanka
         </motion.p>
@@ -187,7 +186,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.1, ease }}
-          className="mx-auto mt-4 max-w-[860px] font-serif text-[44px] font-light leading-[1.05] tracking-[-0.02em] text-gray-900 lg:text-[64px] dark:text-white"
+          className="mt-4 max-w-[860px] font-serif lg:mx-auto text-[44px] font-light leading-[1.05] tracking-[-0.02em] text-gray-900 lg:text-[64px] dark:text-white"
         >
           Build the home you planned, not the one you settled for
         </motion.h1>
@@ -195,20 +194,20 @@ export function Hero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.25, ease }}
-          className="mx-auto mt-6 max-w-[580px] text-[17px] font-light leading-7 text-[#505050] lg:text-[18px] dark:text-white/65"
+          className="mt-6 max-w-[580px] text-[17px] lg:mx-auto font-light leading-7 text-[#505050] lg:text-[18px] dark:text-white/65"
         >
-          Book a certified architect or engineer, follow every stage from permits to handover, and get a clear answer whenever a question comes up.
+          Book a Sri Lankan architect or engineer, follow every stage from permits to handover, and get a clear answer whenever a question comes up.
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.35, ease }}
-          className="mt-10 flex items-center gap-6 lg:mt-8 lg:justify-center"
+          className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 lg:mt-8 lg:justify-center"
         >
-          <DarkPill href="/signup" className="h-11 px-5 lg:h-10">
+          <DarkPill href="/signup" className="h-11 whitespace-nowrap px-5 lg:h-10">
             Book a consultation
           </DarkPill>
-          <a href="#ai" className="flex items-center gap-1 text-[14px] font-medium text-gray-900 dark:text-white">
+          <a href="#ai" className="flex items-center gap-1 whitespace-nowrap text-[14px] font-medium text-gray-900 dark:text-white">
             Meet Planr AI <ChevronRight className="h-3.5 w-3.5" />
           </a>
         </motion.div>
@@ -219,24 +218,37 @@ export function Hero() {
 }
 
 
-export function PracticeMarquee() {
-  const row = [...architects, ...architects]
+const SPECIALISMS = [
+  ...new Map(architects.flatMap((a) => a.specializations.map((s) => [s, a.category] as const))).entries(),
+]
+
+function SpecialismRow({ hidden }: { hidden?: boolean }) {
+  return (
+    <div className="flex shrink-0 items-center" aria-hidden={hidden || undefined}>
+      {SPECIALISMS.map(([name, category]) => {
+        const Icon = CATEGORY_ICON[category] ?? Landmark
+        return (
+          <span key={name} className="flex shrink-0 items-center gap-2 px-10 text-[18px] font-semibold tracking-[-0.02em] text-[#6B6B6B] dark:text-white/55">
+            <Icon className="h-5 w-5" strokeWidth={2.25} />
+            {name}
+          </span>
+        )
+      })}
+    </div>
+  )
+}
+
+export function SpecialismMarquee() {
   return (
     <div className="relative overflow-hidden py-6 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+      <p className="sr-only">Specialisms offered by Planr consultants</p>
       <motion.div
         className="flex w-max items-center"
         animate={{ x: ['0%', '-50%'] }}
-        transition={{ duration: 45, ease: 'linear', repeat: Infinity }}
+        transition={{ duration: 90, ease: 'linear', repeat: Infinity }}
       >
-        {row.map((a, i) => {
-          const Icon = CATEGORY_ICON[a.category] ?? Landmark
-          return (
-            <span key={i} className="flex shrink-0 items-center gap-2 px-10 text-[18px] font-semibold tracking-[-0.02em] text-[#6B6B6B] dark:text-white/45">
-              <Icon className="h-5 w-5" strokeWidth={2.25} />
-              {a.company}
-            </span>
-          )
-        })}
+        <SpecialismRow />
+        <SpecialismRow hidden />
       </motion.div>
     </div>
   )

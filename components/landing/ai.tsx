@@ -25,7 +25,7 @@ const HOME = DEFAULT_MILESTONES.home
 
 function DashboardMock() {
   return (
-    <div className="grid h-[400px] grid-cols-[180px_minmax(0,1fr)_260px] overflow-hidden rounded-t-2xl border border-b-0 border-gray-200 bg-white text-left shadow-[0_-10px_40px_-20px_rgba(7,17,30,0.25)] max-lg:w-[900px] dark:border-white/10 dark:bg-[#0D1B2E]">
+    <div aria-hidden className="grid h-[340px] grid-cols-[140px_minmax(0,1fr)] overflow-hidden rounded-t-2xl border border-b-0 border-gray-200 bg-white text-left shadow-[0_-10px_40px_-20px_rgba(7,17,30,0.25)] md:h-[400px] md:grid-cols-[160px_minmax(0,1fr)_240px] lg:grid-cols-[180px_minmax(0,1fr)_260px] dark:border-white/10 dark:bg-[#0D1B2E]">
       <aside className="border-r border-gray-100 p-4 dark:border-white/8">
         <img src="/planr-logo.svg" alt="" className="h-4 dark:invert" />
         <ul className="mt-6 space-y-1 text-[12px] text-gray-500 dark:text-white/55">
@@ -41,7 +41,7 @@ function DashboardMock() {
           ))}
         </ul>
       </aside>
-      <div className="border-r border-gray-100 p-5 dark:border-white/8">
+      <div className="hidden border-r border-gray-100 p-5 md:block dark:border-white/8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Home className="h-4 w-4 text-gray-400" />
@@ -62,7 +62,7 @@ function DashboardMock() {
               ) : (
                 <Circle className={cn('h-3.5 w-3.5', i === 2 ? 'text-[#3B83BE]' : 'text-gray-300 dark:text-white/20')} />
               )}
-              <span className={cn('flex-1', i < 2 ? 'text-gray-400' : 'text-gray-700 dark:text-white/75')}>{m}</span>
+              <span className={cn('flex-1 truncate', i < 2 ? 'text-gray-400' : 'text-gray-700 dark:text-white/75')}>{m}</span>
               <span className="text-[10px] text-gray-400">{i < 2 ? 'Done' : i === 2 ? 'This week' : ''}</span>
             </li>
           ))}
@@ -134,8 +134,8 @@ export function AiSection() {
             Ask about your build,
             <br className="hidden lg:block" /> in your own words
           </h2>
-          <p className="mx-auto mt-6 max-w-[540px] text-[15px] leading-6 text-[#505050] dark:text-white/60">
-            Planr AI gives practical answers and says plainly when a question needs a professional. It won&apos;t invent prices or sign off on structural work.
+          <p className="mt-6 max-w-[540px] text-[15px] lg:mx-auto leading-6 text-[#505050] dark:text-white/60">
+            Planr AI gives practical answers on the spot. It doesn&apos;t make up prices, and it recommends booking a professional when a question needs a hands-on assessment.
           </p>
         </Reveal>
         <Reveal delay={0.1} className="mx-auto mt-12 max-w-[864px]">
@@ -144,7 +144,7 @@ export function AiSection() {
             <div className="pointer-events-none absolute -right-20 bottom-[-40%] h-[110%] w-[420px] rounded-full bg-[radial-gradient(closest-side,#E1C1A6,transparent)] opacity-70 blur-2xl" />
             <div className="pointer-events-none absolute right-10 top-[-30%] h-[80%] w-[360px] rounded-full bg-[radial-gradient(closest-side,#F3D9E6,transparent)] opacity-80 blur-2xl" />
             <div className="relative flex h-full items-center">
-              <div className="w-full rounded-2xl border border-white/80 bg-white/55 p-5 shadow-[0_8px_40px_-12px_rgba(7,17,30,0.18)] backdrop-blur-xl lg:p-6">
+              <div aria-hidden className="w-full rounded-2xl border border-white/80 bg-white/55 p-5 shadow-[0_8px_40px_-12px_rgba(7,17,30,0.18)] backdrop-blur-xl lg:p-6">
                 <p className="text-[17px] leading-[1.75] text-gray-900 lg:text-[20px] lg:leading-[1.65]">
                   We&apos;re building a <InlineChip icon={Home}>two-storey house</InlineChip> in <InlineChip icon={MapPin}>Kandy</InlineChip>. What should I check with our
                   <InlineChip icon={Building2}>structural engineer</InlineChip> before the foundation pour?

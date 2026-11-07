@@ -33,7 +33,7 @@ export function StatsPanel() {
           <Reveal>
             <h2 className="max-w-[820px] text-[24px] font-light leading-[1.4] text-gray-900 lg:text-[28px] dark:text-white">
               Planr puts your consultant, your build plan and your questions side by side.{' '}
-              <span className="text-[#757575] dark:text-white/50">So nothing important gets lost between site visits.</span>
+              <span className="text-[#666666] dark:text-white/50">So nothing important gets lost between site visits.</span>
             </h2>
           </Reveal>
           <Reveal delay={0.1}>
@@ -316,7 +316,7 @@ function ProfileMock() {
 function Caption({ lead, rest, className }: { lead: string; rest: string; className?: string }) {
   return (
     <p className={cn('text-[18px] leading-[27px] tracking-[-0.01em] lg:text-[20px] lg:leading-[29px]', className)}>
-      <span className="text-gray-900 dark:text-white">{lead}</span> <span className="text-[#757575] dark:text-white/50">{rest}</span>
+      <span className="text-gray-900 dark:text-white">{lead}</span> <span className="text-[#666666] dark:text-white/50">{rest}</span>
     </p>
   )
 }
@@ -326,9 +326,9 @@ const CARD = 'relative overflow-hidden rounded-[20px] border border-gray-900/[0.
 function WideCard({ id, lead, rest, children }: { id: string; lead: string; rest: string; children: ReactNode }) {
   return (
     <Reveal>
-      <div id={id} className={cn(CARD, 'flex scroll-mt-28 flex-col lg:block lg:h-[450px]')}>
-        <Faded className="relative h-[280px] overflow-hidden px-5 pt-6 lg:absolute lg:right-6 lg:top-6 lg:h-[420px] lg:w-[54%] lg:px-0">{children}</Faded>
-        <Caption lead={lead} rest={rest} className="px-6 pb-7 lg:absolute lg:bottom-10 lg:left-10 lg:max-w-[300px] lg:p-0" />
+      <div id={id} className={cn(CARD, 'flex scroll-mt-28 flex-col xl:grid xl:h-[450px] xl:grid-cols-[minmax(0,1fr)_54%] xl:gap-8')}>
+        <Faded className="relative h-[280px] overflow-hidden px-5 pt-6 lg:h-[320px] lg:px-10 lg:pt-10 xl:col-start-2 xl:row-start-1 xl:h-[450px] xl:pl-0 xl:pr-6 xl:pt-6">{children}</Faded>
+        <Caption lead={lead} rest={rest} className="px-6 pb-7 lg:max-w-[560px] lg:px-10 lg:pb-10 xl:col-start-1 xl:row-start-1 xl:max-w-[340px] xl:self-end xl:pr-0" />
       </div>
     </Reveal>
   )
@@ -444,7 +444,7 @@ export function ProductSection() {
                 <ul className="mt-4 hidden space-y-2 lg:block">
                   {b.items.map((it) => (
                     <li key={it.label}>
-                      <a href={it.href} className="text-[14px] leading-5 text-[#757575] transition-colors hover:text-gray-900 dark:text-white/50 dark:hover:text-white">
+                      <a href={it.href} className="text-[14px] leading-5 text-[#666666] transition-colors hover:text-gray-900 dark:text-white/50 dark:hover:text-white">
                         {it.label}
                       </a>
                     </li>
@@ -480,7 +480,7 @@ export function StatementPanel() {
                 <Quote className="ml-2 hidden h-4 w-4 -translate-y-2 text-gray-300 lg:inline" />
               </p>
               <p className="mt-8 text-[14px] text-gray-900">Why Planr exists</p>
-              <p className="text-[12px] text-[#757575]">From the Planr team</p>
+              <p className="text-[12px] text-[#666666]">From the Planr team</p>
             </div>
           </div>
         </Reveal>
