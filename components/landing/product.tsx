@@ -9,6 +9,7 @@ import {
   Circle,
   Clock,
   MapPin,
+  Quote,
   Sparkles,
   StickyNote,
   User,
@@ -16,13 +17,12 @@ import {
 import { architects } from '@/lib/architects'
 import { DEFAULT_MILESTONES } from '@/lib/data'
 import { cn } from '@/lib/utils'
-import { CATEGORY_ICON } from './hero'
-import { Container, Reveal } from './reveal'
+import { CATEGORY_ICON, Container, Reveal } from './ui'
 
 const STATS = [
   { value: '10', unit: 'stages', caption: 'Tracked on every home build, from planning to handover' },
   { value: '7', unit: 'disciplines', caption: 'From architects to quantity surveyors' },
-  { value: '24/7', unit: '', caption: 'Answers from Planr AI, whenever a question comes up' },
+  { value: '24/7', unit: '', caption: 'Answers from Planr AI, day or night' },
 ]
 
 export function StatsPanel() {
@@ -32,8 +32,8 @@ export function StatsPanel() {
         <Container>
           <Reveal>
             <h2 className="max-w-[760px] text-[24px] font-light leading-[1.4] text-gray-900 lg:text-[28px] dark:text-white">
-              Your consultant, your build plan and your questions in one place.{' '}
-              <span className="text-[#757575] dark:text-white/50">Fewer surprises on site, and far less chasing.</span>
+              Planr puts your consultant, your build plan and your questions side by side.{' '}
+              <span className="text-[#757575] dark:text-white/50">So decisions get made early, while they are still cheap to change.</span>
             </h2>
           </Reveal>
           <Reveal delay={0.1}>
@@ -75,8 +75,7 @@ function Chip({ icon: Icon, children }: { icon: typeof User; children: ReactNode
 function Faded({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div
-      className={cn('select-none opacity-60 saturate-[0.35] dark:opacity-50', className)}
-      style={{ maskImage: 'linear-gradient(to bottom, black 55%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, black 55%, transparent)' }}
+      className={cn('select-none opacity-60 saturate-[0.35] [mask-image:linear-gradient(to_bottom,black_55%,transparent)] dark:opacity-50', className)}
       aria-hidden
     >
       {children}
@@ -93,8 +92,8 @@ function BookingMock() {
       <div className="mt-3 flex flex-wrap gap-4">
         <Chip icon={User}>Roshan Perera</Chip>
         <Chip icon={Building2}>Architecture</Chip>
-        <Chip icon={Clock}>45 min</Chip>
-        <Chip icon={MapPin}>Video call</Chip>
+        <Chip icon={Clock}>1 hour</Chip>
+        <Chip icon={MapPin}>Colombo 03</Chip>
       </div>
       <div className="mt-5 grid grid-cols-7 gap-1.5">
         {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
@@ -230,20 +229,30 @@ function ProgressMock() {
   )
 }
 
-function ThreadMock() {
+function AskAiMock() {
+  return (
+    <Window>
+      <div className="flex items-center gap-2 text-[12px] text-gray-700 dark:text-white/80">
+        <Sparkles className="h-3.5 w-3.5" /> Planr AI
+      </div>
+      <div className="mt-3 ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-gray-100 px-3 py-2 text-[11px] text-gray-600 dark:bg-white/10 dark:text-white/70">
+        Is a flat concrete roof sensible for a house in the hills?
+      </div>
+      <div className="mt-3 space-y-1 text-[11px] leading-[18px] text-gray-500 dark:text-white/55">
+        <p>It can work, but heavy rain is the main risk:</p>
+        <p>· Plan a proper fall so water never sits</p>
+        <p>· Budget for good waterproofing</p>
+        <p>· Ask your architect about overhangs</p>
+      </div>
+    </Window>
+  )
+}
+
+function ConsultantMock() {
   const eng = architects[6]
   return (
     <Window>
-      <p className="text-[13px] text-gray-800 dark:text-white/85">Can we move the staircase to open up the living room?</p>
-      <p className="mt-0.5 text-[10px] text-gray-400">Kandy family home · Framing &amp; Structure</p>
-      <div className="mt-4 rounded-lg bg-gray-50 p-3 dark:bg-white/5">
-        <p className="flex items-center gap-1.5 text-[11px] text-gray-600 dark:text-white/70">
-          <Sparkles className="h-3 w-3" /> Planr AI
-        </p>
-        <p className="mt-1 text-[11px] leading-5 text-gray-500 dark:text-white/50">
-          Often possible, but it can change the beam and slab layout above. This one needs a structural engineer to check your drawings.
-        </p>
-      </div>
+      <p className="text-[12px] text-gray-800 dark:text-white/85">Can we move the staircase to open up the living room?</p>
       <div className="mt-3 rounded-lg border border-gray-100 p-3 dark:border-white/8">
         <p className="flex items-center gap-2 text-[11px] text-gray-600 dark:text-white/70">
           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-[8px] text-gray-600 dark:bg-white/15 dark:text-white/70">PL</span>
@@ -373,7 +382,7 @@ const BLOCKS: Block[] = [
           <MilestoneMock />
         </WideCard>
         <div className="grid gap-6 lg:grid-cols-2">
-          <HalfCard id="track-notes" lead="Notes and dates." rest="Keep due dates and decisions against each stage, so nothing lives only in someone's phone.">
+          <HalfCard id="track-notes" lead="Notes & dates." rest="Keep due dates and decisions against each stage, so nothing lives only in someone's phone.">
             <NotesMock />
           </HalfCard>
           <HalfCard id="track-progress" lead="Progress at a glance." rest="See what's done, what's next and how far along the build really is." delay={0.08}>
@@ -387,14 +396,19 @@ const BLOCKS: Block[] = [
     id: 'ask',
     title: 'Ask',
     items: [
-      { label: 'Planr AI', href: '#ask-thread' },
-      { label: 'Consultant replies', href: '#ask-thread' },
+      { label: 'Planr AI', href: '#ask-ai' },
+      { label: 'Consultants', href: '#ask-consultant' },
     ],
     heading: 'Answers while the question still matters',
     body: (
-      <WideCard id="ask-thread" lead="Ask once, in one thread." rest="Planr AI takes the quick questions straight away. When something needs a professional eye, a consultant picks it up.">
-        <ThreadMock />
-      </WideCard>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <HalfCard id="ask-ai" lead="Two ways to ask." rest="Get an instant answer from Planr AI for the everyday questions.">
+          <AskAiMock />
+        </HalfCard>
+        <HalfCard id="ask-consultant" lead="A professional eye." rest="Put the question to a consultant when it needs someone who knows structure, cost or design." delay={0.08}>
+          <ConsultantMock />
+        </HalfCard>
+      </div>
     ),
   },
   {
@@ -455,14 +469,18 @@ export function StatementPanel() {
       <Container>
         <Reveal>
           <div className="relative overflow-hidden rounded-[20px] border border-[#81B9E9]/30 bg-[#F4F8FC] px-6 py-14 text-center lg:h-[473px] lg:px-24 lg:py-0">
-            <div className="pointer-events-none absolute -left-24 -top-10 h-[140%] w-[260px] rotate-[18deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#3B83BE)] opacity-70 blur-2xl max-lg:opacity-40" />
-            <div className="pointer-events-none absolute -right-28 top-1/3 h-[120%] w-[240px] -rotate-[20deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#E1C1A6)] opacity-60 blur-2xl" />
+            <div className="pointer-events-none absolute -left-24 -top-10 h-[140%] w-[180px] lg:w-[300px] rotate-[18deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#3B83BE)] opacity-90 blur-md" />
+            <div className="pointer-events-none absolute -right-28 top-1/3 h-[120%] w-[240px] -rotate-[20deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#E1C1A6)] opacity-60 blur-md" />
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#3B83BE_1px,transparent_1px)] [background-size:6px_6px] opacity-[0.12] [mask-image:linear-gradient(90deg,black,transparent_25%,transparent_75%,black)]" />
             <div className="relative flex h-full flex-col items-center justify-center">
               <img src="/planr-logo.svg" alt="Planr" className="h-6" />
-              <p className="mt-8 max-w-[760px] text-[22px] leading-[1.45] text-gray-900 lg:text-[28px]">
-                An hour with the right professional early on costs far less than fixing a decision once the walls are up. Planr is built around that idea.
-              </p>
+              <div className="relative mt-8 max-w-[760px]">
+                <Quote className="absolute -left-7 -top-1 hidden h-5 w-5 rotate-180 text-gray-300 lg:block" />
+                <p className="text-[22px] leading-[1.45] text-gray-900 lg:text-[28px]">
+                  An hour with the right professional early on costs far less than fixing a decision once the walls are up. Planr is built around that idea.
+                </p>
+                <Quote className="absolute -bottom-1 -right-7 hidden h-5 w-5 text-gray-300 lg:block" />
+              </div>
               <p className="mt-8 text-[14px] text-gray-900">Why Planr exists</p>
               <p className="text-[12px] text-[#757575]">From the Planr team</p>
             </div>

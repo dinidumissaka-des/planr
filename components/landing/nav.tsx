@@ -17,7 +17,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { ease } from './reveal'
+import { ease } from './ui'
 
 type MenuItem = { label: string; desc: string; href: string; icon: LucideIcon }
 
@@ -35,7 +35,7 @@ const RESOURCES: MenuItem[] = [
 ]
 
 const LINKS = [
-  { label: 'Consultants', href: '#find' },
+  { label: 'Consultants', href: '#specialists' },
   { label: 'How it works', href: '#start' },
   { label: 'Planr AI', href: '#ai' },
 ]
@@ -70,7 +70,7 @@ export function AnnouncementBar() {
   return (
     <div className="relative z-10 flex min-h-9 items-center justify-center bg-[linear-gradient(90deg,#D6E8F7_0%,#F1E7DE_50%,#D6E8F7_100%)] px-4 py-2 text-center text-[13px] leading-5 text-[#505050]">
       <p>
-        Planr AI is now built into every project.{' '}
+        Planr AI answers building questions any time.{' '}
         <a href="#ai" className="text-gray-900 underline underline-offset-2">
           Take a look
         </a>
@@ -91,7 +91,15 @@ export function LandingHeader() {
   }, [])
 
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : 'auto'
+    if (!open) return
+    document.body.style.overflow = 'hidden'
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const onChange = (e: MediaQueryListEvent) => e.matches && setOpen(false)
+    mq.addEventListener('change', onChange)
+    return () => {
+      document.body.style.overflow = 'auto'
+      mq.removeEventListener('change', onChange)
+    }
   }, [open])
 
   return (

@@ -4,27 +4,28 @@ import { motion } from 'motion/react'
 import {
   ArrowRight,
   ArrowUp,
-  Calculator,
+  Building2,
+  CalendarDays,
   Check,
   Circle,
-  FileText,
   FolderOpen,
+  Hammer,
   Home,
   LayoutGrid,
   MessagesSquare,
   Plus,
   Sparkles,
+  type LucideIcon,
 } from 'lucide-react'
 import { DEFAULT_MILESTONES } from '@/lib/data'
 import { cn } from '@/lib/utils'
-import { CATEGORY_ICON } from './hero'
-import { Container, OutlinePill, Reveal, ease } from './reveal'
+import { CATEGORY_ICON, Container, OutlinePill, Reveal, ease } from './ui'
 
 const HOME = DEFAULT_MILESTONES.home
 
 function DashboardMock() {
   return (
-    <div className="grid h-[340px] grid-cols-[180px_minmax(0,1fr)_260px] overflow-hidden rounded-t-2xl border border-b-0 border-gray-200 bg-white text-left shadow-[0_-10px_40px_-20px_rgba(7,17,30,0.25)] max-lg:w-[900px] dark:border-white/10 dark:bg-[#0D1B2E]">
+    <div className="grid h-[400px] grid-cols-[180px_minmax(0,1fr)_260px] overflow-hidden rounded-t-2xl border border-b-0 border-gray-200 bg-white text-left shadow-[0_-10px_40px_-20px_rgba(7,17,30,0.25)] max-lg:w-[900px] dark:border-white/10 dark:bg-[#0D1B2E]">
       <aside className="border-r border-gray-100 p-4 dark:border-white/8">
         <img src="/planr-logo.svg" alt="" className="h-4 dark:invert" />
         <ul className="mt-6 space-y-1 text-[12px] text-gray-500 dark:text-white/55">
@@ -32,7 +33,7 @@ function DashboardMock() {
             { i: LayoutGrid, t: 'Dashboard' },
             { i: FolderOpen, t: 'Projects', on: true },
             { i: MessagesSquare, t: 'Ask Planr' },
-            { i: Sparkles, t: 'Planr AI' },
+            { i: CalendarDays, t: 'Bookings' },
           ].map(({ i: Icon, t, on }) => (
             <li key={t} className={cn('flex items-center gap-2 rounded-lg px-2 py-1.5', on && 'bg-gray-100 text-gray-900 dark:bg-white/10 dark:text-white')}>
               <Icon className="h-3.5 w-3.5" /> {t}
@@ -72,7 +73,7 @@ function DashboardMock() {
           <Sparkles className="h-3.5 w-3.5" /> Planr AI
         </p>
         <div className="mt-3 ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-white px-3 py-2 text-[11px] text-gray-600 shadow-sm dark:bg-white/10 dark:text-white/70">
-          What should I check before the foundation pour?
+          What should I check before a foundation pour?
         </div>
         <div className="mt-3 space-y-1 text-[11px] leading-[18px] text-gray-500 dark:text-white/55">
           <p>Before the pour, confirm:</p>
@@ -85,7 +86,7 @@ function DashboardMock() {
   )
 }
 
-function InlineChip({ icon: Icon, children }: { icon: typeof FileText; children: string }) {
+function InlineChip({ icon: Icon, children }: { icon: LucideIcon; children: string }) {
   return (
     <span className="mx-0.5 inline-flex translate-y-[-2px] items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 align-middle text-[13px] leading-5 text-gray-800 shadow-[0_1px_2px_rgba(7,17,30,0.06)] lg:text-[14px]">
       <Icon className="h-3.5 w-3.5 text-[#3B83BE]" />
@@ -108,13 +109,13 @@ export function AiSection() {
               <span className="mx-1.5 inline-flex h-9 w-9 translate-y-[-4px] items-center justify-center rounded-xl bg-[linear-gradient(135deg,#81B9E9,#E1C1A6)] align-middle text-white lg:h-11 lg:w-11">
                 <Sparkles className="h-5 w-5" />
               </span>
-              <br className="hidden lg:block" /> inside every project
+              <br className="hidden lg:block" /> on call for your project
             </h2>
             <p className="mt-6 max-w-[560px] text-[15px] lg:mx-auto leading-6 text-[#505050] dark:text-white/60">
-              Planr AI sits next to your milestones, so you can ask about the stage you&apos;re on without starting from scratch. It covers design, permits, materials, budgets and site work.
+              Ask about design, permits, materials, budgets or site work and get a practical answer straight away. It&apos;s one tap from every project.
             </p>
           </Reveal>
-          <div className="mt-14 overflow-hidden lg:mt-16 lg:px-8">
+          <div className="mt-14 overflow-hidden lg:mt-16 lg:px-0">
             <motion.div
               initial={{ opacity: 0, y: 40, rotateX: 14 }}
               whileInView={{ opacity: 1, y: 0, rotateX: 8 }}
@@ -127,7 +128,7 @@ export function AiSection() {
           </div>
         </div>
       </Container>
-      <div className="mx-0 rounded-b-[24px] bg-[linear-gradient(180deg,#F1F1F1_0%,#F7F7F7_30%,#F7F7F7_100%)] px-5 pb-16 pt-16 sm:mx-2 lg:pb-20 lg:pt-20 dark:bg-none dark:bg-[#0A1525]">
+      <div className="mx-0 rounded-b-[24px] bg-[linear-gradient(180deg,#F1F1F1_0%,#F7F7F7_30%,#F7F7F7_100%)] px-5 pb-16 pt-16 sm:mx-2 lg:pb-36 lg:pt-32 dark:bg-none dark:bg-[#0A1525]">
         <Reveal className="mx-auto max-w-[720px] lg:text-center">
           <h2 className="text-[34px] font-light leading-[1.1] tracking-[-0.02em] text-gray-900 lg:text-[48px] dark:text-white">
             Ask about your build,
@@ -145,8 +146,8 @@ export function AiSection() {
             <div className="relative flex h-full items-center">
               <div className="w-full rounded-2xl border border-white/80 bg-white/55 p-5 shadow-[0_8px_40px_-12px_rgba(7,17,30,0.18)] backdrop-blur-xl lg:p-6">
                 <p className="text-[17px] leading-[1.75] text-gray-900 lg:text-[20px] lg:leading-[1.65]">
-                  Go through <InlineChip icon={FileText}>quote.pdf</InlineChip> for <InlineChip icon={Home}>Kandy family home</InlineChip> and list anything priced that isn&apos;t in our drawings, then tell me what to raise with our
-                  <InlineChip icon={Calculator}>quantity surveyor</InlineChip>.
+                  We&apos;re at <InlineChip icon={Hammer}>Foundation</InlineChip> on <InlineChip icon={Home}>Kandy family home</InlineChip>. What should I check with our
+                  <InlineChip icon={Building2}>structural engineer</InlineChip> before the pour?
                 </p>
                 <div className="mt-5 flex items-center justify-between text-gray-600">
                   <Plus className="h-4 w-4" />
@@ -167,19 +168,20 @@ const DISCIPLINES = Object.keys(CATEGORY_ICON)
 
 export function Specialists() {
   return (
-    <section id="find-all" className="relative overflow-hidden pb-20 pt-24 lg:h-[800px] lg:pb-0 lg:pt-[150px]">
+    <section id="specialists" className="relative scroll-mt-20 overflow-hidden pb-20 pt-24 lg:h-[800px] lg:pb-0 lg:pt-[110px]">
       <div className="relative mx-auto flex h-[300px] w-full max-w-[900px] items-center justify-center lg:h-[320px]">
+        <span className="pointer-events-none absolute left-1/2 top-1/2 h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(129,185,233,0.10),transparent_65%)]" />
         {[220, 360, 500, 640, 780, 920].map((s, i) => (
           <span
             key={s}
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-gray-900/[0.05] dark:border-white/[0.06]"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-gray-900/[0.035] dark:border-white/[0.06]"
             style={{ width: s, height: s, opacity: 1 - i * 0.14 }}
           />
         ))}
         {DISCIPLINES.map((d, i) => {
           const Icon = CATEGORY_ICON[d]
           const angle = (i / DISCIPLINES.length) * Math.PI * 2 - Math.PI / 2
-          const r = i % 2 ? 250 : 320
+          const r = 300
           return (
             <motion.span
               key={d}
@@ -187,8 +189,8 @@ export function Specialists() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 + i * 0.06, ease }}
-              className="absolute left-1/2 top-1/2 hidden items-center gap-1.5 whitespace-nowrap rounded-full border border-gray-200 bg-white px-3 py-1.5 text-[12px] text-[#505050] shadow-[0_2px_8px_-2px_rgba(7,17,30,0.08)] lg:flex dark:border-white/10 dark:bg-[#0D1B2E] dark:text-white/70"
-              style={{ x: `calc(${Math.cos(angle) * r}px - 50%)`, y: `calc(${Math.sin(angle) * r * 0.42}px - 50%)` }}
+              className="absolute left-1/2 top-1/2 hidden items-center gap-1.5 whitespace-nowrap rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] text-[#505050] shadow-[0_2px_8px_-2px_rgba(7,17,30,0.08)] lg:flex dark:border-white/10 dark:bg-[#0D1B2E] dark:text-white/70"
+              style={{ x: `calc(${Math.cos(angle) * r}px - 50%)`, y: `calc(${Math.sin(angle) * r * 0.5}px - 50%)` }}
             >
               <Icon className="h-3.5 w-3.5 text-[#3B83BE]" />
               {d}

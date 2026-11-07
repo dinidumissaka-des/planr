@@ -2,6 +2,16 @@
 
 import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
+import {
+  Building2,
+  Calculator,
+  HardHat,
+  Landmark,
+  Leaf,
+  Map as MapIcon,
+  Sofa,
+  type LucideIcon,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export const ease = [0.22, 1, 0.36, 1] as const
@@ -50,4 +60,14 @@ export function DarkPill({ href, children, className }: { href: string; children
       {children}
     </a>
   )
+}
+
+export const CATEGORY_ICON: Record<string, LucideIcon> = {
+  Architecture: Landmark,
+  'Interior Design': Sofa,
+  'Landscape Architecture': Leaf,
+  'Urban Design': MapIcon,
+  'Structural Engineering': Building2,
+  Construction: HardHat,
+  'Quantity Surveying': Calculator,
 }

@@ -2,11 +2,10 @@
 
 import { useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronRight, Mail, MessageCircle } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronRight } from 'lucide-react'
 import { architects } from '@/lib/architects'
 import { cn } from '@/lib/utils'
-import { CATEGORY_ICON } from './hero'
-import { Container, OutlinePill, Reveal, ease } from './reveal'
+import { CATEGORY_ICON, Container, OutlinePill, Reveal, ease } from './ui'
 
 const STORIES = [
   { a: architects[0], p: architects[0].portfolio[0] },
@@ -104,7 +103,10 @@ function Starting() {
                   )}
                 >
                   <span>
-                    <span className="block text-[18px] leading-7 text-gray-900 lg:text-[20px] dark:text-white">{s.q}</span>
+                    <span className="flex items-center justify-between gap-4 text-[18px] leading-7 text-gray-900 lg:text-[20px] dark:text-white">
+                      {s.q}
+                      {!isOpen && <ChevronRight className="h-4 w-4 shrink-0 text-gray-500 lg:hidden" />}
+                    </span>
                     {isOpen && <span className="mt-1 block text-[18px] leading-7 text-[#757575] lg:text-[20px] dark:text-white/55">{s.a}</span>}
                   </span>
                   {isOpen ? (
@@ -122,7 +124,10 @@ function Starting() {
                       </span>
                     </motion.span>
                   ) : (
-                    <span className="mt-2 hidden text-[14px] leading-[22px] text-[#757575] lg:mt-1 lg:block dark:text-white/50">{s.a}</span>
+                    <span className="mt-2 hidden items-start justify-between gap-6 text-[14px] leading-[22px] text-[#757575] lg:mt-1 lg:flex dark:text-white/50">
+                      {s.a}
+                      <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-gray-500" />
+                    </span>
                   )}
                 </button>
               </div>
@@ -168,7 +173,7 @@ export function Trust() {
 
   return (
     <section className="sm:px-2 lg:px-4">
-      <div className="overflow-hidden rounded-[20px] bg-[#07111E] py-16 text-white lg:py-24 dark:border dark:border-white/10">
+      <div className="overflow-hidden rounded-[20px] bg-[#07111E] py-16 text-white lg:pb-28 lg:pt-24 dark:border dark:border-white/10">
         <Container>
           <div className="flex items-end justify-between gap-6">
             <Reveal>
@@ -205,7 +210,7 @@ export function Trust() {
           ))}
           <span className="w-px shrink-0" />
         </div>
-        <Container className="mt-14 lg:mt-20">
+        <Container className="mt-14 lg:mt-24">
           <p className="text-[16px] text-white">Your data</p>
           <div className="mt-2 flex gap-5 text-[13px] text-white/60">
             <a href="#" className="inline-flex items-center gap-0.5 underline underline-offset-4 hover:text-white">
@@ -228,7 +233,7 @@ const FAQS = [
   },
   {
     q: 'How much does a consultation cost?',
-    a: 'Consultants set their own rates. You will see the price for a session before you confirm a booking, and plan options are shown when you sign up.',
+    a: "You'll see the full price for a session, including any platform fee, before you confirm a booking. Plan options are shown when you sign up.",
   },
   {
     q: 'How does Planr AI work, and what will it not do?',
@@ -276,7 +281,7 @@ export function Faq() {
                 <button
                   onClick={() => setOpen(isOpen ? null : i)}
                   aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between gap-6 py-6 text-left text-[18px] leading-7 text-gray-900 lg:text-[20px] dark:text-white"
+                  className="flex w-full items-center justify-between gap-6 py-8 text-left text-[18px] leading-7 text-gray-900 lg:text-[20px] dark:text-white"
                 >
                   {f.q}
                   <ChevronRight className={cn('h-4 w-4 shrink-0 text-gray-500 transition-transform duration-300', isOpen && 'rotate-90')} />
@@ -290,7 +295,7 @@ export function Faq() {
                       transition={{ duration: 0.35, ease }}
                       className="overflow-hidden"
                     >
-                      <p className="max-w-[820px] pb-7 text-[15px] leading-6 text-[#505050] dark:text-white/60">{f.a}</p>
+                      <p className="max-w-[820px] pb-8 text-[14px] leading-6 text-[#505050] dark:text-white/60">{f.a}</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -333,7 +338,7 @@ const FOOTER = [
   { title: 'Product', links: [['Consultations', '#plan'], ['Build tracker', '#track'], ['Ask Planr', '#ask'], ['Planr AI', '#ai'], ['Consultants', '#find']] },
   { title: 'Resources', links: [['Getting started', '#start'], ['Project stories', '#stories'], ['FAQ', '#faq'], ['Help centre', '#']] },
   { title: 'Company', links: [['About', '#'], ['Become a consultant', '/signup'], ['Contact', '#']] },
-  { title: 'Legal', links: [['Privacy', '#'], ['Terms of service', '#'], ['Cookie settings', '#']] },
+  { title: 'Legal', links: [['Privacy', '#'], ['Terms of service', '#']] },
 ]
 
 export function Footer() {
@@ -361,15 +366,7 @@ export function Footer() {
             ))}
           </div>
         </div>
-        <div className="mt-20 flex items-center justify-between border-t border-gray-200/80 py-8 lg:mt-[110px] dark:border-white/8">
-          <div className="flex gap-4 text-[#757575] dark:text-white/50">
-            <a href="#" aria-label="Email us" className="hover:text-gray-900 dark:hover:text-white">
-              <Mail className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="Message us" className="hover:text-gray-900 dark:hover:text-white">
-              <MessageCircle className="h-4 w-4" />
-            </a>
-          </div>
+        <div className="mt-20 flex items-center border-t border-gray-200/80 py-8 lg:mt-[110px] dark:border-white/8">
           <p className="text-[12px] text-[#757575] dark:text-white/50">© {new Date().getFullYear()} Planr</p>
         </div>
       </Container>

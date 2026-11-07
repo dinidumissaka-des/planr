@@ -2,28 +2,16 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
-import {
-  Building2,
-  Calculator,
-  ChevronRight,
-  HardHat,
-  Landmark,
-  Leaf,
-  Map as MapIcon,
-  Sofa,
-  Sparkles,
-  X,
-  type LucideIcon,
-} from 'lucide-react'
+import { ChevronRight, Landmark, Sparkles, X } from 'lucide-react'
 import { architects } from '@/lib/architects'
-import { DarkPill, ease } from './reveal'
+import { CATEGORY_ICON, DarkPill, ease } from './ui'
 
 const COLORS = ['#81B9E9', '#3B83BE', '#A2B2CD', '#81B9E9', '#E1C1A6', '#5E9FD6']
 
 const CLUSTERS = [
   { x: 0.57, y: 0.55, label: 'Planr AI' },
   { x: 0.76, y: 0.42, label: 'Structural engineer' },
-  { x: 0.28, y: 0.68, label: 'Site visit' },
+  { x: 0.4, y: 0.74, label: 'Site visit' },
 ]
 
 type Dot = { x: number; y: number; r: number; a: number; c: string; p: number; s: number }
@@ -34,8 +22,8 @@ function makeDots(w: number, h: number): Dot[] {
   for (let i = 0; i < count; i++) {
     const x = Math.random()
     const y = Math.pow(Math.random(), 0.7)
-    const edge = Math.max(0, x - 0.55) * 1.6 + Math.max(0, 0.35 - x) * 0.9
-    if (Math.random() > 0.25 + y * 0.55 + edge) continue
+    const keep = (0.2 + y * 0.6 + Math.max(0, x - 0.5) * 1.4) * (x < 0.3 ? 0.35 : 1)
+    if (Math.random() > keep) continue
     dots.push({
       x: x * w,
       y: y * h,
@@ -157,7 +145,7 @@ function IntroCard() {
       className="absolute bottom-5 right-4 z-10 hidden w-[218px] rounded-xl border border-gray-200/80 bg-white/90 p-1.5 shadow-[0_8px_30px_-10px_rgba(7,17,30,0.2)] backdrop-blur lg:block dark:border-white/10 dark:bg-[#0D1B2E]/90"
     >
       <div className="flex items-center justify-between px-1 pb-1.5 pt-0.5">
-        <p className="text-[12px] text-[#505050] dark:text-white/70">Introducing Planr AI</p>
+        <p className="text-[12px] text-[#505050] dark:text-white/70">New: Planr AI</p>
         <button onClick={() => setOpen(false)} aria-label="Dismiss" className="text-gray-400 hover:text-gray-700 dark:hover:text-white">
           <X className="h-3 w-3" />
         </button>
@@ -193,13 +181,13 @@ export function Hero() {
           transition={{ duration: 0.8, ease }}
           className="text-[12px] uppercase leading-[1.8] tracking-[0.1em] text-[#757575] dark:text-white/50"
         >
-          Consultations, build tracking &amp; AI for Sri Lankan homeowners
+          For homeowners building in Sri Lanka
         </motion.p>
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.1, ease }}
-          className="mx-auto mt-4 max-w-[860px] font-serif text-[40px] font-light leading-[1.06] tracking-[-0.02em] text-gray-900 lg:text-[64px] dark:text-white"
+          className="mx-auto mt-4 max-w-[860px] font-serif text-[44px] font-light leading-[1.05] tracking-[-0.02em] text-gray-900 lg:text-[64px] dark:text-white"
         >
           Build the home you planned, not the one you settled for
         </motion.h1>
@@ -230,15 +218,6 @@ export function Hero() {
   )
 }
 
-export const CATEGORY_ICON: Record<string, LucideIcon> = {
-  Architecture: Landmark,
-  'Interior Design': Sofa,
-  'Landscape Architecture': Leaf,
-  'Urban Design': MapIcon,
-  'Structural Engineering': Building2,
-  Construction: HardHat,
-  'Quantity Surveying': Calculator,
-}
 
 export function PracticeMarquee() {
   const row = [...architects, ...architects]
@@ -252,7 +231,7 @@ export function PracticeMarquee() {
         {row.map((a, i) => {
           const Icon = CATEGORY_ICON[a.category] ?? Landmark
           return (
-            <span key={i} className="flex shrink-0 items-center gap-2 px-10 text-[18px] font-semibold tracking-[-0.02em] text-[#8C8C8C] dark:text-white/45">
+            <span key={i} className="flex shrink-0 items-center gap-2 px-10 text-[18px] font-semibold tracking-[-0.02em] text-[#6B6B6B] dark:text-white/45">
               <Icon className="h-5 w-5" strokeWidth={2.25} />
               {a.company}
             </span>
