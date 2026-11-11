@@ -1,6 +1,7 @@
 'use client'
 
-import { motion } from 'motion/react'
+import { useRef } from 'react'
+import { motion, useInView } from 'motion/react'
 import {
   ArrowRight,
   ArrowUp,
@@ -23,9 +24,16 @@ import { CATEGORY_ICON, Container, OutlinePill, Reveal, ease } from './ui'
 
 const HOME = DEFAULT_MILESTONES.home
 
+const rowList = { show: { transition: { staggerChildren: 0.12, delayChildren: 0.3 } } }
+const rowItem = { hidden: { opacity: 0, x: -6 }, show: { opacity: 1, x: 0, transition: { duration: 0.4, ease } } }
+const tick = { hidden: { scale: 0.3, opacity: 0 }, show: { scale: 1, opacity: 1, transition: { duration: 0.35, ease, delay: 0.15 } } }
+
 function DashboardMock() {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, amount: 0.3 })
+  const state = inView ? 'show' : 'hidden'
   return (
-    <div aria-hidden className="grid h-[340px] grid-cols-[140px_minmax(0,1fr)] overflow-hidden rounded-t-2xl border border-b-0 border-gray-200 bg-white text-left shadow-[0_-10px_40px_-20px_rgba(7,17,30,0.25)] md:h-[400px] md:grid-cols-[160px_minmax(0,1fr)_240px] lg:grid-cols-[180px_minmax(0,1fr)_260px] dark:border-white/10 dark:bg-[#0D1B2E]">
+    <div ref={ref} aria-hidden className="grid h-[340px] grid-cols-[140px_minmax(0,1fr)] overflow-hidden rounded-t-2xl border border-b-0 border-gray-200 bg-white text-left shadow-[0_-10px_40px_-20px_rgba(7,17,30,0.25)] md:h-[400px] md:grid-cols-[160px_minmax(0,1fr)_240px] lg:grid-cols-[180px_minmax(0,1fr)_260px] dark:border-white/10 dark:bg-[#0D1B2E]">
       <aside className="border-r border-gray-100 p-4 dark:border-white/8">
         <img src="/planr-logo.svg" alt="" className="h-4 dark:invert" />
         <ul className="mt-6 space-y-1 text-[12px] text-gray-500 dark:text-white/55">
@@ -50,23 +58,28 @@ function DashboardMock() {
           <span className="rounded-full bg-gray-900 px-2.5 py-1 text-[10px] text-white dark:bg-white dark:text-gray-900">Add note</span>
         </div>
         <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
-          <div className="h-full w-[30%] rounded-full bg-[#81B9E9]" />
+          <motion.div
+            className="h-full w-[30%] origin-left rounded-full bg-[#81B9E9]"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: inView ? 1 : 0 }}
+            transition={{ duration: 1, delay: 0.4, ease }}
+          />
         </div>
-        <ul className="mt-4 space-y-0.5">
+        <motion.ul className="mt-4 space-y-0.5" initial="hidden" animate={state} variants={rowList}>
           {HOME.slice(1, 7).map((m, i) => (
-            <li key={m} className="flex items-center gap-2.5 rounded-lg px-2 py-2 text-[12px] even:bg-gray-50/70 dark:even:bg-white/[0.03]">
+            <motion.li key={m} variants={rowItem} className="flex items-center gap-2.5 rounded-lg px-2 py-2 text-[12px] even:bg-gray-50/70 dark:even:bg-white/[0.03]">
               {i < 2 ? (
-                <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-gray-900 text-white dark:bg-white dark:text-gray-900">
+                <motion.span variants={tick} className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-gray-900 text-white dark:bg-white dark:text-gray-900">
                   <Check className="h-2 w-2" />
-                </span>
+                </motion.span>
               ) : (
                 <Circle className={cn('h-3.5 w-3.5', i === 2 ? 'text-[#3B83BE]' : 'text-gray-300 dark:text-white/20')} />
               )}
               <span className={cn('flex-1 truncate', i < 2 ? 'text-gray-400' : 'text-gray-700 dark:text-white/75')}>{m}</span>
               <span className="text-[10px] text-gray-400">{i < 2 ? 'Done' : i === 2 ? 'This week' : ''}</span>
-            </li>
+            </motion.li>
           ))}
-        </ul>
+        </motion.ul>
       </div>
       <div className="flex flex-col gap-3 bg-gray-50/60 p-4 dark:bg-white/[0.02]">
         <div className="rounded-2xl bg-[linear-gradient(to_right,#1A3050,#81B9E9)] p-4 text-white">

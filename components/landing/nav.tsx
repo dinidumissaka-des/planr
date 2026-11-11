@@ -81,7 +81,7 @@ function Dropdown({ label, items }: { label: string; items: MenuItem[] }) {
           hovering.current = false
           setOpen((v) => (fromHover ? true : !v))
         }}
-        className="flex h-8 items-center gap-1 px-3 text-[14px] text-[#666666] transition-colors hover:text-gray-900 dark:text-white/60 dark:hover:text-white"
+        className="flex h-8 items-center gap-1 px-2.5 text-[14px] text-[#666666] xl:px-3 transition-colors hover:text-gray-900 dark:text-white/60 dark:hover:text-white"
       >
         {label}
         <ChevronDown className={cn('h-3.5 w-3.5 transition-transform', open && 'rotate-180')} />
@@ -113,7 +113,7 @@ function Dropdown({ label, items }: { label: string; items: MenuItem[] }) {
 
 export function AnnouncementBar() {
   return (
-    <div className="relative z-10 flex min-h-9 items-center justify-center bg-[linear-gradient(90deg,#D6E8F7_0%,#F1E7DE_50%,#D6E8F7_100%)] px-4 py-2 text-center text-[13px] leading-5 text-[#505050] dark:border-b dark:border-white/10 dark:bg-[linear-gradient(90deg,#0D1B2E_0%,#1A2536_50%,#0D1B2E_100%)] dark:text-white/60">
+    <div className="relative z-10 flex min-h-9 items-center lg:h-9 lg:py-0 justify-center bg-[linear-gradient(90deg,#D6E8F7_0%,#F1E7DE_50%,#D6E8F7_100%)] px-4 py-2 text-center text-[13px] leading-5 text-[#505050] dark:border-b dark:border-white/10 dark:bg-[linear-gradient(90deg,#0D1B2E_0%,#1A2536_50%,#0D1B2E_100%)] dark:text-white/60">
       <p>
         Planr AI answers building questions any time.{' '}
         <a href="#ai" className="text-gray-900 underline underline-offset-2 dark:text-white">
@@ -263,7 +263,7 @@ export function LandingHeader() {
           scrolled ? 'border-gray-900/[0.06] bg-white/85 backdrop-blur-md dark:border-white/[0.06] dark:bg-[#07111E]/85' : 'border-transparent',
         )}
       >
-        <nav aria-label="Main" className="mx-auto flex h-[66px] w-full max-w-[1360px] items-center justify-between px-5 lg:grid lg:grid-cols-3 lg:px-10">
+        <nav aria-label="Main" className="mx-auto flex h-[66px] w-full max-w-[1360px] items-center justify-between px-5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-6 lg:px-10 xl:grid-cols-3 xl:gap-0">
           <a href="/" aria-label="Planr home" className="justify-self-start">
             <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:invert" />
           </a>
@@ -271,14 +271,14 @@ export function LandingHeader() {
           <div className="hidden items-center justify-self-center lg:flex">
             <Dropdown label="Product" items={PRODUCT} />
             {LINKS.map((l) => (
-              <a key={l.label} href={l.href} className="flex h-8 items-center whitespace-nowrap px-3 text-[14px] text-[#666666] transition-colors hover:text-gray-900 dark:text-white/60 dark:hover:text-white">
+              <a key={l.label} href={l.href} className="flex h-8 items-center whitespace-nowrap px-2.5 text-[14px] xl:px-3 text-[#666666] transition-colors hover:text-gray-900 dark:text-white/60 dark:hover:text-white">
                 {l.label}
               </a>
             ))}
             <Dropdown label="Resources" items={RESOURCES} />
           </div>
 
-          <div className="hidden items-center gap-5 justify-self-end lg:flex">
+          <div className="hidden items-center gap-4 justify-self-end lg:flex xl:gap-5">
             <ThemeToggle className="-mx-2" />
             <a href="/login" className="text-[14px] text-gray-700 transition-colors hover:text-gray-900 dark:text-white/70 dark:hover:text-white">
               Log in
