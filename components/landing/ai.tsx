@@ -5,17 +5,42 @@ import { motion, useInView } from 'motion/react'
 import {
   ArrowRight,
   ArrowUp,
+  Bath,
+  BrickWall,
   Building2,
   CalendarDays,
   Check,
   Circle,
+  ClipboardList,
+  DoorOpen,
+  DraftingCompass,
+  Droplets,
+  Fence,
+  FileCheck2,
   FolderOpen,
+  Hammer,
   Home,
+  Hotel,
+  Lamp,
+  Layers,
   LayoutGrid,
   MapPin,
   MessagesSquare,
+  Mountain,
+  PaintRoller,
+  PencilRuler,
   Plus,
+  Ruler,
+  Shovel,
   Sparkles,
+  Store,
+  Sun,
+  Trees,
+  Truck,
+  UtensilsCrossed,
+  Warehouse,
+  Wrench,
+  Zap,
   type LucideIcon,
 } from 'lucide-react'
 import { DEFAULT_MILESTONES } from '@/lib/data'
@@ -179,40 +204,95 @@ export function AiSection() {
 
 const DISCIPLINES = Object.keys(CATEGORY_ICON)
 
+type Tile = { icon: LucideIcon; tone: string; label?: string } | 'planr'
+
+const TONES = [
+  'text-[#3B83BE] dark:text-[#81B9E9]',
+  'text-gray-900 dark:text-white',
+  'text-[#81B9E9]',
+  'text-[#B07E56] dark:text-[#E1C1A6]',
+  'text-[#2F8F6B] dark:text-[#6FCBA6]',
+  'text-[#5E7FA8] dark:text-[#A2B2CD]',
+]
+
+const discipline = (label: string): Tile => ({ icon: CATEGORY_ICON[label], tone: TONES[0], label })
+const deco = (icon: LucideIcon, tone: number): Tile => ({ icon, tone: TONES[tone] })
+
+const TILE_ROWS: Tile[][] = [
+  [deco(Ruler, 1), deco(Sun, 3), deco(PencilRuler, 5), discipline('Architecture'), discipline('Interior Design'), deco(Lamp, 3), deco(DoorOpen, 1), deco(Droplets, 2), deco(Fence, 4)],
+  [deco(Mountain, 4), deco(Hotel, 5), deco(BrickWall, 3), discipline('Quantity Surveying'), discipline('Structural Engineering'), 'planr', discipline('Landscape Architecture'), discipline('Urban Design'), deco(Zap, 3), deco(Store, 1), deco(Warehouse, 5)],
+  [deco(Truck, 1), deco(Shovel, 3), deco(Layers, 5), deco(Hammer, 1), discipline('Construction'), deco(PaintRoller, 2), deco(Bath, 5), deco(UtensilsCrossed, 3), deco(Trees, 4)],
+]
+
+const OUTER = (row: number, i: number) => (row === 1 ? i < 2 || i > 8 : i < 2 || i > 6)
+
+function TileGrid() {
+  let order = 0
+  return (
+    <div className="relative flex flex-col items-center gap-1.5 sm:gap-2 lg:gap-3">
+      {TILE_ROWS.map((row, r) => (
+        <div key={r} className="flex gap-1.5 sm:gap-2 lg:gap-3">
+          {row.map((tile, i) => {
+            const delay = 0.04 * order++
+            const hideSmall = OUTER(r, i) && 'max-lg:hidden'
+            if (tile === 'planr') {
+              return (
+                <motion.div
+                  key="planr"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, margin: '0px 0px -60px 0px' }}
+                  transition={{ duration: 0.6, ease }}
+                  className="relative z-10 flex h-11 w-11 items-center justify-center rounded-[12px] border border-gray-100 bg-white shadow-[0_12px_32px_-8px_rgba(7,17,30,0.22)] sm:h-[72px] sm:w-[72px] sm:rounded-[18px] lg:-my-1.5 lg:h-[100px] lg:w-[100px] lg:rounded-[22px] dark:border-white/15 dark:bg-[#132339]"
+                >
+                  <img src="/planr-logo.svg" alt="Planr" className="w-9 sm:w-12 lg:w-[60px] dark:invert" />
+                </motion.div>
+              )
+            }
+            const Icon = tile.icon
+            return (
+              <motion.div
+                key={`${r}-${i}`}
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '0px 0px -60px 0px' }}
+                transition={{ duration: 0.5, delay, ease }}
+                role={tile.label ? 'img' : undefined}
+                aria-label={tile.label}
+                aria-hidden={tile.label ? undefined : true}
+                className={cn(
+                  'group relative flex h-11 w-11 items-center justify-center rounded-[12px] border border-gray-200/80 bg-white shadow-[0_1px_2px_rgba(7,17,30,0.04)] transition-transform duration-300 hover:z-30 hover:-translate-y-0.5 sm:h-16 sm:w-16 sm:rounded-[16px] lg:h-[88px] lg:w-[88px] lg:rounded-[20px] dark:border-white/10 dark:bg-[#0D1B2E]',
+                  hideSmall,
+                )}
+              >
+                <Icon className={cn('h-5 w-5 sm:h-6 sm:w-6 lg:h-8 lg:w-8', tile.tone)} strokeWidth={1.6} />
+                {tile.label && (
+                  <span className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 hidden -translate-x-1/2 whitespace-nowrap rounded-full bg-gray-900 px-2.5 py-1 text-[11px] text-white opacity-0 transition-opacity group-hover:opacity-100 lg:block dark:bg-white dark:text-gray-900">
+                    {tile.label}
+                  </span>
+                )}
+              </motion.div>
+            )
+          })}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export function Specialists() {
   return (
-    <section id="specialists" className="relative scroll-mt-20 overflow-hidden pb-20 pt-24 lg:h-[800px] lg:pb-0 lg:pt-[110px]">
-      <div className="relative mx-auto flex h-[300px] w-full max-w-[900px] items-center justify-center lg:h-[320px]">
+    <section id="specialists" className="relative scroll-mt-20 overflow-hidden pb-20 pt-20 lg:pb-24 lg:pt-[100px]">
+      <div className="relative mx-auto flex w-full max-w-[1100px] items-center justify-center">
         <span className="pointer-events-none absolute left-1/2 top-1/2 h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(129,185,233,0.10),transparent_65%)]" />
         {[220, 360, 500, 640, 780, 920].map((s, i) => (
           <span
             key={s}
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-gray-900/[0.035] dark:border-white/[0.06]"
+            className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-gray-900/[0.035] dark:border-white/[0.06]"
             style={{ width: s, height: s, opacity: 1 - i * 0.14 }}
           />
         ))}
-        {DISCIPLINES.map((d, i) => {
-          const Icon = CATEGORY_ICON[d]
-          const angle = (i / DISCIPLINES.length) * Math.PI * 2 - Math.PI / 2
-          const r = 300
-          return (
-            <motion.span
-              key={d}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 + i * 0.06, ease }}
-              className="absolute left-1/2 top-1/2 hidden items-center gap-1.5 whitespace-nowrap rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] text-[#505050] shadow-[0_2px_8px_-2px_rgba(7,17,30,0.08)] lg:flex dark:border-white/10 dark:bg-[#0D1B2E] dark:text-white/70"
-              style={{ x: `calc(${Math.cos(angle) * r}px - 50%)`, y: `calc(${Math.sin(angle) * r * 0.5}px - 50%)` }}
-            >
-              <Icon className="h-3.5 w-3.5 text-[#3B83BE]" />
-              {d}
-            </motion.span>
-          )
-        })}
-        <div className="relative flex h-[104px] w-[104px] items-center justify-center rounded-[26px] border border-gray-100 bg-white shadow-[0_10px_30px_-8px_rgba(7,17,30,0.18)] dark:border-white/10 dark:bg-[#0D1B2E]">
-          <img src="/planr-logo.svg" alt="Planr" className="w-14 dark:invert" />
-        </div>
+        <TileGrid />
       </div>
       <Container className="relative mt-10 lg:mt-14 lg:text-center">
         <Reveal>
