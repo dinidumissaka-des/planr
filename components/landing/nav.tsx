@@ -113,7 +113,7 @@ function Dropdown({ label, items }: { label: string; items: MenuItem[] }) {
 
 export function AnnouncementBar() {
   return (
-    <div className="relative z-10 flex min-h-9 items-center justify-center bg-[linear-gradient(90deg,#D6E8F7_0%,#F1E7DE_50%,#D6E8F7_100%)] px-4 py-2 text-center text-[13px] leading-5 text-[#505050] dark:border-b dark:border-white/10 dark:bg-[linear-gradient(90deg,#0D1B2E_0%,#1A2536_50%,#0D1B2E_100%)] dark:text-white/60">
+    <div className="relative z-10 flex min-h-9 items-center lg:h-9 lg:py-0 justify-center bg-[linear-gradient(90deg,#D6E8F7_0%,#F1E7DE_50%,#D6E8F7_100%)] px-4 py-2 text-center text-[13px] leading-5 text-[#505050] dark:border-b dark:border-white/10 dark:bg-[linear-gradient(90deg,#0D1B2E_0%,#1A2536_50%,#0D1B2E_100%)] dark:text-white/60">
       <p>
         Planr AI answers building questions any time.{' '}
         <a href="#ai" className="text-gray-900 underline underline-offset-2 dark:text-white">

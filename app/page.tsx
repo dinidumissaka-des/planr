@@ -30,12 +30,14 @@ export default function Home() {
         >
           Skip to main content
         </a>
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[900px] bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,#E6F0F9_0%,transparent_70%),radial-gradient(ellipse_45%_40%_at_8%_78%,rgba(129,185,233,0.22),transparent_70%),radial-gradient(ellipse_40%_35%_at_95%_70%,rgba(225,193,166,0.18),transparent_70%)] dark:bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,#12263F_0%,transparent_70%),radial-gradient(ellipse_45%_40%_at_8%_78%,rgba(59,131,190,0.18),transparent_70%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[max(900px,100svh)] bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,#E6F0F9_0%,transparent_70%),radial-gradient(ellipse_45%_40%_at_8%_78%,rgba(129,185,233,0.22),transparent_70%),radial-gradient(ellipse_40%_35%_at_95%_70%,rgba(225,193,166,0.18),transparent_70%)] dark:bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,#12263F_0%,transparent_70%),radial-gradient(ellipse_45%_40%_at_8%_78%,rgba(59,131,190,0.18),transparent_70%)]" />
         <AnnouncementBar />
         <LandingHeader />
         <main id="main" className="relative">
-          <Hero />
-          <SpecialismMarquee />
+          <div className="flex flex-col lg:min-h-[max(580px,calc(100svh-103px))]">
+            <Hero />
+            <SpecialismMarquee />
+          </div>
           <StatsPanel />
           <ProductSection />
           <StatementPanel />

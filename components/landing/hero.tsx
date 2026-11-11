@@ -4,162 +4,35 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'motion/react'
 import { ChevronRight, Landmark, Sparkles, X } from 'lucide-react'
 import { architects } from '@/lib/architects'
+import Waves from '@/components/reactbits/Waves'
 import { CATEGORY_ICON, DarkPill, ease } from './ui'
 
-const COLORS = ['#81B9E9', '#3B83BE', '#A2B2CD', '#81B9E9', '#E1C1A6', '#5E9FD6']
-
-const CLUSTERS = [
-  { x: 0.57, y: 0.55 },
-  { x: 0.76, y: 0.42 },
-  { x: 0.4, y: 0.74 },
-]
-
-type Dot = { x: number; y: number; r: number; a: number; c: string; p: number; s: number }
-
-function makeDots(w: number, h: number): Dot[] {
-  const dots: Dot[] = []
-  const count = Math.min(7000, Math.round((w * h) / 90))
-  for (let i = 0; i < count; i++) {
-    const x = Math.random()
-    const y = Math.pow(Math.random(), 0.7)
-    const keep = (0.2 + y * 0.6 + Math.max(0, x - 0.5) * 1.4) * (x < 0.3 ? 0.35 : 1)
-    if (Math.random() > keep) continue
-    dots.push({
-      x: x * w,
-      y: y * h,
-      r: 0.5 + Math.random() * 1.1,
-      a: 0.2 + Math.random() * 0.6,
-      c: COLORS[Math.floor(Math.random() * COLORS.length)],
-      p: Math.random() * Math.PI * 2,
-      s: 0.25 + Math.random() * 0.6,
-    })
-  }
-  for (const cl of CLUSTERS) {
-    for (let i = 0; i < 160; i++) {
-      const ang = Math.random() * Math.PI * 2
-      const rad = Math.pow(Math.random(), 1.6) * 70
-      dots.push({
-        x: cl.x * w + Math.cos(ang) * rad,
-        y: cl.y * h + Math.sin(ang) * rad * 0.8,
-        r: 0.6 + Math.random() * 1.2,
-        a: 0.35 + Math.random() * 0.55,
-        c: Math.random() > 0.8 ? '#E1C1A6' : '#3B83BE',
-        p: Math.random() * Math.PI * 2,
-        s: 0.3 + Math.random() * 0.6,
-      })
-    }
-  }
-  return dots
+function useHtmlDark() {
+  const [dark, setDark] = useState(false)
+  useEffect(() => {
+    const html = document.documentElement
+    const sync = () => setDark(html.classList.contains('dark'))
+    sync()
+    const mo = new MutationObserver(sync)
+    mo.observe(html, { attributes: true, attributeFilter: ['class'] })
+    return () => mo.disconnect()
+  }, [])
+  return dark
 }
 
-function ParticleField() {
-  const ref = useRef<HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    const canvas = ref.current
-    const ctx = canvas?.getContext('2d')
-    if (!canvas || !ctx) return
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    let dots: Dot[] = []
-    let w = 0
-    let h = 0
-    let raf = 0
-    const pointer = { x: -9999, y: -9999, tx: -9999, ty: -9999, strength: 0, target: 0 }
-    const radius = 150
-
-    const draw = (t: number) => {
-      ctx.clearRect(0, 0, w, h)
-      pointer.x += (pointer.tx - pointer.x) * 0.12
-      pointer.y += (pointer.ty - pointer.y) * 0.12
-      pointer.strength += (pointer.target - pointer.strength) * 0.08
-      for (const d of dots) {
-        const depth = d.y / h
-        const phase = d.x * 0.007 - t * 0.0011 + d.y * 0.004
-        const crest = Math.sin(phase)
-        let x = d.x + Math.sin(t * 0.0004 * d.s + d.p) * 3
-        let y = d.y + crest * (6 + 16 * depth) + Math.sin(d.x * 0.0025 + t * 0.0006) * 8
-        let alpha = d.a * (0.55 + 0.45 * (crest * 0.5 + 0.5))
-        let r = d.r
-        if (pointer.strength > 0.01) {
-          const dx = x - pointer.x
-          const dy = y - pointer.y
-          const dist = Math.hypot(dx, dy)
-          if (dist < radius && dist > 0.001) {
-            const f = (1 - dist / radius) ** 2 * pointer.strength
-            const ripple = Math.sin(dist * 0.08 - t * 0.008) * 4 * f
-            x += (dx / dist) * (f * 36 + ripple)
-            y += (dy / dist) * (f * 36 + ripple)
-            alpha = Math.min(1, alpha + f * 0.6)
-            r = d.r * (1 + f * 0.8)
-          }
-        }
-        ctx.globalAlpha = alpha
-        ctx.fillStyle = d.c
-        ctx.beginPath()
-        ctx.arc(x, y, r, 0, Math.PI * 2)
-        ctx.fill()
-      }
-    }
-
-    const loop = (t: number) => {
-      draw(t)
-      raf = requestAnimationFrame(loop)
-    }
-
-    const onMove = (e: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
-      const inside = x >= -radius && x <= rect.width + radius && y >= -radius && y <= rect.height + radius
-      if (pointer.target === 0 && inside) {
-        pointer.x = x
-        pointer.y = y
-      }
-      pointer.tx = x
-      pointer.ty = y
-      pointer.target = inside ? 1 : 0
-    }
-    const onLeave = () => {
-      pointer.target = 0
-    }
-
-    const resize = () => {
-      const rect = canvas.getBoundingClientRect()
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
-      w = rect.width
-      h = rect.height
-      canvas.width = w * dpr
-      canvas.height = h * dpr
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      dots = makeDots(w, h)
-      draw(0)
-    }
-
-    resize()
-    const ro = new ResizeObserver(resize)
-    ro.observe(canvas)
-    const io = new IntersectionObserver(([entry]) => {
-      cancelAnimationFrame(raf)
-      if (entry.isIntersecting && !reduce) raf = requestAnimationFrame(loop)
-    })
-    io.observe(canvas)
-    if (!reduce) {
-      window.addEventListener('pointermove', onMove, { passive: true })
-      document.documentElement.addEventListener('pointerleave', onLeave)
-    }
-
-    return () => {
-      cancelAnimationFrame(raf)
-      ro.disconnect()
-      io.disconnect()
-      window.removeEventListener('pointermove', onMove)
-      document.documentElement.removeEventListener('pointerleave', onLeave)
-    }
-  }, [])
-
+function HeroWaves() {
+  const dark = useHtmlDark()
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] [mask-image:linear-gradient(to_bottom,transparent,black_35%)]">
-      <canvas ref={ref} className="h-full w-full" aria-hidden />
+      <Waves
+        lineColor={dark ? '#81B9E9' : '#3B83BE'}
+        accentColor={dark ? '#CFE5F8' : '#81B9E9'}
+        opacity={dark ? 0.32 : 0.42}
+        spacing={14}
+        amplitude={34}
+        speed={0.6}
+        mouseRadius={160}
+      />
     </div>
   )
 }
@@ -202,9 +75,9 @@ function IntroCard() {
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-[640px] flex-col lg:h-[698px]">
-      <ParticleField />
-      <div className="relative mx-auto w-full max-w-[1360px] px-5 pt-14 lg:px-10 lg:pt-[110px] lg:text-center">
+    <section className="relative flex min-h-[640px] flex-col lg:min-h-[480px] lg:flex-1">
+      <HeroWaves />
+      <div className="relative mx-auto w-full max-w-[1360px] px-5 pt-14 lg:px-10 lg:pt-[clamp(48px,11svh,110px)] lg:text-center">
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
