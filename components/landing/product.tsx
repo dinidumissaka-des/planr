@@ -27,30 +27,28 @@ const STATS = [
 
 export function StatsPanel() {
   return (
-    <section className="sm:px-2 lg:px-4">
-      <div className="rounded-[20px] border border-gray-200/70 bg-[#F9F9F9] py-16 lg:py-24 dark:border-white/8 dark:bg-[#0A1525]">
-        <Container>
-          <Reveal>
-            <h2 className="max-w-[820px] text-[24px] font-light leading-[1.4] text-gray-900 lg:text-[28px] dark:text-white">
-              Planr puts your consultant, your build plan and your questions side by side.{' '}
-              <span className="text-[#666666] dark:text-white/50">So nothing important gets lost between site visits.</span>
-            </h2>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <div className="mt-10 grid divide-y divide-gray-200/80 overflow-hidden rounded-[18px] border border-gray-200/80 bg-white lg:mt-12 lg:grid-cols-3 lg:divide-x lg:divide-y-0 dark:divide-white/8 dark:border-white/8 dark:bg-[#0D1B2E]">
-              {STATS.map((s) => (
-                <div key={s.caption} className="flex h-[240px] flex-col justify-between p-8 lg:h-[320px] lg:p-12">
-                  <p className="flex items-start text-gray-900 dark:text-white">
-                    <span className="text-[72px] font-light leading-none tracking-[-0.04em] lg:text-[84px]">{s.value}</span>
-                    {s.unit && <span className="ml-1.5 mt-1 text-[20px] font-light">{s.unit}</span>}
-                  </p>
-                  <p className="max-w-[260px] text-[16px] leading-6 text-gray-800 dark:text-white/75">{s.caption}</p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </Container>
-      </div>
+    <section className="py-16 lg:py-24">
+      <Container>
+        <Reveal>
+          <h2 className="max-w-[820px] text-[24px] font-light leading-[1.4] text-gray-900 lg:text-[28px] dark:text-white">
+            Planr puts your consultant, your build plan and your questions side by side.{' '}
+            <span className="text-[#666666] dark:text-white/50">So nothing important gets lost between site visits.</span>
+          </h2>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <div className="mt-10 grid divide-y divide-gray-200/80 overflow-hidden rounded-[18px] border border-gray-200/80 bg-white lg:mt-12 lg:grid-cols-3 lg:divide-x lg:divide-y-0 dark:divide-white/8 dark:border-white/8 dark:bg-[#0D1B2E]">
+            {STATS.map((s) => (
+              <div key={s.caption} className="flex h-[240px] flex-col justify-between p-8 lg:h-[320px] lg:p-12">
+                <p className="flex items-start text-gray-900 dark:text-white">
+                  <span className="text-[72px] font-light leading-none tracking-[-0.04em] lg:text-[84px]">{s.value}</span>
+                  {s.unit && <span className="ml-1.5 mt-1 text-[20px] font-light">{s.unit}</span>}
+                </p>
+                <p className="max-w-[260px] text-[16px] leading-6 text-gray-800 dark:text-white/75">{s.caption}</p>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+      </Container>
     </section>
   )
 }
@@ -433,7 +431,7 @@ export function ProductSection() {
       <Container>
         <Reveal>
           <h2 className="font-serif text-[36px] font-light leading-[1.08] tracking-[-0.02em] text-gray-900 lg:text-[48px] dark:text-white">
-            One place for every stage <span className="lg:block lg:pl-20">of your build</span>
+            One place for every stage <span className="lg:block">of your build</span>
           </h2>
         </Reveal>
         <div className="mt-16 space-y-24 lg:mt-[100px] lg:space-y-[180px]">
