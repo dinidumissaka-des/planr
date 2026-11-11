@@ -420,7 +420,7 @@ function NotesMock() {
       <Show on={step >= 2} y={12}>
         <NoteCard title={HOME[4]} date="Add date">
           <span data-payoff className="flex-1">
-            <Typed text="Ask the contractor for two roofing quotes." start={step >= 2} reduce={reduce} speed={30} />
+            <Typed text="Order steel once the column schedule is final." start={step >= 2} reduce={reduce} speed={30} />
           </span>
         </NoteCard>
       </Show>
