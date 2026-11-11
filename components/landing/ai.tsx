@@ -88,8 +88,8 @@ function DashboardMock() {
 
 function InlineChip({ icon: Icon, children }: { icon: LucideIcon; children: string }) {
   return (
-    <span className="mx-0.5 inline-flex translate-y-[-2px] items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 align-middle text-[13px] leading-5 text-gray-800 shadow-[0_1px_2px_rgba(7,17,30,0.06)] lg:text-[14px]">
-      <Icon className="h-3.5 w-3.5 text-[#3B83BE]" />
+    <span className="mx-0.5 inline-flex translate-y-[-2px] items-center gap-1 rounded-full border border-gray-200 bg-white px-2 py-0.5 align-middle text-[13px] leading-5 text-gray-800 shadow-[0_1px_2px_rgba(7,17,30,0.06)] lg:text-[14px] dark:border-white/15 dark:bg-white/10 dark:text-white/90">
+      <Icon className="h-3.5 w-3.5 text-[#3B83BE] dark:text-[#81B9E9]" />
       {children}
     </span>
   )
@@ -139,19 +139,19 @@ export function AiSection() {
           </p>
         </Reveal>
         <Reveal delay={0.1} className="mx-auto mt-12 max-w-[864px]">
-          <div className="relative overflow-hidden rounded-[20px] border border-white/60 bg-[#F6F4F7] p-5 lg:h-[416px] lg:p-10">
-            <div className="pointer-events-none absolute -left-24 -top-16 h-[130%] w-[420px] rotate-[-14deg] rounded-full bg-[radial-gradient(closest-side,#3B83BE,#81B9E9_55%,transparent)] opacity-80 blur-2xl" />
-            <div className="pointer-events-none absolute -right-20 bottom-[-40%] h-[110%] w-[420px] rounded-full bg-[radial-gradient(closest-side,#E1C1A6,transparent)] opacity-70 blur-2xl" />
-            <div className="pointer-events-none absolute right-10 top-[-30%] h-[80%] w-[360px] rounded-full bg-[radial-gradient(closest-side,#F3D9E6,transparent)] opacity-80 blur-2xl" />
+          <div className="relative overflow-hidden rounded-[20px] border border-white/60 bg-[#F6F4F7] p-5 lg:h-[416px] lg:p-10 dark:border-white/10 dark:bg-[#0D1B2E]">
+            <div className="pointer-events-none absolute -left-24 -top-16 h-[130%] w-[420px] rotate-[-14deg] rounded-full bg-[radial-gradient(closest-side,#3B83BE,#81B9E9_55%,transparent)] opacity-80 blur-2xl dark:opacity-40" />
+            <div className="pointer-events-none absolute -right-20 bottom-[-40%] h-[110%] w-[420px] rounded-full bg-[radial-gradient(closest-side,#E1C1A6,transparent)] opacity-70 blur-2xl dark:opacity-25" />
+            <div className="pointer-events-none absolute right-10 top-[-30%] h-[80%] w-[360px] rounded-full bg-[radial-gradient(closest-side,#F3D9E6,transparent)] opacity-80 blur-2xl dark:opacity-15" />
             <div className="relative flex h-full items-center">
-              <div aria-hidden className="w-full rounded-2xl border border-white/80 bg-white/55 p-5 shadow-[0_8px_40px_-12px_rgba(7,17,30,0.18)] backdrop-blur-xl lg:p-6">
-                <p className="text-[17px] leading-[1.75] text-gray-900 lg:text-[20px] lg:leading-[1.65]">
+              <div aria-hidden className="w-full rounded-2xl border border-white/80 bg-white/55 p-5 shadow-[0_8px_40px_-12px_rgba(7,17,30,0.18)] backdrop-blur-xl lg:p-6 dark:border-white/10 dark:bg-[#07111E]/60 dark:shadow-[0_8px_40px_-12px_rgba(0,0,0,0.6)]">
+                <p className="text-[17px] leading-[1.75] text-gray-900 lg:text-[20px] lg:leading-[1.65] dark:text-white">
                   We&apos;re building a <InlineChip icon={Home}>two-storey house</InlineChip> in <InlineChip icon={MapPin}>Kandy</InlineChip>. What should I check with our
                   <InlineChip icon={Building2}>structural engineer</InlineChip> before the foundation pour?
                 </p>
-                <div className="mt-5 flex items-center justify-between text-gray-600">
+                <div className="mt-5 flex items-center justify-between text-gray-600 dark:text-white/50">
                   <Plus className="h-4 w-4" />
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-900 text-white">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-900 text-white dark:bg-white dark:text-gray-900">
                     <ArrowUp className="h-3.5 w-3.5" />
                   </span>
                 </div>
