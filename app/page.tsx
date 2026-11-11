@@ -23,14 +23,14 @@ export default function Home() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="relative overflow-x-clip bg-white antialiased dark:bg-[#07111E]">
+      <div className="relative overflow-x-clip bg-white antialiased dark:bg-[#0A0A0A]">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-full focus:bg-gray-900 focus:px-4 focus:py-2 focus:text-[14px] focus:text-white"
         >
           Skip to main content
         </a>
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[max(900px,100svh)] bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,#E6F0F9_0%,transparent_70%),radial-gradient(ellipse_45%_40%_at_8%_78%,rgba(129,185,233,0.22),transparent_70%),radial-gradient(ellipse_40%_35%_at_95%_70%,rgba(225,193,166,0.18),transparent_70%)] dark:bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,#12263F_0%,transparent_70%),radial-gradient(ellipse_45%_40%_at_8%_78%,rgba(59,131,190,0.18),transparent_70%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[max(900px,100svh)] bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,#E6F0F9_0%,transparent_70%),radial-gradient(ellipse_45%_40%_at_8%_78%,rgba(129,185,233,0.22),transparent_70%),radial-gradient(ellipse_40%_35%_at_95%_70%,rgba(225,193,166,0.18),transparent_70%)] dark:bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,#1A1A1A_0%,transparent_70%),radial-gradient(ellipse_45%_40%_at_8%_78%,rgba(255,255,255,0.06),transparent_70%)] dark:grayscale" />
         <AnnouncementBar />
         <LandingHeader />
         <main id="main" className="relative">

@@ -93,7 +93,7 @@ function Dropdown({ label, items }: { label: string; items: MenuItem[] }) {
           open ? 'visible opacity-100' : 'invisible opacity-0',
         )}
       >
-        <div className="rounded-2xl border border-gray-200/80 bg-white p-2 shadow-[0_12px_40px_-12px_rgba(7,17,30,0.18)] dark:border-white/10 dark:bg-[#0D1B2E]">
+        <div className="rounded-2xl border border-gray-200/80 bg-white p-2 shadow-[0_12px_40px_-12px_rgba(7,17,30,0.18)] dark:border-white/10 dark:bg-[#171717]">
           {items.map((item) => (
             <a key={item.label} href={item.href} onClick={() => setOpen(false)} className="flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-gray-50 dark:hover:bg-white/5">
               <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-700 dark:border-white/10 dark:text-white/80">
@@ -113,7 +113,7 @@ function Dropdown({ label, items }: { label: string; items: MenuItem[] }) {
 
 export function AnnouncementBar() {
   return (
-    <div className="relative z-10 flex min-h-9 items-center lg:h-9 lg:py-0 justify-center bg-[linear-gradient(90deg,#D6E8F7_0%,#F1E7DE_50%,#D6E8F7_100%)] px-4 py-2 text-center text-[13px] leading-5 text-[#505050] dark:border-b dark:border-white/10 dark:bg-[linear-gradient(90deg,#0D1B2E_0%,#1A2536_50%,#0D1B2E_100%)] dark:text-white/60">
+    <div className="relative z-10 flex min-h-9 items-center lg:h-9 lg:py-0 justify-center bg-[linear-gradient(90deg,#D6E8F7_0%,#F1E7DE_50%,#D6E8F7_100%)] px-4 py-2 text-center text-[13px] leading-5 text-[#505050] dark:border-b dark:border-white/10 dark:bg-[linear-gradient(90deg,#171717_0%,#1C1C1C_50%,#171717_100%)] dark:text-white/60">
       <p>
         Planr AI answers building questions any time.{' '}
         <a href="#ai" className="text-gray-900 underline underline-offset-2 dark:text-white">
@@ -181,7 +181,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2, ease }}
-      className="fixed inset-0 z-[60] flex flex-col bg-white lg:hidden dark:bg-[#07111E]"
+      className="fixed inset-0 z-[60] flex flex-col bg-white lg:hidden dark:bg-[#0A0A0A]"
     >
       <div className="flex h-[66px] shrink-0 items-center justify-between border-b border-gray-100 px-5 dark:border-white/10">
         <a href="/" aria-label="Planr home" onClick={onClose}>
@@ -260,7 +260,7 @@ export function LandingHeader() {
       <header
         className={cn(
           'sticky top-0 z-50 border-b transition-colors duration-300',
-          scrolled ? 'border-gray-900/[0.06] bg-white/85 backdrop-blur-md dark:border-white/[0.06] dark:bg-[#07111E]/85' : 'border-transparent',
+          scrolled ? 'border-gray-900/[0.06] bg-white/85 backdrop-blur-md dark:border-white/[0.06] dark:bg-[#0A0A0A]/85' : 'border-transparent',
         )}
       >
         <nav aria-label="Main" className="mx-auto flex h-[66px] w-full max-w-[1360px] items-center justify-between px-5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-6 lg:px-10 xl:grid-cols-3 xl:gap-0">
