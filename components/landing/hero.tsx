@@ -1,115 +1,259 @@
 'use client'
 
-import { motion } from 'motion/react'
-import { ArrowRight, CalendarDays } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useInView } from 'motion/react'
+import { ChevronRight, Landmark, Sparkles, X } from 'lucide-react'
 import { architects } from '@/lib/architects'
-import { ease } from './reveal'
+import { CATEGORY_ICON, DarkPill, ease } from './ui'
 
-const lead = architects[0]
+const COLORS = ['#81B9E9', '#3B83BE', '#A2B2CD', '#81B9E9', '#E1C1A6', '#5E9FD6']
 
-const FACTS = [
-  { value: '7', label: 'disciplines, from architects to quantity surveyors' },
-  { value: '10', label: 'build stages tracked, planning to handover' },
-  { value: '4', label: 'regions covered — Colombo, Kandy, Galle, Negombo' },
+const CLUSTERS = [
+  { x: 0.57, y: 0.55, label: 'Planr AI' },
+  { x: 0.76, y: 0.42, label: 'Structural engineer' },
+  { x: 0.4, y: 0.74, label: 'Site visit' },
 ]
+
+type Dot = { x: number; y: number; r: number; a: number; c: string; p: number; s: number }
+
+function makeDots(w: number, h: number): Dot[] {
+  const dots: Dot[] = []
+  const count = Math.min(7000, Math.round((w * h) / 90))
+  for (let i = 0; i < count; i++) {
+    const x = Math.random()
+    const y = Math.pow(Math.random(), 0.7)
+    const keep = (0.2 + y * 0.6 + Math.max(0, x - 0.5) * 1.4) * (x < 0.3 ? 0.35 : 1)
+    if (Math.random() > keep) continue
+    dots.push({
+      x: x * w,
+      y: y * h,
+      r: 0.5 + Math.random() * 1.1,
+      a: 0.2 + Math.random() * 0.6,
+      c: COLORS[Math.floor(Math.random() * COLORS.length)],
+      p: Math.random() * Math.PI * 2,
+      s: 0.25 + Math.random() * 0.6,
+    })
+  }
+  for (const cl of CLUSTERS) {
+    for (let i = 0; i < 160; i++) {
+      const ang = Math.random() * Math.PI * 2
+      const rad = Math.pow(Math.random(), 1.6) * 70
+      dots.push({
+        x: cl.x * w + Math.cos(ang) * rad,
+        y: cl.y * h + Math.sin(ang) * rad * 0.8,
+        r: 0.6 + Math.random() * 1.2,
+        a: 0.35 + Math.random() * 0.55,
+        c: Math.random() > 0.8 ? '#E1C1A6' : '#3B83BE',
+        p: Math.random() * Math.PI * 2,
+        s: 0.3 + Math.random() * 0.6,
+      })
+    }
+  }
+  return dots
+}
+
+function ParticleField() {
+  const ref = useRef<HTMLCanvasElement>(null)
+  const wrap = useRef<HTMLDivElement>(null)
+  const inView = useInView(wrap)
+
+  useEffect(() => {
+    const canvas = ref.current
+    const ctx = canvas?.getContext('2d')
+    if (!canvas || !ctx) return
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    let dots: Dot[] = []
+    let w = 0
+    let h = 0
+    let raf = 0
+
+    const draw = (t: number) => {
+      ctx.clearRect(0, 0, w, h)
+      for (const d of dots) {
+        const dx = Math.sin(t * 0.0004 * d.s + d.p) * 6
+        const dy = Math.cos(t * 0.0003 * d.s + d.p) * 4
+        ctx.globalAlpha = d.a
+        ctx.fillStyle = d.c
+        ctx.beginPath()
+        ctx.arc(d.x + dx, d.y + dy, d.r, 0, Math.PI * 2)
+        ctx.fill()
+      }
+    }
+
+    const loop = (t: number) => {
+      draw(t)
+      raf = requestAnimationFrame(loop)
+    }
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect()
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      w = rect.width
+      h = rect.height
+      canvas.width = w * dpr
+      canvas.height = h * dpr
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      dots = makeDots(w, h)
+      draw(0)
+    }
+
+    resize()
+    const ro = new ResizeObserver(resize)
+    ro.observe(canvas)
+    const io = new IntersectionObserver(([entry]) => {
+      cancelAnimationFrame(raf)
+      if (entry.isIntersecting && !reduce) raf = requestAnimationFrame(loop)
+    })
+    io.observe(canvas)
+
+    return () => {
+      cancelAnimationFrame(raf)
+      ro.disconnect()
+      io.disconnect()
+    }
+  }, [])
+
+  return (
+    <div ref={wrap} className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] [mask-image:linear-gradient(to_bottom,transparent,black_35%)]">
+      <canvas ref={ref} className="h-full w-full" aria-hidden />
+      {CLUSTERS.map((cl, i) => (
+        <motion.div
+          key={cl.label}
+          className="absolute hidden items-center gap-1 text-[10px] text-gray-600 sm:flex dark:text-white/70"
+          style={{ left: `${cl.x * 100}%`, top: `${cl.y * 100}%` }}
+          initial={{ opacity: 0, y: 6 }}
+          animate={inView ? { opacity: 1, y: [0, -6, 0] } : { opacity: 1, y: 0 }}
+          transition={{ opacity: { delay: 0.8 + i * 0.2, duration: 0.6 }, y: inView ? { duration: 5 + i, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 } }}
+        >
+          <span className="relative -mt-8 flex items-center gap-1 rounded-full bg-white/80 px-1.5 py-0.5 shadow-[0_1px_3px_rgba(7,17,30,0.08)] backdrop-blur dark:bg-[#0D1B2E]/80">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#3B83BE]" />
+            {cl.label}
+          </span>
+        </motion.div>
+      ))}
+    </div>
+  )
+}
+
+function IntroCard() {
+  const [open, setOpen] = useState(true)
+  if (!open) return null
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 1.2, ease }}
+      className="absolute bottom-5 right-4 z-10 hidden w-[218px] rounded-xl border border-gray-200/80 bg-white/90 p-1.5 shadow-[0_8px_30px_-10px_rgba(7,17,30,0.2)] backdrop-blur lg:block dark:border-white/10 dark:bg-[#0D1B2E]/90"
+    >
+      <div className="flex items-center justify-between px-1 pb-1.5 pt-0.5">
+        <p className="text-[12px] text-[#505050] dark:text-white/70">New: Planr AI</p>
+        <button onClick={() => setOpen(false)} aria-label="Dismiss" className="text-gray-400 hover:text-gray-700 dark:hover:text-white">
+          <X className="h-3 w-3" />
+        </button>
+      </div>
+      <a href="#ai" className="block">
+        <div className="relative h-[100px] overflow-hidden rounded-lg bg-[#E7EEF5] dark:bg-white/10">
+          <img src={architects[0].portfolio[1].url} alt="" className="h-full w-full object-cover grayscale" />
+          <span className="absolute inset-0 flex items-center justify-center">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-gray-900 shadow">
+              <Sparkles className="h-3.5 w-3.5" />
+            </span>
+          </span>
+        </div>
+        <div className="flex items-center justify-between px-1 pb-0.5 pt-1.5 text-[12px] text-[#505050] dark:text-white/70">
+          <span className="flex items-center gap-1.5">
+            <Sparkles className="h-3 w-3" /> See what it can do
+          </span>
+          <ChevronRight className="h-3 w-3" />
+        </div>
+      </a>
+    </motion.div>
+  )
+}
 
 export function Hero() {
   return (
-    <section className="mx-auto max-w-[1240px] px-5 pt-28 pb-20 md:px-8 md:pt-36 md:pb-28">
-      <div className="grid gap-12 md:grid-cols-12 md:gap-10">
-        <div className="flex flex-col md:col-span-5 md:pt-6">
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, ease }}
-            className="mb-8 text-[13px] text-gray-500 dark:text-white/50"
-          >
-            Architecture consultation &amp; build tracking — Sri Lanka
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.1, ease }}
-            className="font-semibold text-[clamp(52px,6.4vw,96px)] leading-[1.02] tracking-[-0.045em] text-gray-900 dark:text-white"
-          >
-            Plan it properly.
-            <br />
-            <em className="font-serif font-normal italic tracking-[-0.02em] text-[#8A6A4F] dark:text-sand-400">Build it once.</em>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.25, ease }}
-            className="mt-8 max-w-[440px] text-[17px] leading-[1.6] text-gray-600 dark:text-white/65"
-          >
-            Book a certified Sri Lankan architect, follow every milestone from permits to handover, and get straight answers before the concrete is poured.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.35, ease }}
-            className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4"
-          >
-            <a
-              href="/signup"
-              className="group inline-flex h-12 items-center gap-2 rounded-xl bg-gray-900 px-6 text-[15px] font-semibold text-white transition-opacity hover:opacity-85 dark:bg-white dark:text-gray-900"
-            >
-              Book a consultation
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </a>
-            <a href="#how" className="text-[15px] font-medium text-gray-900 underline decoration-gray-900/30 underline-offset-4 hover:decoration-gray-900 dark:text-white dark:decoration-white/30 dark:hover:decoration-white">
-              See how it works
-            </a>
-          </motion.div>
-        </div>
-
-        <div className="md:col-span-7">
-          <motion.figure
-            initial={{ clipPath: 'inset(0 0 100% 0)' }}
-            animate={{ clipPath: 'inset(0 0 0% 0)' }}
-            transition={{ duration: 1.4, delay: 0.15, ease }}
-            className="relative"
-          >
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[4px] bg-[#E7E1D7] md:aspect-[5/6] dark:bg-[#0D1B2E]">
-              <motion.img
-                src={`${lead.portfolio[0].url.split('?')[0]}?w=1400&q=80&auto=format&fit=crop`}
-                alt={lead.portfolio[0].caption}
-                initial={{ scale: 1.12 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 2, delay: 0.15, ease }}
-                className="h-full w-full object-cover"
-              />
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.2, ease }}
-                className="absolute bottom-4 left-4 flex items-center gap-3 rounded-2xl bg-white/95 p-3 pr-5 shadow-[0_8px_30px_rgba(7,17,30,.18)] backdrop-blur md:bottom-6 md:left-6"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F5F2EC]">
-                  <CalendarDays className="h-[18px] w-[18px] text-gray-900" />
-                </span>
-                <div>
-                  <div className="text-[11px] text-gray-500">Next consultation · {lead.available}</div>
-                  <div className="text-[13.5px] font-semibold text-gray-900">{lead.name}, {lead.role}</div>
-                </div>
-              </motion.div>
-            </div>
-            <figcaption className="mt-3 flex justify-between gap-4 text-[12.5px] text-gray-500 dark:text-white/50">
-              <span className="text-gray-900 dark:text-white">{lead.portfolio[0].caption}</span>
-              <span>{lead.name} — {lead.company}</span>
-            </figcaption>
-          </motion.figure>
-        </div>
+    <section className="relative flex min-h-[640px] flex-col lg:h-[698px]">
+      <ParticleField />
+      <div className="relative mx-auto w-full max-w-[1360px] px-5 pt-14 lg:px-10 lg:pt-[110px] lg:text-center">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, ease }}
+          className="text-[12px] uppercase leading-[1.8] tracking-[0.1em] text-[#666666] dark:text-white/50"
+        >
+          For homeowners building in Sri Lanka
+        </motion.p>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.1, ease }}
+          className="mt-4 max-w-[860px] font-serif lg:mx-auto text-[44px] font-light leading-[1.05] tracking-[-0.02em] text-gray-900 lg:text-[64px] dark:text-white"
+        >
+          Build the home you planned, not the one you settled for
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.25, ease }}
+          className="mt-6 max-w-[580px] text-[17px] lg:mx-auto font-light leading-7 text-[#505050] lg:text-[18px] dark:text-white/65"
+        >
+          Book an architect or engineer, follow every stage from permits to handover, and get a clear answer whenever a question comes up.
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.35, ease }}
+          className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 lg:mt-8 lg:justify-center"
+        >
+          <DarkPill href="/signup" className="h-11 whitespace-nowrap px-5 lg:h-10">
+            Book a consultation
+          </DarkPill>
+          <a href="#ai" className="flex items-center gap-1 whitespace-nowrap text-[14px] font-medium text-gray-900 dark:text-white">
+            Meet Planr AI <ChevronRight className="h-3.5 w-3.5" />
+          </a>
+        </motion.div>
       </div>
-
-      <dl className="mt-20 grid gap-8 border-t border-gray-900/15 pt-8 sm:grid-cols-3 md:mt-28 dark:border-white/15">
-        {FACTS.map(f => (
-          <div key={f.label} className="flex items-baseline gap-4">
-            <dt className="text-[44px] font-semibold leading-none tracking-[-0.04em] text-gray-900 dark:text-white">{f.value}</dt>
-            <dd className="max-w-[220px] text-[13.5px] leading-snug text-gray-600 dark:text-white/60">{f.label}</dd>
-          </div>
-        ))}
-      </dl>
+      <IntroCard />
     </section>
+  )
+}
+
+
+const SPECIALISMS = [
+  ...new Map(architects.flatMap((a) => a.specializations.map((s) => [s, a.category] as const))).entries(),
+]
+
+function SpecialismRow({ hidden }: { hidden?: boolean }) {
+  return (
+    <div className="flex shrink-0 items-center" aria-hidden={hidden || undefined}>
+      {SPECIALISMS.map(([name, category]) => {
+        const Icon = CATEGORY_ICON[category] ?? Landmark
+        return (
+          <span key={name} className="flex shrink-0 items-center gap-2 px-10 text-[18px] font-semibold tracking-[-0.02em] text-[#6B6B6B] dark:text-white/55">
+            <Icon className="h-5 w-5" strokeWidth={2.25} />
+            {name}
+          </span>
+        )
+      })}
+    </div>
+  )
+}
+
+export function SpecialismMarquee() {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref)
+  return (
+    <div ref={ref} className="relative overflow-hidden py-6 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+      <p className="sr-only">Specialisms offered by Planr consultants</p>
+      <motion.div
+        className="flex w-max items-center"
+        animate={inView ? { x: ['0%', '-50%'] } : { x: '0%' }}
+        transition={inView ? { duration: 90, ease: 'linear', repeat: Infinity } : { duration: 0 }}
+      >
+        <SpecialismRow />
+        <SpecialismRow hidden />
+      </motion.div>
+    </div>
   )
 }
