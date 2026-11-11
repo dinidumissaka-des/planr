@@ -11,7 +11,7 @@ import { Faq, FinalCta, Footer, StoriesPanel, Trust } from '@/components/landing
 export default function Home() {
   useEffect(() => {
     const html = document.documentElement
-    html.style.scrollBehavior = 'smooth'
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) html.style.scrollBehavior = 'smooth'
     document.body.style.overflow = 'auto'
     document.body.style.height = 'auto'
     return () => {

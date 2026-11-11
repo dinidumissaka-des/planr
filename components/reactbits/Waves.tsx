@@ -1,4 +1,5 @@
-// Waves by React Bits (https://reactbits.dev), MIT + Commons Clause. Vendored as-is.
+// Waves by React Bits (https://reactbits.dev). Copyright (c) 2026 David Haz
+// MIT + Commons Clause, see ./LICENSE.md. Vendored as-is.
 'use client';
 
 import { useEffect, useRef, type CSSProperties } from 'react';

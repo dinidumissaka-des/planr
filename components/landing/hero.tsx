@@ -90,7 +90,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.1, ease }}
-          className="mt-4 max-w-[860px] font-serif lg:mx-auto text-[44px] font-light leading-[1.05] tracking-[-0.02em] text-gray-900 lg:text-[64px] dark:text-white"
+          className="mt-4 max-w-[860px] text-balance font-serif lg:mx-auto text-[44px] font-light leading-[1.05] tracking-[-0.02em] text-gray-900 lg:text-[64px] dark:text-white"
         >
           Build the home you planned, not the one you settled for
         </motion.h1>
@@ -148,14 +148,10 @@ export function SpecialismMarquee() {
   return (
     <div ref={ref} className="relative overflow-hidden py-6 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
       <p className="sr-only">Specialisms offered by Planr consultants</p>
-      <motion.div
-        className="flex w-max items-center"
-        animate={inView ? { x: ['0%', '-50%'] } : { x: '0%' }}
-        transition={inView ? { duration: 240, ease: 'linear', repeat: Infinity } : { duration: 0 }}
-      >
+      <div className="flex w-max items-center motion-safe:animate-marquee" style={{ animationPlayState: inView ? 'running' : 'paused' }}>
         <SpecialismRow />
         <SpecialismRow hidden />
-      </motion.div>
+      </div>
     </div>
   )
 }

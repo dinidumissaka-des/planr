@@ -5,6 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --animate-marquee: marquee 240s linear infinite;
   /* Typography scale */
   --text-8: 8px;
   --text-8--line-height: 12px;
@@ -277,5 +278,11 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
   }
 }

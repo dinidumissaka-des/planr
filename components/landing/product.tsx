@@ -31,43 +31,34 @@ const GRAIN =
 
 const DRIFT = { duration: 7, repeat: Infinity, ease: 'easeInOut' } as const
 
+const BANDS = [
+  { band: 'left-[-35%] w-[120%]', accent: 'right-[-10%] top-[-20%] bg-[radial-gradient(closest-side,#D9E9F7,transparent)]' },
+  { band: 'left-[-25%] w-[150%]', accent: 'left-[-10%] top-[-25%] bg-[radial-gradient(closest-side,#F3E6DA,transparent)]' },
+  { band: 'right-[-35%] w-[120%]', accent: 'left-[10%] top-[-20%] bg-[radial-gradient(closest-side,#F1E3D6,transparent)]' },
+]
+
 function StatGlow({ variant, active }: { variant: number; active: boolean }) {
-  const move = active ? undefined : { x: 0, y: 0, rotate: 0 }
+  const shape = BANDS[variant % BANDS.length]
+  const settle = { duration: 0.5 }
   return (
     <div
       aria-hidden
       className={cn('pointer-events-none absolute inset-0 overflow-hidden transition-opacity duration-500', active ? 'opacity-100' : 'opacity-0')}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_20%_10%,#E3EFFA,transparent_70%),radial-gradient(ellipse_70%_60%_at_80%_100%,#F6ECE3,transparent_70%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_20%_10%,#12304F,transparent_70%),radial-gradient(ellipse_70%_60%_at_80%_100%,#1B2A3D,transparent_70%)]" />
-      {variant === 0 && (
-        <motion.div
-          className="absolute -right-6 -top-24 h-[150%] w-[120px] rounded-full bg-[linear-gradient(180deg,#3B83BE,#81B9E9_55%,transparent)] opacity-80 blur-2xl dark:opacity-60"
-          initial={{ rotate: 26 }}
-          animate={move ?? { x: [0, -36, 0], rotate: [26, 18, 26] }}
-          transition={DRIFT}
-        />
-      )}
-      {variant === 1 && (
-        <motion.div
-          className="absolute -left-1/4 bottom-[-38%] h-[75%] w-[150%] rounded-[50%] bg-[radial-gradient(closest-side,#3B83BE,#81B9E9_55%,transparent)] opacity-80 blur-xl dark:opacity-60"
-          animate={move ?? { x: [-30, 30, -30], y: [0, -14, 0] }}
-          transition={DRIFT}
-        />
-      )}
-      {variant === 2 && (
-        <>
-          <motion.div
-            className="absolute -bottom-24 -right-16 h-[280px] w-[280px] rounded-full bg-[radial-gradient(closest-side,#3B83BE,#81B9E9_50%,transparent)] opacity-75 blur-xl dark:opacity-55"
-            animate={move ?? { x: [0, -24, 0], y: [0, -18, 0] }}
-            transition={DRIFT}
-          />
-          <motion.div
-            className="absolute -left-10 top-6 h-[160px] w-[220px] rounded-full bg-[radial-gradient(closest-side,#E1C1A6,transparent)] opacity-70 blur-xl dark:opacity-30"
-            animate={move ?? { x: [0, 30, 0] }}
-            transition={{ ...DRIFT, duration: 9 }}
-          />
-        </>
-      )}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_20%_10%,#EAF3FB,transparent_70%),radial-gradient(ellipse_70%_60%_at_80%_100%,#F6EEE6,transparent_70%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_20%_10%,#12304F,transparent_70%),radial-gradient(ellipse_70%_60%_at_80%_100%,#1B2A3D,transparent_70%)]" />
+      <motion.div
+        className={cn('absolute h-[60%] w-[70%] rounded-full opacity-80 blur-2xl dark:opacity-25', shape.accent)}
+        animate={active ? { x: [0, 24, 0] } : { x: 0 }}
+        transition={active ? { ...DRIFT, duration: 9 } : settle}
+      />
+      <motion.div
+        className={cn(
+          'absolute bottom-[-42%] h-[70%] rounded-[50%] bg-[radial-gradient(closest-side,#81B9E9,#B9D8F2_55%,transparent)] opacity-70 blur-xl dark:bg-[radial-gradient(closest-side,#3B83BE,#81B9E9_55%,transparent)] dark:opacity-35',
+          shape.band,
+        )}
+        animate={active ? { x: [-24, 24, -24], y: [0, -10, 0] } : { x: 0, y: 0 }}
+        transition={active ? DRIFT : settle}
+      />
       <div className="absolute inset-0 opacity-[0.22] mix-blend-soft-light" style={{ backgroundImage: GRAIN }} />
     </div>
   )
@@ -82,11 +73,11 @@ function StatCard({ stat, variant }: { stat: (typeof STATS)[number]; variant: nu
       className="relative flex h-[240px] flex-col justify-between overflow-hidden p-8 lg:h-[320px] lg:p-12"
     >
       <StatGlow variant={variant} active={active} />
-      <p className={cn('relative flex items-start transition-colors duration-500', active ? 'text-[#3B83BE] dark:text-[#9CCBF0]' : 'text-gray-900 dark:text-white')}>
+      <p className={cn('relative flex items-start transition-colors duration-500', active ? 'text-[#2F6E9F] dark:text-[#9CCBF0]' : 'text-gray-900 dark:text-white')}>
         <span className="text-[72px] font-light leading-none tracking-[-0.04em] lg:text-[84px]">{stat.value}</span>
         {stat.unit && <span className="ml-1.5 mt-1 text-[20px] font-light">{stat.unit}</span>}
       </p>
-      <p className={cn('relative max-w-[260px] text-[16px] leading-6 transition-colors duration-500', active ? 'text-[#2F6E9F] dark:text-[#BFDDF5]' : 'text-gray-800 dark:text-white/75')}>
+      <p className={cn('relative max-w-[260px] text-[16px] leading-6 transition-colors duration-500', active ? 'text-[#1F4E74] dark:text-[#F2F8FD]' : 'text-gray-800 dark:text-white/75')}>
         {stat.caption}
       </p>
     </div>
@@ -197,12 +188,7 @@ function Dots() {
   return (
     <span className="inline-flex items-center gap-1">
       {[0, 1, 2].map((i) => (
-        <motion.span
-          key={i}
-          className="h-1.5 w-1.5 rounded-full bg-gray-400 dark:bg-white/50"
-          animate={{ opacity: [0.3, 1, 0.3] }}
-          transition={{ duration: 1, repeat: Infinity, delay: i * 0.15 }}
-        />
+        <span key={i} className="h-1.5 w-1.5 rounded-full bg-gray-400 motion-safe:animate-pulse dark:bg-white/50" style={{ animationDelay: `${i * 150}ms` }} />
       ))}
     </span>
   )
@@ -227,7 +213,7 @@ function Chip({ icon: Icon, children }: { icon: typeof User; children: ReactNode
 
 function MockFrame({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div aria-hidden className={cn('select-none overflow-hidden [mask-image:linear-gradient(to_bottom,black_62%,transparent_97%)]', className)}>
+    <div aria-hidden className={cn('select-none overflow-hidden [mask-image:linear-gradient(to_bottom,black_80%,transparent_99%)] xl:[mask-image:linear-gradient(to_bottom,black_72%,transparent_98%)]', className)}>
       <div className="flex min-h-[calc(100%+80px)] flex-col [&>*]:flex-1">{children}</div>
     </div>
   )
@@ -239,19 +225,18 @@ const BOOKING_NOTE = 'Layout options for a two-storey house on a sloping plot. W
 function BookingMock() {
   const { ref, play, reduce } = usePlay()
   const step = useTimeline(BOOKING_TIMES, play, reduce)
-  const days = Array.from({ length: 14 }, (_, i) => i + 9)
+  const days = Array.from({ length: 7 }, (_, i) => i + 9)
   return (
     <div ref={ref} className="flex flex-col">
       <Window className="flex-1">
         <p className="text-[15px] text-gray-800 dark:text-white/90">New consultation</p>
-        <p className="mt-0.5 text-[11px] text-gray-500">Kandy family home</p>
-        <div className="mt-3 flex flex-wrap gap-4">
+        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
           <Chip icon={User}>Roshan Perera</Chip>
           <Chip icon={Building2}>Architecture</Chip>
           <Chip icon={Clock}>1 hour</Chip>
           <Chip icon={MapPin}>Colombo 03</Chip>
         </div>
-        <div className="mt-5 grid grid-cols-7 gap-1.5">
+        <div className="mt-4 grid grid-cols-7 gap-1.5">
           {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
             <span key={i} className="text-center text-[10px] text-gray-500">{d}</span>
           ))}
@@ -273,7 +258,7 @@ function BookingMock() {
             )
           })}
         </div>
-        <div className="mt-4 flex gap-2">
+        <div className="mt-3 flex flex-wrap gap-2">
           {['9:00 AM', '10:30 AM', '2:00 PM', '4:30 PM'].map((t, i) => (
             <span
               key={t}
@@ -286,16 +271,17 @@ function BookingMock() {
             </span>
           ))}
         </div>
-        <div className="mt-4 rounded-lg bg-gray-50 p-3 text-[11px] leading-5 text-gray-600 dark:bg-white/5 dark:text-white/70">
+        <div className="mt-3 rounded-lg bg-gray-50 p-3 text-[11px] leading-5 text-gray-600 dark:bg-white/5 dark:text-white/70">
           <Typed text={BOOKING_NOTE} start={step >= 3} reduce={reduce} speed={22} />
         </div>
         <div
+          data-payoff
           className={cn(
-            'mt-4 flex h-8 items-center justify-center rounded-full text-[11px] transition-colors duration-500',
+            'mt-3 flex h-8 items-center justify-center rounded-full text-[11px] transition-colors duration-500',
             step >= 4 ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'bg-gray-100 text-gray-400 dark:bg-white/10 dark:text-white/40',
           )}
         >
-          Confirm booking
+          Confirm &amp; pay
         </div>
       </Window>
     </div>
@@ -315,7 +301,7 @@ function AiPrepMock() {
     '4. Photos of homes you like',
   ]
   return (
-    <div ref={ref}>
+    <div ref={ref} className="flex flex-col">
       <Window className="flex flex-1 flex-col">
         <div className="flex items-center gap-2 text-[13px] text-gray-700 dark:text-white/90">
           <Sparkles className="h-3.5 w-3.5" /> Planr AI
@@ -331,7 +317,7 @@ function AiPrepMock() {
           )}
           {lines.map((l, i) => (
             <Show key={l} on={step >= 3 + i} y={4}>
-              <p>{l}</p>
+              <p data-payoff={i === lines.length - 1 || undefined}>{l}</p>
             </Show>
           ))}
         </div>
@@ -391,16 +377,12 @@ function MilestoneMock() {
                     <Check className="h-2.5 w-2.5" />
                   </motion.span>
                 ) : current ? (
-                  <motion.span
-                    className="h-4 w-4 rounded-full border-2 border-[#3B83BE] border-r-transparent"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1.6, repeat: Infinity, ease: 'linear' }}
-                  />
+                  <span className="h-4 w-4 rounded-full border-2 border-[#3B83BE] border-r-transparent motion-safe:animate-[spin_1.6s_linear_infinite]" />
                 ) : (
                   <Circle className="h-4 w-4 text-gray-400 dark:text-white/40" />
                 )}
                 <span className={cn('flex-1 text-[12px] transition-colors duration-300', isDone ? 'text-gray-500 line-through' : 'text-gray-700 dark:text-white/90')}>{m}</span>
-                <span className="text-[10px] text-gray-500">{isDone ? 'Done' : current ? 'In progress' : 'Pending'}</span>
+                <span data-payoff={current || undefined} className="text-[10px] text-gray-500">{isDone ? 'Done' : current ? 'In progress' : 'Pending'}</span>
               </li>
             )
           })}
@@ -410,42 +392,42 @@ function MilestoneMock() {
   )
 }
 
-const NOTES_TIMES = [300, 700, 1300] as const
+const NOTES_TIMES = [300, 800, 2600] as const
+
+function NoteCard({ title, date, children, className }: { title: string; date: string; children: ReactNode; className?: string }) {
+  return (
+    <Window className={cn('p-4', className)}>
+      <div className="flex items-center justify-between">
+        <p className="text-[12px] text-gray-800 dark:text-white/90">{title}</p>
+        <Chip icon={CalendarDays}>{date}</Chip>
+      </div>
+      <p className="mt-2 flex gap-1.5 text-[11px] leading-4 text-gray-600 dark:text-white/70">
+        <StickyNote className="mt-0.5 h-3 w-3 shrink-0" />
+        {children}
+      </p>
+    </Window>
+  )
+}
 
 function NotesMock() {
   const { ref, play, reduce } = usePlay()
   const step = useTimeline(NOTES_TIMES, play, reduce)
-  const notes = [
-    { t: HOME[3], d: 'Due 14 Mar', n: 'Footing depth confirmed with the engineer after the soil test.' },
-    { t: HOME[4], d: 'Due 2 Apr', n: 'Order steel once the column schedule is final.' },
-  ]
   return (
     <div ref={ref} className="flex flex-col gap-3">
-      {notes.map((x, i) => (
-        <Show key={x.t} on={step >= i + 1} y={12}>
-          <Window className="p-4">
-            <div className="flex items-center justify-between">
-              <p className="text-[12px] text-gray-800 dark:text-white/90">{x.t}</p>
-              <Chip icon={CalendarDays}>{x.d}</Chip>
-            </div>
-            <p className="mt-2 flex gap-1.5 text-[11px] leading-4 text-gray-600 dark:text-white/70">
-              <StickyNote className="mt-0.5 h-3 w-3 shrink-0" />
-              {x.n}
-            </p>
-          </Window>
-        </Show>
-      ))}
+      <Show on={step >= 1} y={12}>
+        <NoteCard title={HOME[3]} date="Due 14 Mar">Footing depth confirmed with the engineer after the soil test.</NoteCard>
+      </Show>
+      <Show on={step >= 2} y={12}>
+        <NoteCard title={HOME[4]} date="Add date">
+          <span data-payoff className="flex-1">
+            <Typed text="Ask the contractor for two roofing quotes." start={step >= 2} reduce={reduce} speed={30} />
+          </span>
+        </NoteCard>
+      </Show>
       <Show on={step >= 3} y={12} className="flex flex-1 flex-col">
-        <Window className="flex-1 p-4">
-          <div className="flex items-center justify-between">
-            <p className="text-[12px] text-gray-800 dark:text-white/90">{HOME[5]}</p>
-            <Chip icon={CalendarDays}>Add date</Chip>
-          </div>
-          <p className="mt-2 flex gap-1.5 text-[11px] leading-4 text-gray-600 dark:text-white/70">
-            <StickyNote className="mt-0.5 h-3 w-3 shrink-0" />
-            <Typed text="Ask the contractor for two roofing quotes." start={step >= 3} reduce={reduce} speed={30} />
-          </p>
-        </Window>
+        <NoteCard title={HOME[5]} date="Due 2 May" className="flex-1">
+          Roof sheets to be ordered after the frame inspection.
+        </NoteCard>
       </Show>
     </div>
   )
@@ -461,7 +443,7 @@ function ProgressMock() {
         <div className="flex items-end justify-between">
           <div>
             <p className="text-[11px] text-gray-500">Overall progress</p>
-            <p className="mt-1 text-[34px] font-light leading-none tabular-nums text-gray-800 dark:text-white/90">{pct}%</p>
+            <p data-payoff className="mt-1 text-[34px] font-light leading-none tabular-nums text-gray-800 dark:text-white/90">{pct}%</p>
           </div>
           <span className="text-[10px] text-gray-500">Next: {HOME[3]}</span>
         </div>
@@ -517,7 +499,7 @@ function AskAiMock() {
           )}
           {lines.map((l, i) => (
             <Show key={l} on={step >= 3 + i} y={4}>
-              <p>{l}</p>
+              <p data-payoff={i === lines.length - 1 || undefined}>{l}</p>
             </Show>
           ))}
         </div>
@@ -526,7 +508,7 @@ function AskAiMock() {
   )
 }
 
-const CONSULT_TIMES = [500, 2100] as const
+const CONSULT_TIMES = [500, 1500] as const
 
 function ConsultantMock() {
   const { ref, play, reduce } = usePlay()
@@ -536,18 +518,17 @@ function ConsultantMock() {
     <div ref={ref} className="flex flex-col">
       <Window className="flex-1">
         <p className="text-[12px] text-gray-800 dark:text-white/90">Can we move the staircase to open up the living room?</p>
-        <div className="relative mt-3">
-          <Show on={step === 1} className="absolute inset-x-0 top-0 flex items-center gap-2 rounded-lg border border-gray-100 p-3 text-[11px] text-gray-500 dark:border-white/8 dark:text-white/60">
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-[8px] text-gray-700 dark:bg-white/15 dark:text-white/90">PL</span>
-            {eng.name.split(' ')[0]} is replying
-            <Dots />
-          </Show>
+        <Show on={step >= 1} y={4} className="mt-2 flex items-center gap-1.5 text-[10px] text-gray-500 dark:text-white/60">
+          <Check className="h-3 w-3 text-[#3B83BE]" />
+          Sent to {eng.name}
+        </Show>
+        <div className="mt-3">
           <Show on={step >= 2} className="rounded-lg border border-gray-100 p-3 dark:border-white/8">
             <p className="flex items-center gap-2 text-[11px] text-gray-700 dark:text-white/90">
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-[8px] text-gray-700 dark:bg-white/15 dark:text-white/90">PL</span>
               {eng.name} · {eng.role}
             </p>
-            <p className="mt-1.5 text-[11px] leading-5 text-gray-600 dark:text-white/70">
+            <p data-payoff className="mt-1.5 text-[11px] leading-5 text-gray-600 dark:text-white/70">
               Send me the latest ground floor plan and I&apos;ll look at the spans. If the landing moves, we may need one extra beam.
             </p>
           </Show>
@@ -592,7 +573,7 @@ function ProfileMock() {
             </motion.div>
           ))}
         </motion.div>
-        <motion.span initial="hidden" animate={state} variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { delay: 0.9, duration: 0.4 } } }} className="mt-4 flex h-8 items-center justify-center rounded-full bg-gray-900 text-[11px] text-white dark:bg-white dark:text-gray-900">
+        <motion.span data-payoff initial="hidden" animate={state} variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { delay: 0.9, duration: 0.4 } } }} className="mt-4 flex h-8 items-center justify-center rounded-full bg-gray-900 text-[11px] text-white dark:bg-white dark:text-gray-900">
           Book consultation
         </motion.span>
       </Window>
@@ -627,7 +608,7 @@ function WideCard({ id, lead, rest, children }: { id: string; lead: string; rest
   return (
     <Reveal>
       <div id={id} className={cn(CARD, 'flex scroll-mt-28 flex-col xl:grid xl:h-[450px] xl:grid-cols-[minmax(0,1fr)_56%] xl:gap-4')}>
-        <MockFrame className="relative h-[280px] px-5 pt-6 lg:h-[320px] lg:px-10 lg:pt-10 xl:col-start-2 xl:row-start-1 xl:h-[450px] xl:pl-0 xl:pr-6 xl:pt-6">{children}</MockFrame>
+        <MockFrame className="relative h-[440px] px-5 pt-5 sm:h-[360px] lg:h-[380px] lg:px-10 lg:pt-6 xl:col-start-2 xl:row-start-1 xl:h-[450px] xl:pl-0 xl:pr-6 xl:pt-6">{children}</MockFrame>
         <Caption lead={lead} rest={rest} className="px-6 pb-7 lg:max-w-[560px] lg:px-10 lg:pb-10 xl:col-start-1 xl:row-start-1 xl:max-w-[340px] xl:self-end xl:pr-0" />
       </div>
     </Reveal>
@@ -638,7 +619,7 @@ function HalfCard({ id, lead, rest, children, delay = 0 }: { id: string; lead: s
   return (
     <Reveal delay={delay}>
       <div id={id} className={cn(CARD, 'flex scroll-mt-28 flex-col lg:h-[450px]')}>
-        <MockFrame className="h-[260px] px-5 pt-6 lg:h-[250px] lg:px-10 lg:pt-10">{children}</MockFrame>
+        <MockFrame className="h-[300px] px-5 pt-5 lg:h-[300px] lg:px-8 lg:pt-8">{children}</MockFrame>
         <Caption lead={lead} rest={rest} className="mt-auto px-6 pb-7 lg:max-w-[380px] lg:px-10 lg:pb-10" />
       </div>
     </Reveal>
@@ -681,7 +662,7 @@ const BLOCKS: Block[] = [
         <WideCard id="track-milestones" lead="A plan from day one." rest="Every project starts with a milestone list made for its type, from a home build to a hotel.">
           <MilestoneMock />
         </WideCard>
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-6 xl:grid-cols-2">
           <HalfCard id="track-notes" lead="Notes & dates." rest="Keep due dates and decisions against each stage, so nothing lives only in someone's phone.">
             <NotesMock />
           </HalfCard>
@@ -701,7 +682,7 @@ const BLOCKS: Block[] = [
     ],
     heading: 'Answers while the question still matters',
     body: (
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 xl:grid-cols-2">
         <HalfCard id="ask-ai" lead="Two ways to ask." rest="Get an instant answer from Planr AI for the everyday questions.">
           <AskAiMock />
         </HalfCard>
