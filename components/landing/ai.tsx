@@ -229,7 +229,7 @@ const OUTER = (row: number, i: number) => (row === 1 ? i < 2 || i > 8 : i < 2 ||
 function TileGrid() {
   let order = 0
   return (
-    <div className="relative flex flex-col items-center gap-1.5 sm:gap-2 lg:gap-3">
+    <div className="relative flex flex-col items-center gap-1.5 [mask-image:linear-gradient(to_right,transparent,black_28%,black_72%,transparent)] sm:gap-2 lg:gap-3">
       {TILE_ROWS.map((row, r) => (
         <div key={r} className="flex gap-1.5 sm:gap-2 lg:gap-3">
           {row.map((tile, i) => {
