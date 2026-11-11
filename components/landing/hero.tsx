@@ -66,16 +66,39 @@ function ParticleField() {
     let w = 0
     let h = 0
     let raf = 0
+    const pointer = { x: -9999, y: -9999, tx: -9999, ty: -9999, strength: 0, target: 0 }
+    const radius = 150
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, w, h)
+      pointer.x += (pointer.tx - pointer.x) * 0.12
+      pointer.y += (pointer.ty - pointer.y) * 0.12
+      pointer.strength += (pointer.target - pointer.strength) * 0.08
       for (const d of dots) {
-        const dx = Math.sin(t * 0.0004 * d.s + d.p) * 6
-        const dy = Math.cos(t * 0.0003 * d.s + d.p) * 4
-        ctx.globalAlpha = d.a
+        const depth = d.y / h
+        const phase = d.x * 0.007 - t * 0.0011 + d.y * 0.004
+        const crest = Math.sin(phase)
+        let x = d.x + Math.sin(t * 0.0004 * d.s + d.p) * 3
+        let y = d.y + crest * (6 + 16 * depth) + Math.sin(d.x * 0.0025 + t * 0.0006) * 8
+        let alpha = d.a * (0.55 + 0.45 * (crest * 0.5 + 0.5))
+        let r = d.r
+        if (pointer.strength > 0.01) {
+          const dx = x - pointer.x
+          const dy = y - pointer.y
+          const dist = Math.hypot(dx, dy)
+          if (dist < radius && dist > 0.001) {
+            const f = (1 - dist / radius) ** 2 * pointer.strength
+            const ripple = Math.sin(dist * 0.08 - t * 0.008) * 4 * f
+            x += (dx / dist) * (f * 36 + ripple)
+            y += (dy / dist) * (f * 36 + ripple)
+            alpha = Math.min(1, alpha + f * 0.6)
+            r = d.r * (1 + f * 0.8)
+          }
+        }
+        ctx.globalAlpha = alpha
         ctx.fillStyle = d.c
         ctx.beginPath()
-        ctx.arc(d.x + dx, d.y + dy, d.r, 0, Math.PI * 2)
+        ctx.arc(x, y, r, 0, Math.PI * 2)
         ctx.fill()
       }
     }
@@ -83,6 +106,23 @@ function ParticleField() {
     const loop = (t: number) => {
       draw(t)
       raf = requestAnimationFrame(loop)
+    }
+
+    const onMove = (e: PointerEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+      const inside = x >= -radius && x <= rect.width + radius && y >= -radius && y <= rect.height + radius
+      if (pointer.target === 0 && inside) {
+        pointer.x = x
+        pointer.y = y
+      }
+      pointer.tx = x
+      pointer.ty = y
+      pointer.target = inside ? 1 : 0
+    }
+    const onLeave = () => {
+      pointer.target = 0
     }
 
     const resize = () => {
@@ -105,11 +145,17 @@ function ParticleField() {
       if (entry.isIntersecting && !reduce) raf = requestAnimationFrame(loop)
     })
     io.observe(canvas)
+    if (!reduce) {
+      window.addEventListener('pointermove', onMove, { passive: true })
+      document.documentElement.addEventListener('pointerleave', onLeave)
+    }
 
     return () => {
       cancelAnimationFrame(raf)
       ro.disconnect()
       io.disconnect()
+      window.removeEventListener('pointermove', onMove)
+      document.documentElement.removeEventListener('pointerleave', onLeave)
     }
   }, [])
 
