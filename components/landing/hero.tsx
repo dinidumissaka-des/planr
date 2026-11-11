@@ -278,7 +278,7 @@ export function SpecialismMarquee() {
       <motion.div
         className="flex w-max items-center"
         animate={inView ? { x: ['0%', '-50%'] } : { x: '0%' }}
-        transition={inView ? { duration: 90, ease: 'linear', repeat: Infinity } : { duration: 0 }}
+        transition={inView ? { duration: 240, ease: 'linear', repeat: Infinity } : { duration: 0 }}
       >
         <SpecialismRow />
         <SpecialismRow hidden />
