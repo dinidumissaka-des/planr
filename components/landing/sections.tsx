@@ -329,17 +329,17 @@ export function FinalCta() {
     <section className="pb-16 pt-12 lg:pb-0 lg:pt-14">
       <Container>
         <Reveal>
-          <div className="relative overflow-hidden rounded-[20px] border border-gray-200/60 bg-[#F7F5F8] px-6 py-16 text-center lg:h-[362px] lg:py-0">
-            <div className="pointer-events-none absolute -left-20 -top-24 h-[420px] w-[360px] rotate-[25deg] rounded-full bg-[radial-gradient(closest-side,#3B83BE,#81B9E9_50%,transparent)] opacity-80 blur-2xl" />
-            <div className="pointer-events-none absolute -bottom-32 -right-16 h-[360px] w-[360px] rounded-full bg-[radial-gradient(closest-side,#81B9E9,transparent)] opacity-80 blur-2xl" />
-            <div className="pointer-events-none absolute -top-20 right-1/4 h-[260px] w-[420px] rounded-full bg-[radial-gradient(closest-side,#F2E2D4,transparent)] opacity-90 blur-2xl" />
+          <div className="relative overflow-hidden rounded-[20px] border border-gray-200/60 bg-[#F7F5F8] px-6 py-16 dark:border-white/10 dark:bg-[#0D1B2E] text-center lg:h-[362px] lg:py-0">
+            <div className="pointer-events-none absolute -left-20 -top-24 h-[420px] w-[360px] rotate-[25deg] rounded-full bg-[radial-gradient(closest-side,#3B83BE,#81B9E9_50%,transparent)] opacity-80 blur-2xl dark:opacity-40" />
+            <div className="pointer-events-none absolute -bottom-32 -right-16 h-[360px] w-[360px] rounded-full bg-[radial-gradient(closest-side,#81B9E9,transparent)] opacity-80 blur-2xl dark:opacity-30" />
+            <div className="pointer-events-none absolute -top-20 right-1/4 h-[260px] w-[420px] rounded-full bg-[radial-gradient(closest-side,#F2E2D4,transparent)] opacity-90 blur-2xl dark:opacity-15" />
             <div className="relative flex h-full flex-col items-center justify-center">
-              <h2 className="font-serif text-[34px] font-light leading-[1.08] tracking-[-0.02em] text-gray-900 lg:text-[48px]">
+              <h2 className="font-serif text-[34px] font-light leading-[1.08] tracking-[-0.02em] text-gray-900 lg:text-[48px] dark:text-white">
                 Every good build
                 <br /> starts with a proper plan.
               </h2>
-              <p className="mt-5 text-[15px] text-[#505050]">Talk it through with a professional first.</p>
-              <a href="/signup" className="mt-8 inline-flex h-10 items-center rounded-full bg-gray-900 px-5 text-[14px] text-white transition-colors hover:bg-gray-700">
+              <p className="mt-5 text-[15px] text-[#505050] dark:text-white/60">Talk it through with a professional first.</p>
+              <a href="/signup" className="mt-8 inline-flex h-10 items-center rounded-full bg-gray-900 px-5 text-[14px] text-white transition-colors hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200">
                 Book a consultation
               </a>
             </div>

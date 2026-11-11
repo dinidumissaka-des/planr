@@ -12,10 +12,13 @@ import {
   ListChecks,
   Menu,
   MessagesSquare,
+  Moon,
   Sparkles,
+  Sun,
   X,
   type LucideIcon,
 } from 'lucide-react'
+import { useTheme } from '@/hooks/use-theme'
 import { cn } from '@/lib/utils'
 import { ease } from './ui'
 
@@ -110,14 +113,31 @@ function Dropdown({ label, items }: { label: string; items: MenuItem[] }) {
 
 export function AnnouncementBar() {
   return (
-    <div className="relative z-10 flex min-h-9 items-center justify-center bg-[linear-gradient(90deg,#D6E8F7_0%,#F1E7DE_50%,#D6E8F7_100%)] px-4 py-2 text-center text-[13px] leading-5 text-[#505050]">
+    <div className="relative z-10 flex min-h-9 items-center justify-center bg-[linear-gradient(90deg,#D6E8F7_0%,#F1E7DE_50%,#D6E8F7_100%)] px-4 py-2 text-center text-[13px] leading-5 text-[#505050] dark:border-b dark:border-white/10 dark:bg-[linear-gradient(90deg,#0D1B2E_0%,#1A2536_50%,#0D1B2E_100%)] dark:text-white/60">
       <p>
         Planr AI answers building questions any time.{' '}
-        <a href="#ai" className="text-gray-900 underline underline-offset-2">
+        <a href="#ai" className="text-gray-900 underline underline-offset-2 dark:text-white">
           Take a look
         </a>
       </p>
     </div>
+  )
+}
+
+function ThemeToggle({ className }: { className?: string }) {
+  const { theme, toggleTheme } = useTheme()
+  const dark = theme === 'dark'
+  return (
+    <button
+      onClick={toggleTheme}
+      aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+      className={cn(
+        'flex h-9 w-9 items-center justify-center rounded-full text-[#666666] transition-colors hover:bg-gray-900/5 hover:text-gray-900 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white',
+        className,
+      )}
+    >
+      {dark ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
+    </button>
   )
 }
 
@@ -259,6 +279,7 @@ export function LandingHeader() {
           </div>
 
           <div className="hidden items-center gap-5 justify-self-end lg:flex">
+            <ThemeToggle className="-mx-2" />
             <a href="/login" className="text-[14px] text-gray-700 transition-colors hover:text-gray-900 dark:text-white/70 dark:hover:text-white">
               Log in
             </a>
@@ -267,16 +288,19 @@ export function LandingHeader() {
             </a>
           </div>
 
-          <button
-            ref={burger}
-            onClick={() => setOpen(true)}
-            aria-label="Open menu"
-            aria-expanded={open}
-            aria-controls={open ? 'mobile-menu' : undefined}
-            className="-mr-2 flex h-10 w-10 items-center justify-center text-gray-900 lg:hidden dark:text-white"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-1 lg:hidden">
+            <ThemeToggle />
+            <button
+              ref={burger}
+              onClick={() => setOpen(true)}
+              aria-label="Open menu"
+              aria-expanded={open}
+              aria-controls={open ? 'mobile-menu' : undefined}
+              className="-mr-2 flex h-10 w-10 items-center justify-center text-gray-900 lg:hidden dark:text-white"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          </div>
         </nav>
       </header>
       <AnimatePresence>{open && <MobileMenu onClose={close} />}</AnimatePresence>

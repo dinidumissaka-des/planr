@@ -468,19 +468,19 @@ export function StatementPanel() {
     <section className="py-20 lg:py-20">
       <Container>
         <Reveal>
-          <div className="relative overflow-hidden rounded-[20px] border border-[#81B9E9]/30 bg-[#F4F8FC] px-6 py-14 text-center lg:h-[473px] lg:px-24 lg:py-0">
-            <div className="pointer-events-none absolute -left-24 -top-10 h-[140%] w-[180px] lg:w-[300px] rotate-[18deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#3B83BE)] opacity-90 blur-md max-lg:opacity-60" />
-            <div className="pointer-events-none absolute -right-28 top-1/3 h-[120%] w-[240px] -rotate-[20deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#E1C1A6)] opacity-60 blur-md" />
+          <div className="relative overflow-hidden rounded-[20px] border border-[#81B9E9]/30 bg-[#F4F8FC] px-6 py-14 dark:border-white/10 dark:bg-[#0D1B2E] text-center lg:h-[473px] lg:px-24 lg:py-0">
+            <div className="pointer-events-none absolute -left-24 -top-10 h-[140%] w-[180px] lg:w-[300px] rotate-[18deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#3B83BE)] opacity-90 blur-md max-lg:opacity-60 dark:opacity-35" />
+            <div className="pointer-events-none absolute -right-28 top-1/3 h-[120%] w-[240px] -rotate-[20deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#E1C1A6)] opacity-60 blur-md dark:opacity-25" />
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#3B83BE_1px,transparent_1px)] [background-size:6px_6px] opacity-[0.12] [mask-image:linear-gradient(90deg,black,transparent_25%,transparent_75%,black)]" />
             <div className="relative flex h-full flex-col items-center justify-center">
-              <img src="/planr-logo.svg" alt="Planr" className="h-6" />
-              <p className="mt-8 max-w-[760px] text-[22px] leading-[1.45] text-gray-900 lg:text-[28px]">
-                <Quote className="mr-2 hidden h-4 w-4 -translate-y-2 rotate-180 text-gray-300 lg:inline" />
+              <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:invert" />
+              <p className="mt-8 max-w-[760px] text-[22px] leading-[1.45] text-gray-900 lg:text-[28px] dark:text-white">
+                <Quote className="mr-2 hidden h-4 w-4 -translate-y-2 rotate-180 text-gray-300 lg:inline dark:text-white/25" />
                 An hour with the right professional early on costs far less than fixing a decision once the walls are up. Planr is built around that idea.
-                <Quote className="ml-2 hidden h-4 w-4 -translate-y-2 text-gray-300 lg:inline" />
+                <Quote className="ml-2 hidden h-4 w-4 -translate-y-2 text-gray-300 lg:inline dark:text-white/25" />
               </p>
-              <p className="mt-8 text-[14px] text-gray-900">Why Planr exists</p>
-              <p className="text-[12px] text-[#666666]">From the Planr team</p>
+              <p className="mt-8 text-[14px] text-gray-900 dark:text-white">Why Planr exists</p>
+              <p className="text-[12px] text-[#666666] dark:text-white/50">From the Planr team</p>
             </div>
           </div>
         </Reveal>
