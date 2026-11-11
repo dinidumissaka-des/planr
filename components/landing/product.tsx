@@ -45,15 +45,15 @@ function StatGlow({ variant, active }: { variant: number; active: boolean }) {
       aria-hidden
       className={cn('pointer-events-none absolute inset-0 overflow-hidden transition-opacity duration-500', active ? 'opacity-100' : 'opacity-0')}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_20%_10%,#EAF3FB,transparent_70%),radial-gradient(ellipse_70%_60%_at_80%_100%,#F6EEE6,transparent_70%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_20%_10%,#12304F,transparent_70%),radial-gradient(ellipse_70%_60%_at_80%_100%,#1B2A3D,transparent_70%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_20%_10%,#EAF3FB,transparent_70%),radial-gradient(ellipse_70%_60%_at_80%_100%,#F6EEE6,transparent_70%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_20%_10%,#1A1A1A,transparent_70%),radial-gradient(ellipse_70%_60%_at_80%_100%,#1F1F1F,transparent_70%)]" />
       <motion.div
-        className={cn('absolute h-[60%] w-[70%] rounded-full opacity-80 blur-2xl dark:opacity-25', shape.accent)}
+        className={cn('absolute h-[60%] w-[70%] rounded-full opacity-80 blur-2xl dark:opacity-25 dark:grayscale', shape.accent)}
         animate={active ? { x: [0, 24, 0] } : { x: 0 }}
         transition={active ? { ...DRIFT, duration: 9 } : settle}
       />
       <motion.div
         className={cn(
-          'absolute bottom-[-42%] h-[70%] rounded-[50%] bg-[radial-gradient(closest-side,#81B9E9,#B9D8F2_55%,transparent)] opacity-70 blur-xl dark:bg-[radial-gradient(closest-side,#3B83BE,#81B9E9_55%,transparent)] dark:opacity-35',
+          'absolute bottom-[-42%] h-[70%] rounded-[50%] bg-[radial-gradient(closest-side,#81B9E9,#B9D8F2_55%,transparent)] opacity-70 blur-xl dark:bg-[radial-gradient(closest-side,#D4D4D4,#D4D4D4_55%,transparent)] dark:opacity-35',
           shape.band,
         )}
         animate={active ? { x: [-24, 24, -24], y: [0, -10, 0] } : { x: 0, y: 0 }}
@@ -73,11 +73,11 @@ function StatCard({ stat, variant }: { stat: (typeof STATS)[number]; variant: nu
       className="relative flex h-[240px] flex-col justify-between overflow-hidden p-8 lg:h-[320px] lg:p-12"
     >
       <StatGlow variant={variant} active={active} />
-      <p className={cn('relative flex items-start transition-colors duration-500', active ? 'text-[#2F6E9F] dark:text-[#9CCBF0]' : 'text-gray-900 dark:text-white')}>
+      <p className={cn('relative flex items-start transition-colors duration-500', active ? 'text-[#2F6E9F] dark:text-[#FFFFFF]' : 'text-gray-900 dark:text-white')}>
         <span className="text-[72px] font-light leading-none tracking-[-0.04em] lg:text-[84px]">{stat.value}</span>
         {stat.unit && <span className="ml-1.5 mt-1 text-[20px] font-light">{stat.unit}</span>}
       </p>
-      <p className={cn('relative max-w-[260px] text-[16px] leading-6 transition-colors duration-500', active ? 'text-[#1F4E74] dark:text-[#F2F8FD]' : 'text-gray-800 dark:text-white/75')}>
+      <p className={cn('relative max-w-[260px] text-[16px] leading-6 transition-colors duration-500', active ? 'text-[#1F4E74] dark:text-[#FAFAFA]' : 'text-gray-800 dark:text-white/75')}>
         {stat.caption}
       </p>
     </div>
@@ -86,7 +86,7 @@ function StatCard({ stat, variant }: { stat: (typeof STATS)[number]; variant: nu
 
 export function StatsPanel() {
   return (
-    <section className="bg-[#F7F7F7] py-16 lg:py-24 dark:bg-[#0A1525]">
+    <section className="bg-[#F7F7F7] py-16 lg:py-24 dark:bg-[#111111]">
       <Container>
         <Reveal>
           <h2 className="max-w-[820px] text-[24px] font-light leading-[1.4] text-gray-900 lg:text-[28px] dark:text-white">
@@ -95,7 +95,7 @@ export function StatsPanel() {
           </h2>
         </Reveal>
         <Reveal delay={0.1}>
-          <div className="mt-10 grid divide-y divide-gray-200/80 overflow-hidden rounded-[18px] border border-gray-200/80 bg-white shadow-[0_8px_30px_-20px_rgba(7,17,30,0.12)] lg:mt-12 lg:grid-cols-3 lg:divide-x lg:divide-y-0 dark:divide-white/8 dark:border-white/8 dark:bg-[#0D1B2E]">
+          <div className="mt-10 grid divide-y divide-gray-200/80 overflow-hidden rounded-[18px] border border-gray-200/80 bg-white shadow-[0_8px_30px_-20px_rgba(7,17,30,0.12)] lg:mt-12 lg:grid-cols-3 lg:divide-x lg:divide-y-0 dark:divide-white/8 dark:border-white/8 dark:bg-[#171717]">
             {STATS.map((s, i) => (
               <StatCard key={s.caption} stat={s} variant={i} />
             ))}
@@ -196,7 +196,7 @@ function Dots() {
 
 function Window({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn('rounded-xl border border-gray-200 bg-white p-5 shadow-[0_1px_2px_rgba(7,17,30,0.04)] dark:border-white/10 dark:bg-[#0D1B2E]', className)}>
+    <div className={cn('rounded-xl border border-gray-200 bg-white p-5 shadow-[0_1px_2px_rgba(7,17,30,0.04)] dark:border-white/10 dark:bg-[#171717]', className)}>
       {children}
     </div>
   )
@@ -264,7 +264,7 @@ function BookingMock() {
               key={t}
               className={cn(
                 'rounded-full border px-2.5 py-1 text-[10px] transition-colors duration-300',
-                i === 1 && step >= 2 ? 'border-[#3B83BE] bg-[#81B9E9]/15 text-[#2F6E9F] dark:text-[#9CCBF0]' : 'border-gray-200 text-gray-600 dark:border-white/10 dark:text-white/70',
+                i === 1 && step >= 2 ? 'border-[#3B83BE] bg-[#81B9E9]/15 text-[#2F6E9F] dark:border-white/60 dark:bg-white/10 dark:text-[#FFFFFF]' : 'border-gray-200 text-gray-600 dark:border-white/10 dark:text-white/70',
               )}
             >
               {t}
@@ -354,7 +354,7 @@ function MilestoneMock() {
           </div>
           <div className="mt-3 h-1 overflow-hidden rounded-full bg-gray-100 dark:bg-white/10">
             <motion.div
-              className="h-full origin-left rounded-full bg-[#81B9E9]"
+              className="h-full origin-left rounded-full bg-[#81B9E9] dark:bg-white/70"
               initial={false}
               animate={{ scaleX: (done + (step >= 4 ? 0.5 : 0)) / HOME.length }}
               transition={{ duration: 0.5, ease }}
@@ -451,7 +451,7 @@ function ProgressMock() {
           {HOME.map((m, i) => (
             <span key={m} className="relative h-8 flex-1 overflow-hidden rounded-sm bg-gray-100 dark:bg-white/10">
               <motion.span
-                className={cn('absolute inset-0 origin-bottom', i === 3 ? 'bg-[#81B9E9]/40' : 'bg-[#81B9E9]')}
+                className={cn('absolute inset-0 origin-bottom', i === 3 ? 'bg-[#81B9E9]/40 dark:bg-white/25' : 'bg-[#81B9E9] dark:bg-white/70')}
                 initial={false}
                 animate={{ scaleY: i < filled || (i === 3 && pct >= 30) ? 1 : 0 }}
                 transition={{ duration: 0.4, ease }}
@@ -602,7 +602,7 @@ function Caption({ lead, rest, className }: { lead: string; rest: string; classN
   )
 }
 
-const CARD = 'relative overflow-hidden rounded-[20px] border border-gray-900/[0.03] bg-[linear-gradient(160deg,#FAFAFA,#F4F4F4)] dark:border-white/8 dark:bg-none dark:bg-[#0D1B2E]'
+const CARD = 'relative overflow-hidden rounded-[20px] border border-gray-900/[0.03] bg-[linear-gradient(160deg,#FAFAFA,#F4F4F4)] dark:border-white/8 dark:bg-none dark:bg-[#171717]'
 
 function WideCard({ id, lead, rest, children }: { id: string; lead: string; rest: string; children: ReactNode }) {
   return (
@@ -749,12 +749,12 @@ export function StatementPanel() {
     <section className="py-20 lg:py-20">
       <Container>
         <Reveal>
-          <div className="relative overflow-hidden rounded-[20px] border border-[#81B9E9]/30 bg-[#F4F8FC] px-6 py-14 dark:border-white/10 dark:bg-[#0D1B2E] text-center lg:h-[473px] lg:px-24 lg:py-0">
-            <div className="pointer-events-none absolute -left-24 -top-10 h-[140%] w-[180px] lg:w-[300px] rotate-[18deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#3B83BE)] opacity-90 blur-md max-lg:opacity-60 dark:opacity-35" />
-            <div className="pointer-events-none absolute -right-28 top-1/3 h-[120%] w-[240px] -rotate-[20deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#E1C1A6)] opacity-60 blur-md dark:opacity-25" />
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#3B83BE_1px,transparent_1px)] [background-size:6px_6px] opacity-[0.12] [mask-image:linear-gradient(90deg,black,transparent_25%,transparent_75%,black)]" />
+          <div className="relative overflow-hidden rounded-[20px] border border-[#81B9E9]/30 bg-[#F4F8FC] px-6 py-14 dark:border-white/10 dark:bg-[#171717] text-center lg:h-[473px] lg:px-24 lg:py-0">
+            <div className="pointer-events-none absolute -left-24 -top-10 h-[140%] w-[180px] lg:w-[300px] rotate-[18deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#3B83BE)] opacity-90 blur-md max-lg:opacity-60 dark:opacity-35 dark:grayscale" />
+            <div className="pointer-events-none absolute -right-28 top-1/3 h-[120%] w-[240px] -rotate-[20deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#E1C1A6)] opacity-60 blur-md dark:opacity-25 dark:grayscale" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#3B83BE_1px,transparent_1px)] [background-size:6px_6px] opacity-[0.12] [mask-image:linear-gradient(90deg,black,transparent_25%,transparent_75%,black)] dark:grayscale" />
             <div className="relative flex h-full flex-col items-center justify-center">
-              <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:invert" />
+              <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:hidden" /><img src="/planr-logo-light.svg" alt="Planr" className="h-6 hidden dark:block" />
               <p className="mt-8 max-w-[760px] text-[22px] leading-[1.45] text-gray-900 lg:text-[28px] dark:text-white">
                 <Quote className="mr-2 hidden h-4 w-4 -translate-y-2 rotate-180 text-gray-300 lg:inline dark:text-white/25" />
                 An hour with the right professional early on costs far less than fixing a decision once the walls are up. Planr is built around that idea.

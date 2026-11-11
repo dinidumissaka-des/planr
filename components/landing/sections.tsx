@@ -152,7 +152,7 @@ function Starting() {
 export function StoriesPanel() {
   return (
     <section className="sm:px-2 lg:px-4">
-      <div className="rounded-[20px] border border-gray-200/70 bg-[#F9F9F9] dark:border-white/8 dark:bg-[#0A1525]">
+      <div className="rounded-[20px] border border-gray-200/70 bg-[#F9F9F9] dark:border-white/8 dark:bg-[#111111]">
         <Stories />
         <Starting />
       </div>
@@ -183,7 +183,7 @@ export function Trust() {
 
   return (
     <section className="sm:px-2 lg:px-4">
-      <div className="overflow-hidden rounded-[20px] bg-[#07111E] py-16 text-white lg:pb-28 lg:pt-24 dark:border dark:border-white/10 dark:bg-[#0A1525]">
+      <div className="overflow-hidden rounded-[20px] bg-[#07111E] py-16 text-white lg:pb-28 lg:pt-24 dark:border dark:border-white/10 dark:bg-[#111111]">
         <Container>
           <div className="flex items-end justify-between gap-6">
             <Reveal>
@@ -329,9 +329,9 @@ export function FinalCta() {
     <section className="pb-16 pt-12 lg:pb-0 lg:pt-14">
       <Container>
         <Reveal>
-          <div className="relative overflow-hidden rounded-[20px] border border-gray-200/60 bg-[#F7F5F8] px-6 py-16 dark:border-white/10 dark:bg-[#0D1B2E] text-center lg:h-[362px] lg:py-0">
-            <div className="pointer-events-none absolute -left-20 -top-24 h-[420px] w-[360px] rotate-[25deg] rounded-full bg-[radial-gradient(closest-side,#3B83BE,#81B9E9_50%,transparent)] opacity-80 blur-2xl dark:opacity-40" />
-            <div className="pointer-events-none absolute -bottom-32 -right-16 h-[360px] w-[360px] rounded-full bg-[radial-gradient(closest-side,#81B9E9,transparent)] opacity-80 blur-2xl dark:opacity-30" />
+          <div className="relative overflow-hidden rounded-[20px] border border-gray-200/60 bg-[#F7F5F8] px-6 py-16 dark:border-white/10 dark:bg-[#171717] text-center lg:h-[362px] lg:py-0">
+            <div className="pointer-events-none absolute -left-20 -top-24 h-[420px] w-[360px] rotate-[25deg] rounded-full bg-[radial-gradient(closest-side,#3B83BE,#81B9E9_50%,transparent)] opacity-80 blur-2xl dark:opacity-40 dark:grayscale" />
+            <div className="pointer-events-none absolute -bottom-32 -right-16 h-[360px] w-[360px] rounded-full bg-[radial-gradient(closest-side,#81B9E9,transparent)] opacity-80 blur-2xl dark:opacity-30 dark:grayscale" />
             <div className="pointer-events-none absolute -top-20 right-1/4 h-[260px] w-[420px] rounded-full bg-[radial-gradient(closest-side,#F2E2D4,transparent)] opacity-90 blur-2xl dark:opacity-15" />
             <div className="relative flex h-full flex-col items-center justify-center">
               <h2 className="font-serif text-[34px] font-light leading-[1.08] tracking-[-0.02em] text-gray-900 lg:text-[48px] dark:text-white">
@@ -363,7 +363,7 @@ export function Footer() {
       <Container>
         <div className="grid gap-12 lg:grid-cols-[324px_repeat(4,minmax(0,1fr))] lg:gap-0">
           <a href="/" aria-label="Planr home">
-            <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:invert" />
+            <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:hidden" /><img src="/planr-logo-light.svg" alt="Planr" className="h-6 hidden dark:block" />
           </a>
           <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:contents">
             {FOOTER.map((col) => (

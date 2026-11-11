@@ -25,9 +25,9 @@ function HeroWaves() {
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] [mask-image:linear-gradient(to_bottom,transparent,black_35%)]">
       <Waves
-        lineColor={dark ? '#81B9E9' : '#3B83BE'}
-        accentColor={dark ? '#CFE5F8' : '#81B9E9'}
-        opacity={dark ? 0.32 : 0.42}
+        lineColor={dark ? '#FFFFFF' : '#3B83BE'}
+        accentColor={dark ? '#FFFFFF' : '#81B9E9'}
+        opacity={dark ? 0.16 : 0.42}
         spacing={14}
         amplitude={34}
         speed={0.6}
@@ -45,7 +45,7 @@ function IntroCard() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 1.2, ease }}
-      className="absolute bottom-5 right-4 z-10 hidden w-[218px] rounded-xl border border-gray-200/80 bg-white/90 p-1.5 shadow-[0_8px_30px_-10px_rgba(7,17,30,0.2)] backdrop-blur lg:block dark:border-white/10 dark:bg-[#0D1B2E]/90"
+      className="absolute bottom-5 right-4 z-10 hidden w-[218px] rounded-xl border border-gray-200/80 bg-white/90 p-1.5 shadow-[0_8px_30px_-10px_rgba(7,17,30,0.2)] backdrop-blur lg:block dark:border-white/10 dark:bg-[#171717]/90"
     >
       <div className="flex items-center justify-between px-1 pb-1.5 pt-0.5">
         <p className="text-[12px] text-[#505050] dark:text-white/70">New: Planr AI</p>
