@@ -754,7 +754,7 @@ export function StatementPanel() {
             <div className="pointer-events-none absolute -right-28 top-1/3 h-[120%] w-[240px] -rotate-[20deg] rounded-full bg-[linear-gradient(180deg,#81B9E9,#E1C1A6)] opacity-60 blur-md dark:opacity-25" />
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#3B83BE_1px,transparent_1px)] [background-size:6px_6px] opacity-[0.12] [mask-image:linear-gradient(90deg,black,transparent_25%,transparent_75%,black)]" />
             <div className="relative flex h-full flex-col items-center justify-center">
-              <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:invert" />
+              <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:hidden" /><img src="/planr-logo-light.svg" alt="Planr" className="h-6 hidden dark:block" />
               <p className="mt-8 max-w-[760px] text-[22px] leading-[1.45] text-gray-900 lg:text-[28px] dark:text-white">
                 <Quote className="mr-2 hidden h-4 w-4 -translate-y-2 rotate-180 text-gray-300 lg:inline dark:text-white/25" />
                 An hour with the right professional early on costs far less than fixing a decision once the walls are up. Planr is built around that idea.

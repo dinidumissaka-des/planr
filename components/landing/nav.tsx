@@ -185,7 +185,7 @@ function MobileMenu({ onClose }: { onClose: () => void }) {
     >
       <div className="flex h-[66px] shrink-0 items-center justify-between border-b border-gray-100 px-5 dark:border-white/10">
         <a href="/" aria-label="Planr home" onClick={onClose}>
-          <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:invert" />
+          <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:hidden" /><img src="/planr-logo-light.svg" alt="Planr" className="h-6 hidden dark:block" />
         </a>
         <button onClick={onClose} aria-label="Close menu" className="-mr-2 flex h-10 w-10 items-center justify-center text-gray-900 dark:text-white">
           <X className="h-5 w-5" />
@@ -265,7 +265,7 @@ export function LandingHeader() {
       >
         <nav aria-label="Main" className="mx-auto flex h-[66px] w-full max-w-[1360px] items-center justify-between px-5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-6 lg:px-10 xl:grid-cols-3 xl:gap-0">
           <a href="/" aria-label="Planr home" className="justify-self-start">
-            <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:invert" />
+            <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:hidden" /><img src="/planr-logo-light.svg" alt="Planr" className="h-6 hidden dark:block" />
           </a>
 
           <div className="hidden items-center justify-self-center lg:flex">

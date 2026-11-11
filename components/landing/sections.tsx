@@ -363,7 +363,7 @@ export function Footer() {
       <Container>
         <div className="grid gap-12 lg:grid-cols-[324px_repeat(4,minmax(0,1fr))] lg:gap-0">
           <a href="/" aria-label="Planr home">
-            <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:invert" />
+            <img src="/planr-logo.svg" alt="Planr" className="h-6 dark:hidden" /><img src="/planr-logo-light.svg" alt="Planr" className="h-6 hidden dark:block" />
           </a>
           <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:contents">
             {FOOTER.map((col) => (

@@ -75,7 +75,7 @@ export function ConsultantSidebar() {
       {/* ── Desktop sidebar ── */}
       <aside className="hidden md:flex w-[220px] flex-shrink-0 bg-white dark:bg-[#0A1525] border-r border-gray-100 dark:border-white/8 flex-col py-6 px-4">
         <Link href="/" className="flex items-center gap-2.5 px-2 mb-8">
-          <img src="/planr-logo.svg" alt="Planr" className="h-7 dark:invert" />
+          <img src="/planr-logo.svg" alt="Planr" className="h-7 dark:hidden" /><img src="/planr-logo-light.svg" alt="Planr" className="h-7 hidden dark:block" />
         </Link>
 
         {/* Role badge */}

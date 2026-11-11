@@ -60,7 +60,7 @@ function DashboardMock() {
   return (
     <div ref={ref} aria-hidden className="grid h-[340px] grid-cols-[140px_minmax(0,1fr)] overflow-hidden rounded-t-2xl border border-b-0 border-gray-200 bg-white text-left shadow-[0_-10px_40px_-20px_rgba(7,17,30,0.25)] md:h-[400px] md:grid-cols-[160px_minmax(0,1fr)_240px] lg:grid-cols-[180px_minmax(0,1fr)_260px] dark:border-white/10 dark:bg-[#0D1B2E]">
       <aside className="border-r border-gray-100 p-4 dark:border-white/8">
-        <img src="/planr-logo.svg" alt="" className="h-4 dark:invert" />
+        <img src="/planr-logo.svg" alt="" className="h-4 dark:hidden" /><img src="/planr-logo-light.svg" alt="" className="h-4 hidden dark:block" />
         <ul className="mt-6 space-y-1 text-[12px] text-gray-500 dark:text-white/55">
           {[
             { i: LayoutGrid, t: 'Dashboard' },
@@ -245,7 +245,9 @@ function TileGrid() {
                   transition={{ duration: 0.6, ease }}
                   className="relative z-10 flex h-11 w-11 items-center justify-center rounded-[12px] border border-gray-100 bg-white shadow-[0_12px_32px_-8px_rgba(7,17,30,0.22)] sm:h-[72px] sm:w-[72px] sm:rounded-[18px] lg:-my-1.5 lg:h-[100px] lg:w-[100px] lg:rounded-[22px] dark:border-white/15 dark:bg-[#132339]"
                 >
-                  <img src="/planr-logo.svg" alt="Planr" className="w-9 sm:w-12 lg:w-[60px] dark:invert" />
+                  <span className="block h-6 w-6 overflow-hidden sm:h-8 sm:w-8 lg:h-10 lg:w-10">
+                    <img src="/planr-logo.svg" alt="Planr" className="h-full w-auto max-w-none dark:hidden" /><img src="/planr-logo-light.svg" alt="Planr" className="h-full w-auto max-w-none hidden dark:block" />
+                  </span>
                 </motion.div>
               )
             }
