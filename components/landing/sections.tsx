@@ -20,7 +20,7 @@ function Stories() {
         <Reveal>
           <h2 className="text-[32px] font-light leading-[1.15] tracking-[-0.02em] text-gray-900 lg:text-[40px] dark:text-white">
             Work by the people
-            <span className="block lg:pl-[72px]">you can book on Planr</span>
+            <span className="block">you can book on Planr</span>
           </h2>
         </Reveal>
         <Reveal>
@@ -88,7 +88,7 @@ function Starting() {
         <Reveal>
           <h2 className="text-[32px] font-light leading-[1.15] tracking-[-0.02em] text-gray-900 lg:text-[40px] dark:text-white">
             Starting
-            <span className="block lg:pl-[72px]">with Planr</span>
+            <span className="block">with Planr</span>
           </h2>
         </Reveal>
         <div className="mt-10 lg:-mr-6 lg:mt-0">
@@ -189,7 +189,7 @@ export function Trust() {
             <Reveal>
               <h2 className="text-[32px] font-light leading-[1.15] tracking-[-0.02em] lg:text-[40px]">
                 Built for serious builds.
-                <span className="block lg:pl-[72px]">Careful with what matters.</span>
+                <span className="block">Careful with what matters.</span>
               </h2>
             </Reveal>
             <div className="hidden gap-2 sm:flex">

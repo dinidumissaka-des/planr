@@ -9,9 +9,9 @@ import { CATEGORY_ICON, DarkPill, ease } from './ui'
 const COLORS = ['#81B9E9', '#3B83BE', '#A2B2CD', '#81B9E9', '#E1C1A6', '#5E9FD6']
 
 const CLUSTERS = [
-  { x: 0.57, y: 0.55, label: 'Planr AI' },
-  { x: 0.76, y: 0.42, label: 'Structural engineer' },
-  { x: 0.4, y: 0.74, label: 'Site visit' },
+  { x: 0.57, y: 0.55 },
+  { x: 0.76, y: 0.42 },
+  { x: 0.4, y: 0.74 },
 ]
 
 type Dot = { x: number; y: number; r: number; a: number; c: string; p: number; s: number }
@@ -54,8 +54,6 @@ function makeDots(w: number, h: number): Dot[] {
 
 function ParticleField() {
   const ref = useRef<HTMLCanvasElement>(null)
-  const wrap = useRef<HTMLDivElement>(null)
-  const inView = useInView(wrap)
 
   useEffect(() => {
     const canvas = ref.current
@@ -160,23 +158,8 @@ function ParticleField() {
   }, [])
 
   return (
-    <div ref={wrap} className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] [mask-image:linear-gradient(to_bottom,transparent,black_35%)]">
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] [mask-image:linear-gradient(to_bottom,transparent,black_35%)]">
       <canvas ref={ref} className="h-full w-full" aria-hidden />
-      {CLUSTERS.map((cl, i) => (
-        <motion.div
-          key={cl.label}
-          className="absolute hidden items-center gap-1 text-[10px] text-gray-600 sm:flex dark:text-white/70"
-          style={{ left: `${cl.x * 100}%`, top: `${cl.y * 100}%` }}
-          initial={{ opacity: 0, y: 6 }}
-          animate={inView ? { opacity: 1, y: [0, -6, 0] } : { opacity: 1, y: 0 }}
-          transition={{ opacity: { delay: 0.8 + i * 0.2, duration: 0.6 }, y: inView ? { duration: 5 + i, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 } }}
-        >
-          <span className="relative -mt-8 flex items-center gap-1 rounded-full bg-white/80 px-1.5 py-0.5 shadow-[0_1px_3px_rgba(7,17,30,0.08)] backdrop-blur dark:bg-[#0D1B2E]/80">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#3B83BE]" />
-            {cl.label}
-          </span>
-        </motion.div>
-      ))}
     </div>
   )
 }
@@ -295,7 +278,7 @@ export function SpecialismMarquee() {
       <motion.div
         className="flex w-max items-center"
         animate={inView ? { x: ['0%', '-50%'] } : { x: '0%' }}
-        transition={inView ? { duration: 90, ease: 'linear', repeat: Infinity } : { duration: 0 }}
+        transition={inView ? { duration: 240, ease: 'linear', repeat: Infinity } : { duration: 0 }}
       >
         <SpecialismRow />
         <SpecialismRow hidden />

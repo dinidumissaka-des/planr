@@ -27,30 +27,28 @@ const STATS = [
 
 export function StatsPanel() {
   return (
-    <section className="sm:px-2 lg:px-4">
-      <div className="rounded-[20px] border border-gray-200/70 bg-[#F9F9F9] py-16 lg:py-24 dark:border-white/8 dark:bg-[#0A1525]">
-        <Container>
-          <Reveal>
-            <h2 className="max-w-[820px] text-[24px] font-light leading-[1.4] text-gray-900 lg:text-[28px] dark:text-white">
-              Planr puts your consultant, your build plan and your questions side by side.{' '}
-              <span className="text-[#666666] dark:text-white/50">So nothing important gets lost between site visits.</span>
-            </h2>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <div className="mt-10 grid divide-y divide-gray-200/80 overflow-hidden rounded-[18px] border border-gray-200/80 bg-white lg:mt-12 lg:grid-cols-3 lg:divide-x lg:divide-y-0 dark:divide-white/8 dark:border-white/8 dark:bg-[#0D1B2E]">
-              {STATS.map((s) => (
-                <div key={s.caption} className="flex h-[240px] flex-col justify-between p-8 lg:h-[320px] lg:p-12">
-                  <p className="flex items-start text-gray-900 dark:text-white">
-                    <span className="text-[72px] font-light leading-none tracking-[-0.04em] lg:text-[84px]">{s.value}</span>
-                    {s.unit && <span className="ml-1.5 mt-1 text-[20px] font-light">{s.unit}</span>}
-                  </p>
-                  <p className="max-w-[260px] text-[16px] leading-6 text-gray-800 dark:text-white/75">{s.caption}</p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </Container>
-      </div>
+    <section className="py-16 lg:py-24">
+      <Container>
+        <Reveal>
+          <h2 className="max-w-[820px] text-[24px] font-light leading-[1.4] text-gray-900 lg:text-[28px] dark:text-white">
+            Planr puts your consultant, your build plan and your questions side by side.{' '}
+            <span className="text-[#666666] dark:text-white/50">So nothing important gets lost between site visits.</span>
+          </h2>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <div className="mt-10 grid divide-y divide-gray-200/80 overflow-hidden rounded-[18px] border border-gray-200/80 bg-white lg:mt-12 lg:grid-cols-3 lg:divide-x lg:divide-y-0 dark:divide-white/8 dark:border-white/8 dark:bg-[#0D1B2E]">
+            {STATS.map((s) => (
+              <div key={s.caption} className="flex h-[240px] flex-col justify-between p-8 lg:h-[320px] lg:p-12">
+                <p className="flex items-start text-gray-900 dark:text-white">
+                  <span className="text-[72px] font-light leading-none tracking-[-0.04em] lg:text-[84px]">{s.value}</span>
+                  {s.unit && <span className="ml-1.5 mt-1 text-[20px] font-light">{s.unit}</span>}
+                </p>
+                <p className="max-w-[260px] text-[16px] leading-6 text-gray-800 dark:text-white/75">{s.caption}</p>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+      </Container>
     </section>
   )
 }
@@ -75,7 +73,7 @@ function Chip({ icon: Icon, children }: { icon: typeof User; children: ReactNode
 function Faded({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div
-      className={cn('select-none opacity-60 saturate-[0.35] [mask-image:linear-gradient(to_bottom,black_55%,transparent)] dark:opacity-50', className)}
+      className={cn('select-none [mask-image:linear-gradient(to_bottom,black_85%,transparent)]', className)}
       aria-hidden
     >
       {children}
@@ -87,8 +85,8 @@ function BookingMock() {
   const days = Array.from({ length: 14 }, (_, i) => i + 9)
   return (
     <Window>
-      <p className="text-[15px] text-gray-800 dark:text-white/85">New consultation</p>
-      <p className="mt-0.5 text-[11px] text-gray-400">Kandy family home</p>
+      <p className="text-[15px] text-gray-800 dark:text-white/90">New consultation</p>
+      <p className="mt-0.5 text-[11px] text-gray-500">Kandy family home</p>
       <div className="mt-3 flex flex-wrap gap-4">
         <Chip icon={User}>Roshan Perera</Chip>
         <Chip icon={Building2}>Architecture</Chip>
@@ -97,14 +95,14 @@ function BookingMock() {
       </div>
       <div className="mt-5 grid grid-cols-7 gap-1.5">
         {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => (
-          <span key={i} className="text-center text-[10px] text-gray-400">{d}</span>
+          <span key={i} className="text-center text-[10px] text-gray-500">{d}</span>
         ))}
         {days.map((d) => (
           <span
             key={d}
             className={cn(
               'flex h-7 items-center justify-center rounded-md text-[11px]',
-              d === 12 ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'bg-gray-50 text-gray-500 dark:bg-white/5 dark:text-white/50',
+              d === 12 ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'bg-gray-50 text-gray-600 dark:bg-white/5 dark:text-white/70',
             )}
           >
             {d}
@@ -113,12 +111,12 @@ function BookingMock() {
       </div>
       <div className="mt-4 flex gap-2">
         {['9:00 AM', '10:30 AM', '2:00 PM', '4:30 PM'].map((t, i) => (
-          <span key={t} className={cn('rounded-full border px-2.5 py-1 text-[10px]', i === 1 ? 'border-[#3B83BE] text-[#3B83BE]' : 'border-gray-200 text-gray-500 dark:border-white/10 dark:text-white/50')}>
+          <span key={t} className={cn('rounded-full border px-2.5 py-1 text-[10px]', i === 1 ? 'border-[#3B83BE] text-[#3B83BE]' : 'border-gray-200 text-gray-600 dark:border-white/10 dark:text-white/70')}>
             {t}
           </span>
         ))}
       </div>
-      <div className="mt-4 rounded-lg bg-gray-50 p-3 text-[11px] leading-5 text-gray-500 dark:bg-white/5 dark:text-white/50">
+      <div className="mt-4 rounded-lg bg-gray-50 p-3 text-[11px] leading-5 text-gray-600 dark:bg-white/5 dark:text-white/70">
         Layout options for a two-storey house on a sloping plot. We want the living area to face the hills.
       </div>
     </Window>
@@ -128,20 +126,20 @@ function BookingMock() {
 function AiPrepMock() {
   return (
     <Window>
-      <div className="flex items-center gap-2 text-[13px] text-gray-700 dark:text-white/80">
+      <div className="flex items-center gap-2 text-[13px] text-gray-700 dark:text-white/90">
         <Sparkles className="h-3.5 w-3.5" /> Planr AI
       </div>
-      <div className="mt-4 ml-auto w-fit max-w-[78%] rounded-2xl rounded-br-md bg-gray-100 px-3 py-2 text-[11px] text-gray-600 dark:bg-white/10 dark:text-white/70">
+      <div className="mt-4 ml-auto w-fit max-w-[78%] rounded-2xl rounded-br-md bg-gray-100 px-3 py-2 text-[11px] text-gray-700 dark:bg-white/10 dark:text-white/90">
         What should I prepare before my first meeting with an architect?
       </div>
-      <div className="mt-3 max-w-[88%] space-y-1.5 text-[11px] leading-5 text-gray-500 dark:text-white/55">
+      <div className="mt-3 max-w-[88%] space-y-1.5 text-[11px] leading-5 text-gray-600 dark:text-white/75">
         <p>A few things will make the hour far more useful:</p>
         <p>1. Your survey plan and deed</p>
         <p>2. A rough budget range, even if it&apos;s loose</p>
         <p>3. How many bedrooms and bathrooms you need</p>
         <p>4. Photos of homes you like</p>
       </div>
-      <div className="mt-4 flex items-center justify-between rounded-xl border border-gray-200 px-3 py-2 text-[11px] text-gray-400 dark:border-white/10">
+      <div className="mt-4 flex items-center justify-between rounded-xl border border-gray-200 px-3 py-2 text-[11px] text-gray-500 dark:border-white/10">
         Ask anything about your build
         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-900 text-white dark:bg-white dark:text-gray-900">
           <ArrowUp className="h-3 w-3" />
@@ -158,10 +156,10 @@ function MilestoneMock() {
     <Window className="p-0">
       <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3.5 dark:border-white/8">
         <div>
-          <p className="text-[14px] text-gray-800 dark:text-white/85">Kandy family home</p>
-          <p className="text-[11px] text-gray-400">Home build</p>
+          <p className="text-[14px] text-gray-800 dark:text-white/90">Kandy family home</p>
+          <p className="text-[11px] text-gray-500">Home build</p>
         </div>
-        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] text-gray-500 dark:bg-white/10 dark:text-white/60">3 of {HOME.length} done</span>
+        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] text-gray-600 dark:bg-white/10 dark:text-white/80">3 of {HOME.length} done</span>
       </div>
       <ul className="px-5 py-2">
         {HOME.slice(0, 7).map((m, i) => (
@@ -173,10 +171,10 @@ function MilestoneMock() {
             ) : i === 3 ? (
               <span className="h-4 w-4 rounded-full border-2 border-[#3B83BE] border-r-transparent" />
             ) : (
-              <Circle className="h-4 w-4 text-gray-300 dark:text-white/20" />
+              <Circle className="h-4 w-4 text-gray-400 dark:text-white/40" />
             )}
-            <span className={cn('flex-1 text-[12px]', i < 3 ? 'text-gray-400 line-through' : 'text-gray-700 dark:text-white/75')}>{m}</span>
-            <span className="text-[10px] text-gray-400">{i < 3 ? 'Done' : i === 3 ? 'In progress' : 'Pending'}</span>
+            <span className={cn('flex-1 text-[12px]', i < 3 ? 'text-gray-500 line-through' : 'text-gray-700 dark:text-white/90')}>{m}</span>
+            <span className="text-[10px] text-gray-500">{i < 3 ? 'Done' : i === 3 ? 'In progress' : 'Pending'}</span>
           </li>
         ))}
       </ul>
@@ -193,10 +191,10 @@ function NotesMock() {
       ].map((x) => (
         <Window key={x.t} className="p-4">
           <div className="flex items-center justify-between">
-            <p className="text-[12px] text-gray-800 dark:text-white/85">{x.t}</p>
+            <p className="text-[12px] text-gray-800 dark:text-white/90">{x.t}</p>
             <Chip icon={CalendarDays}>{x.d}</Chip>
           </div>
-          <p className="mt-2 flex gap-1.5 text-[11px] leading-4 text-gray-500 dark:text-white/50">
+          <p className="mt-2 flex gap-1.5 text-[11px] leading-4 text-gray-600 dark:text-white/70">
             <StickyNote className="mt-0.5 h-3 w-3 shrink-0" />
             {x.n}
           </p>
@@ -211,17 +209,17 @@ function ProgressMock() {
     <Window>
       <div className="flex items-end justify-between">
         <div>
-          <p className="text-[11px] text-gray-400">Overall progress</p>
-          <p className="mt-1 text-[34px] font-light leading-none text-gray-800 dark:text-white/85">30%</p>
+          <p className="text-[11px] text-gray-500">Overall progress</p>
+          <p className="mt-1 text-[34px] font-light leading-none text-gray-800 dark:text-white/90">30%</p>
         </div>
-        <span className="text-[10px] text-gray-400">Next: {HOME[3]}</span>
+        <span className="text-[10px] text-gray-500">Next: {HOME[3]}</span>
       </div>
       <div className="mt-5 flex gap-1">
         {HOME.map((m, i) => (
           <span key={m} className={cn('h-8 flex-1 rounded-sm', i < 3 ? 'bg-[#81B9E9]' : i === 3 ? 'bg-[#81B9E9]/40' : 'bg-gray-100 dark:bg-white/10')} />
         ))}
       </div>
-      <div className="mt-2 flex justify-between text-[10px] text-gray-400">
+      <div className="mt-2 flex justify-between text-[10px] text-gray-500">
         <span>Planning</span>
         <span>Handover</span>
       </div>
@@ -232,13 +230,13 @@ function ProgressMock() {
 function AskAiMock() {
   return (
     <Window>
-      <div className="flex items-center gap-2 text-[12px] text-gray-700 dark:text-white/80">
+      <div className="flex items-center gap-2 text-[12px] text-gray-700 dark:text-white/90">
         <Sparkles className="h-3.5 w-3.5" /> Planr AI
       </div>
-      <div className="mt-3 ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-gray-100 px-3 py-2 text-[11px] text-gray-600 dark:bg-white/10 dark:text-white/70">
+      <div className="mt-3 ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-gray-100 px-3 py-2 text-[11px] text-gray-700 dark:bg-white/10 dark:text-white/90">
         Is a flat concrete roof sensible for a house in the hills?
       </div>
-      <div className="mt-3 space-y-1 text-[11px] leading-[18px] text-gray-500 dark:text-white/55">
+      <div className="mt-3 space-y-1 text-[11px] leading-[18px] text-gray-600 dark:text-white/75">
         <p>It can work, but heavy rain is the main risk:</p>
         <p>· Plan a proper fall so water never sits</p>
         <p>· Budget for good waterproofing</p>
@@ -252,13 +250,13 @@ function ConsultantMock() {
   const eng = architects[6]
   return (
     <Window>
-      <p className="text-[12px] text-gray-800 dark:text-white/85">Can we move the staircase to open up the living room?</p>
+      <p className="text-[12px] text-gray-800 dark:text-white/90">Can we move the staircase to open up the living room?</p>
       <div className="mt-3 rounded-lg border border-gray-100 p-3 dark:border-white/8">
-        <p className="flex items-center gap-2 text-[11px] text-gray-600 dark:text-white/70">
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-[8px] text-gray-600 dark:bg-white/15 dark:text-white/70">PL</span>
+        <p className="flex items-center gap-2 text-[11px] text-gray-700 dark:text-white/90">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-[8px] text-gray-700 dark:bg-white/15 dark:text-white/90">PL</span>
           {eng.name} · {eng.role}
         </p>
-        <p className="mt-1.5 text-[11px] leading-5 text-gray-500 dark:text-white/50">
+        <p className="mt-1.5 text-[11px] leading-5 text-gray-600 dark:text-white/70">
           Send me the latest ground floor plan and I&apos;ll look at the spans. If the landing moves, we may need one extra beam.
         </p>
       </div>
@@ -273,18 +271,18 @@ function ProfileMock() {
     <div className="flex gap-4">
       <Window className="w-full sm:w-[62%]">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-[13px] text-gray-600 dark:bg-white/15 dark:text-white/70">RP</span>
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-[13px] text-gray-700 dark:bg-white/15 dark:text-white/90">RP</span>
           <div>
-            <p className="text-[14px] text-gray-800 dark:text-white/85">{a.name}</p>
-            <p className="text-[11px] text-gray-400">{a.role} · {a.company}</p>
+            <p className="text-[14px] text-gray-800 dark:text-white/90">{a.name}</p>
+            <p className="text-[11px] text-gray-500">{a.role} · {a.company}</p>
           </div>
         </div>
-        <p className="mt-3 flex items-center gap-1 text-[11px] text-gray-400">
+        <p className="mt-3 flex items-center gap-1 text-[11px] text-gray-500">
           <MapPin className="h-3 w-3" /> {a.location}
         </p>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {a.specializations.map((s) => (
-            <span key={s} className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] text-gray-500 dark:bg-white/10 dark:text-white/60">{s}</span>
+            <span key={s} className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] text-gray-600 dark:bg-white/10 dark:text-white/80">{s}</span>
           ))}
         </div>
         <div className="mt-4 grid grid-cols-3 gap-1.5">
@@ -297,12 +295,12 @@ function ProfileMock() {
         <span className="mt-4 flex h-8 items-center justify-center rounded-full bg-gray-900 text-[11px] text-white dark:bg-white dark:text-gray-900">Book consultation</span>
       </Window>
       <Window className="hidden flex-1 p-3 sm:block">
-        <p className="px-1 text-[11px] text-gray-400">Disciplines</p>
+        <p className="px-1 text-[11px] text-gray-500">Disciplines</p>
         <ul className="mt-2 space-y-1">
           {disciplines.map((d) => {
             const Icon = CATEGORY_ICON[d]
             return (
-              <li key={d} className={cn('flex items-center gap-2 rounded-md px-1.5 py-1.5 text-[11px]', d === 'Architecture' ? 'bg-gray-100 text-gray-700 dark:bg-white/10 dark:text-white/80' : 'text-gray-500 dark:text-white/50')}>
+              <li key={d} className={cn('flex items-center gap-2 rounded-md px-1.5 py-1.5 text-[11px]', d === 'Architecture' ? 'bg-gray-100 text-gray-700 dark:bg-white/10 dark:text-white/90' : 'text-gray-600 dark:text-white/70')}>
                 <Icon className="h-3 w-3" /> {d}
               </li>
             )
@@ -433,7 +431,7 @@ export function ProductSection() {
       <Container>
         <Reveal>
           <h2 className="font-serif text-[36px] font-light leading-[1.08] tracking-[-0.02em] text-gray-900 lg:text-[48px] dark:text-white">
-            One place for every stage <span className="lg:block lg:pl-20">of your build</span>
+            One place for every stage <span className="lg:block">of your build</span>
           </h2>
         </Reveal>
         <div className="mt-16 space-y-24 lg:mt-[100px] lg:space-y-[180px]">
