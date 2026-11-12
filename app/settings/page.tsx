@@ -76,7 +76,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Account Settings" />
@@ -84,7 +84,7 @@ export default function SettingsPage() {
           <div className="max-w-2xl mx-auto flex flex-col gap-5">
 
             {/* Change password */}
-            <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5">
+            <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5">
               <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">Change Password</p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">Choose a strong password you haven't used before.</p>
               <div className="flex flex-col gap-3">
@@ -126,7 +126,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Notifications */}
-            <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5">
+            <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5">
               <p className="text-sm font-bold text-gray-900 dark:text-white mb-4">Notifications</p>
               <div className="flex flex-col divide-y divide-gray-50 dark:divide-white/5">
                 {[
@@ -154,7 +154,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Danger zone */}
-            <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5">
+            <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5">
               <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">Danger Zone</p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">Permanent actions that cannot be undone.</p>
               <div className="flex flex-col gap-3">

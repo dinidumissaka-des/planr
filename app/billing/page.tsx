@@ -22,7 +22,7 @@ export default function BillingPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Billing" />

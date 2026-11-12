@@ -229,7 +229,7 @@ function RightSidebar({ project, milestones }: { project: Project; milestones: P
     <div className="hidden lg:flex w-72 flex-col gap-4 flex-shrink-0">
 
       {/* Progress card */}
-      <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+      <div className="bg-white dark:bg-[#171717] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
         <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">{project.name}</p>
         {project.location && (
           <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">{project.location}</p>
@@ -368,7 +368,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-50 dark:bg-[#07111E]">
+      <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A]">
         <AppSidebar />
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
@@ -380,7 +380,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
   if (!project) return null
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Project Tracker" />
@@ -388,7 +388,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
         <div className="flex-1 overflow-hidden flex gap-5 p-4 md:p-6 pb-20 md:pb-6">
 
           {/* ── Main panel ── */}
-          <div className="flex-1 bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 flex flex-col overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] min-w-0">
+          <div className="flex-1 bg-white dark:bg-[#171717] rounded-2xl border border-gray-100 dark:border-white/8 flex flex-col overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] min-w-0">
 
             {/* Panel header */}
             <div className="px-5 py-4 border-b border-gray-100 dark:border-white/8">
@@ -433,7 +433,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                       <ChevronDown className="w-2.5 h-2.5" />
                     </button>
                     {statusOpen && (
-                      <div className="absolute right-0 top-full mt-1 bg-white dark:bg-[#0D1B2E] border border-gray-200 dark:border-white/10 rounded-xl shadow-lg overflow-hidden z-20 w-32">
+                      <div className="absolute right-0 top-full mt-1 bg-white dark:bg-[#171717] border border-gray-200 dark:border-white/10 rounded-xl shadow-lg overflow-hidden z-20 w-32">
                         {PROJECT_STATUS_OPTIONS.map(o => (
                           <button
                             key={o.value}

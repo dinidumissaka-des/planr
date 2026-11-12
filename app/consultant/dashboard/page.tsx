@@ -65,7 +65,7 @@ export default function ConsultantDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+      <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
         <ConsultantSidebar />
         <div className="flex-1 flex flex-col overflow-hidden">
           <AppHeader title="Dashboard" />
@@ -90,7 +90,7 @@ export default function ConsultantDashboardPage() {
   ]
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <ConsultantSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Dashboard" />
@@ -154,7 +154,7 @@ export default function ConsultantDashboardPage() {
               </div>
 
               {/* Recent questions */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-sm font-bold text-gray-900 dark:text-white">Questions from clients</p>
                   <Link href="/consultant/questions" className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1 transition-colors">
@@ -199,7 +199,7 @@ export default function ConsultantDashboardPage() {
               </div>
 
               {/* Recent bookings */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-bold text-gray-900 dark:text-white">Recent bookings</p>
                   <Link href="/consultant/bookings" className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1 transition-colors">
@@ -232,7 +232,7 @@ export default function ConsultantDashboardPage() {
             <div className="w-full lg:w-[280px] flex-shrink-0 flex flex-col gap-4">
 
               {/* Next session */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Next session</p>
                 {nextBooking ? (
                   <>
@@ -267,7 +267,7 @@ export default function ConsultantDashboardPage() {
               </div>
 
               {/* Stats summary */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-4">Overview</p>
                 <div className="space-y-3">
                   {[
@@ -287,7 +287,7 @@ export default function ConsultantDashboardPage() {
               </div>
 
               {/* Profile CTA */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ backgroundColor: "rgba(129,185,233,0.18)" }}>
                   <AvatarInitials initials={userName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2)} size="w-8 h-8" textSize="text-[10px]" />
                 </div>

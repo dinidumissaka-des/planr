@@ -16,7 +16,7 @@ function SignOutModal({ onConfirm, onCancel }: { onConfirm: () => Promise<void>;
 
   return (
     <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-end md:items-center justify-center z-50 px-4">
-      <div className="bg-white dark:bg-[#0D1B2E] w-full md:max-w-xs rounded-t-3xl md:rounded-2xl p-7 shadow-2xl">
+      <div className="bg-white dark:bg-[#171717] w-full md:max-w-xs rounded-t-3xl md:rounded-2xl p-7 shadow-2xl">
         <div className="flex justify-center mb-5">
           <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${loading ? "bg-gray-100 dark:bg-white/8" : "bg-red-50 dark:bg-red-500/10"}`}>
             {loading
@@ -73,7 +73,7 @@ export function ConsultantSidebar() {
   return (
     <>
       {/* ── Desktop sidebar ── */}
-      <aside className="hidden md:flex w-[220px] flex-shrink-0 bg-white dark:bg-[#0A1525] border-r border-gray-100 dark:border-white/8 flex-col py-6 px-4">
+      <aside className="hidden md:flex w-[220px] flex-shrink-0 bg-white dark:bg-[#111111] border-r border-gray-100 dark:border-white/8 flex-col py-6 px-4">
         <Link href="/" className="flex items-center gap-2.5 px-2 mb-8">
           <img src="/planr-logo.svg" alt="Planr" className="h-7 dark:hidden" /><img src="/planr-logo-light.svg" alt="Planr" className="h-7 hidden dark:block" />
         </Link>
@@ -116,7 +116,7 @@ export function ConsultantSidebar() {
       </aside>
 
       {/* ── Mobile bottom navigation ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-[#0A1525] border-t border-gray-100 dark:border-white/8 flex items-center justify-around px-2 py-2 safe-b">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-[#111111] border-t border-gray-100 dark:border-white/8 flex items-center justify-around px-2 py-2 safe-b">
         {navItems.map(({ icon: Icon, label, shortLabel, href }) => {
           const active = pathname === href || (href !== "/consultant/dashboard" && pathname.startsWith(href))
           return (

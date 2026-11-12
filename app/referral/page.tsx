@@ -56,7 +56,7 @@ export default function ReferralPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Refer a Friend" />
@@ -81,7 +81,7 @@ export default function ReferralPage() {
             </div>
 
             {/* ── Referral link card ── */}
-            <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+            <div className="bg-white dark:bg-[#171717] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
               <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">Your referral link</p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">Share this link with anyone planning a construction or renovation project.</p>
 
@@ -157,7 +157,7 @@ export default function ReferralPage() {
             </div>
 
             {/* ── How it works ── */}
-            <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+            <div className="bg-white dark:bg-[#171717] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
               <p className="text-sm font-bold text-gray-900 dark:text-white mb-5">How it works</p>
               <div className="space-y-5">
                 {STEPS.map(({ step, title, desc }) => (

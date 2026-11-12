@@ -21,6 +21,8 @@ Each color has a full 50–950 shade scale (e.g. `bg-secondary-100`, `text-prima
 
 ## Dark Mode Rule — Brand Color Backgrounds
 
+Dark mode is **neutral**, not navy: page `#0A0A0A`, sidebar and section bands `#111111`, cards `#171717`, muted/hover `#262626`, borders `white/8`–`white/10`. Never use navy (`#07111E`, `#0D1B2E`, `#0A1525`) or brand blue as a dark-mode surface; brand blue stays a light-mode accent. Use `planr-logo-light.svg` for the logo in dark mode instead of `dark:invert`.
+
 **When a brand color is used as a background, light and dark mode must look identical. Never add `dark:` overrides to brand-color backgrounds.**
 
 ```tsx
@@ -61,7 +63,7 @@ Brand backgrounds stay the same, but the *text* on top may need a dark override 
 ```tsx
 <div className="flex-1 overflow-hidden flex gap-5 p-4 md:p-6 pb-20 md:pb-6">
   {/* Main panel */}
-  <div className="flex-1 bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 flex flex-col overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] min-w-0">
+  <div className="flex-1 bg-white dark:bg-[#171717] rounded-2xl border border-gray-100 dark:border-white/8 flex flex-col overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] min-w-0">
     ...
   </div>
   {/* Right sidebar */}
@@ -73,7 +75,7 @@ Brand backgrounds stay the same, but the *text* on top may need a dark override 
 
 ### Empty state panel (used when no data)
 ```tsx
-<div className="relative flex-1 rounded-2xl border border-gray-100 dark:border-white/8 ... bg-[#EAF3FB] dark:bg-[#0D1B2E] overflow-hidden">
+<div className="relative flex-1 rounded-2xl border border-gray-100 dark:border-white/8 ... bg-[#EAF3FB] dark:bg-[#171717] overflow-hidden">
   <div className="absolute inset-0 bg-cover bg-center opacity-60 dark:opacity-20 pointer-events-none"
     style={{ backgroundImage: "url('/grain-bg-lg.png')" }} />
   {/* centered content */}
@@ -82,7 +84,7 @@ Brand backgrounds stay the same, but the *text* on top may need a dark override 
 
 ### Card (white panel)
 - Light: `bg-white border border-gray-100 rounded-2xl shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]`
-- Dark: `dark:bg-[#0D1B2E] dark:border-white/8`
+- Dark: `dark:bg-[#171717] dark:border-white/8`
 
 ### Gradient sidebar card (AI / CTA)
 ```tsx
@@ -97,10 +99,10 @@ Brand backgrounds stay the same, but the *text* on top may need a dark override 
 
 | Surface | Light | Dark |
 |---|---|---|
-| Page | `bg-gray-50` | `dark:bg-[#07111E]` |
-| Card | `bg-white` | `dark:bg-[#0D1B2E]` |
-| Sidebar | `bg-white` | `dark:bg-[#0A1525]` |
-| Empty state | `bg-[#EAF3FB]` | `dark:bg-[#0D1B2E]` |
+| Page | `bg-gray-50` | `dark:bg-[#0A0A0A]` |
+| Card | `bg-white` | `dark:bg-[#171717]` |
+| Sidebar | `bg-white` | `dark:bg-[#111111]` |
+| Empty state | `bg-[#EAF3FB]` | `dark:bg-[#171717]` |
 
 ## Buttons
 

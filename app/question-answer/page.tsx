@@ -66,7 +66,7 @@ function ChatBubble({ msg }: { msg: Message }) {
   return (
     <div className="flex items-start gap-0 mb-5">
       <div className="flex flex-col gap-1">
-        <div className="bg-white dark:bg-[#0D1B2E] border-l-[3px] border-emerald-500 rounded-2xl rounded-tl-sm px-4 py-3 max-w-xl text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">{msg.text}</div>
+        <div className="bg-white dark:bg-[#171717] border-l-[3px] border-emerald-500 rounded-2xl rounded-tl-sm px-4 py-3 max-w-xl text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">{msg.text}</div>
         <span className="text-[11px] text-gray-400 dark:text-gray-600">{msg.time}</span>
       </div>
     </div>
@@ -106,7 +106,7 @@ function RightSidebar({ onAI, onView, previousConsultations, loadingPrev, mode, 
     <div className="hidden lg:flex w-72 flex-col gap-4 flex-shrink-0">
       {/* AI chat history */}
       {mode === "ai" ? (
-        <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+        <div className="bg-white dark:bg-[#171717] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
           <div className="flex items-center justify-between mb-3">
             <p className="text-sm font-bold text-gray-900 dark:text-white">Previous chats</p>
             <button onClick={onNewChat} className="text-xs font-semibold text-primary dark:text-secondary hover:opacity-70 transition-opacity">
@@ -141,7 +141,7 @@ function RightSidebar({ onAI, onView, previousConsultations, loadingPrev, mode, 
           )}
         </div>
       ) : (
-      <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+      <div className="bg-white dark:bg-[#171717] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
         <div className="flex items-center justify-between mb-3">
           <p className="text-sm font-bold text-gray-900 dark:text-white">Previous consultations</p>
           {previousConsultations.length > 0 && (
@@ -213,7 +213,7 @@ function RightSidebar({ onAI, onView, previousConsultations, loadingPrev, mode, 
 
 function EmptyState({ onStart, onAI }: { onStart: () => void; onAI: () => void }) {
   return (
-    <div className="relative flex-1 rounded-2xl border border-gray-100 dark:border-white/8 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] flex flex-col items-center justify-center px-8 text-center min-h-0 bg-[#EAF3FB] dark:bg-[#0D1B2E] overflow-hidden">
+    <div className="relative flex-1 rounded-2xl border border-gray-100 dark:border-white/8 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] flex flex-col items-center justify-center px-8 text-center min-h-0 bg-[#EAF3FB] dark:bg-[#171717] overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center opacity-60 dark:opacity-20 pointer-events-none" style={{ backgroundImage: "url('/grain-bg-lg.png')" }} />
       <div className="relative mb-7">
         <div className="w-24 h-24 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(219, 207, 99, 0.18)' }}>
@@ -400,7 +400,7 @@ export default function QuestionAnswerPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Ask Planr" />
@@ -414,7 +414,7 @@ export default function QuestionAnswerPage() {
 
           {/* ── Chat view ── */}
           {view === "chat" && (
-            <div className="flex-1 bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 flex flex-col overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] min-w-0">
+            <div className="flex-1 bg-white dark:bg-[#171717] rounded-2xl border border-gray-100 dark:border-white/8 flex flex-col overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] min-w-0">
               {/* Tabs */}
               <div className="flex items-end gap-4 px-5 pt-5 pb-0 border-b border-gray-100 dark:border-white/8">
                 <button

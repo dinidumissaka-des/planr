@@ -10,7 +10,7 @@ export function useTheme() {
   function applyTheme(t: Theme) {
     document.documentElement.classList.toggle("dark", t === "dark")
     const meta = document.querySelector('meta[name="theme-color"]')
-    if (meta) meta.setAttribute("content", t === "dark" ? "#0A1525" : "#ffffff")
+    if (meta) meta.setAttribute("content", t === "dark" ? "#0A0A0A" : "#ffffff")
   }
 
   useEffect(() => {

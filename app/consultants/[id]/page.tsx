@@ -25,7 +25,7 @@ export default function ConsultantPage({ params }: { params: Promise<{ id: strin
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+      <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
         <AppSidebar />
         <div className="flex-1 flex flex-col overflow-hidden">
           <AppHeader title="Consultant Profile" />
@@ -39,7 +39,7 @@ export default function ConsultantPage({ params }: { params: Promise<{ id: strin
 
   if (!consultant) {
     return (
-      <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+      <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
         <AppSidebar />
         <div className="flex-1 flex flex-col overflow-hidden">
           <AppHeader title="Consultant Profile" />
@@ -55,7 +55,7 @@ export default function ConsultantPage({ params }: { params: Promise<{ id: strin
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Consultant Profile" />
@@ -71,7 +71,7 @@ export default function ConsultantPage({ params }: { params: Promise<{ id: strin
           <div className="max-w-3xl mx-auto flex flex-col gap-5">
 
             {/* Hero card */}
-            <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6 flex flex-col sm:flex-row items-start gap-5">
+            <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-6 flex flex-col sm:flex-row items-start gap-5">
               <AvatarInitials
                 initials={consultant.display_name.split(" ").map(n => n[0]).join("")}
                 size="w-20 h-20"
@@ -129,7 +129,7 @@ export default function ConsultantPage({ params }: { params: Promise<{ id: strin
 
             {/* About */}
             {consultant.bio && (
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-6">
                 <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3">About</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{consultant.bio}</p>
               </div>
@@ -137,7 +137,7 @@ export default function ConsultantPage({ params }: { params: Promise<{ id: strin
 
             {/* Specializations */}
             {consultant.specializations?.length > 0 && (
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-6">
                 <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3">Specializations</p>
                 <div className="flex flex-wrap gap-2">
                   {consultant.specializations.map(s => (
@@ -149,7 +149,7 @@ export default function ConsultantPage({ params }: { params: Promise<{ id: strin
 
             {/* Experience */}
             {consultant.experience?.length > 0 && (
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-6">
                 <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-1.5">
                   <Briefcase className="w-3.5 h-3.5" /> Experience
                 </p>
@@ -168,7 +168,7 @@ export default function ConsultantPage({ params }: { params: Promise<{ id: strin
 
             {/* Education */}
             {consultant.education?.length > 0 && (
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-6">
                 <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-1.5">
                   <GraduationCap className="w-3.5 h-3.5" /> Education
                 </p>
@@ -184,14 +184,14 @@ export default function ConsultantPage({ params }: { params: Promise<{ id: strin
 
             {/* Portfolio */}
             {consultant.portfolio?.length > 0 && (
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-6">
                 <PortfolioGallery portfolio={consultant.portfolio} />
               </div>
             )}
 
             {/* Reviews */}
             {consultant.reviews?.length > 0 && (
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-6">
                 <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4 flex items-center gap-1.5">
                   <Award className="w-3.5 h-3.5" /> Client Reviews
                 </p>
