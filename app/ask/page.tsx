@@ -21,7 +21,7 @@ const categories = [
 function SuccessModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 bg-gray-600/80 dark:bg-black/70 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl shadow-2xl w-full max-w-md p-8 relative">
+      <div className="bg-white dark:bg-[#171717] rounded-2xl shadow-2xl w-full max-w-md p-8 relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-400 transition-colors"
@@ -123,7 +123,7 @@ export default function AskPage() {
           </div>
 
           {/* ── Right Panel ── */}
-          <div className="flex-1 bg-white dark:bg-[#0D1B2E] flex flex-col p-8 relative">
+          <div className="flex-1 bg-white dark:bg-[#171717] flex flex-col p-8 relative">
             <button
               onClick={() => router.push("/login")}
               className="absolute top-5 right-5 text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-400 transition-colors"
@@ -142,7 +142,7 @@ export default function AskPage() {
                   <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-500" />
                 </button>
                 {dropdownOpen && (
-                  <div className="absolute top-full left-0 mt-1 w-56 bg-white dark:bg-[#0D1B2E] border border-gray-200 dark:border-white/10 rounded-lg shadow-lg z-10 overflow-hidden">
+                  <div className="absolute top-full left-0 mt-1 w-56 bg-white dark:bg-[#171717] border border-gray-200 dark:border-white/10 rounded-lg shadow-lg z-10 overflow-hidden">
                     {categories.map((cat) => (
                       <button
                         key={cat}

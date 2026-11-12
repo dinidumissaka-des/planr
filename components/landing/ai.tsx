@@ -209,9 +209,9 @@ type Tile = { icon: LucideIcon; tone: string; label?: string } | 'planr'
 const TONES = [
   'text-[#3B83BE] dark:text-[#D4D4D4]',
   'text-gray-900 dark:text-white',
-  'text-[#81B9E9]',
-  'text-[#B07E56] dark:text-[#E1C1A6]',
-  'text-[#2F8F6B] dark:text-[#6FCBA6]',
+  'text-[#81B9E9] dark:text-[#A3A3A3]',
+  'text-[#B07E56] dark:text-[#BDBDBD]',
+  'text-[#2F8F6B] dark:text-[#A3A3A3]',
   'text-[#5E7FA8] dark:text-[#A3A3A3]',
 ]
 

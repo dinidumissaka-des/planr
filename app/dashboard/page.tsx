@@ -110,7 +110,7 @@ export default function DashboardPage() {
   ]
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Dashboard" />
@@ -176,7 +176,7 @@ export default function DashboardPage() {
               </div>
 
               {/* ── Recent Q&A ── */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 flex-shrink-0">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 flex-shrink-0">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-sm font-bold text-gray-900 dark:text-white">Recent Questions &amp; Answers</p>
                   <Link href="/question-answer" className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1 transition-colors">
@@ -188,7 +188,7 @@ export default function DashboardPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {recentQuestions.map((q) => (
                       <Link key={q.id} href="/question-answer" className="group relative border border-gray-200 dark:border-white/12 hover:border-secondary/40 rounded-xl p-4 transition-all block shadow-sm hover:shadow-md overflow-hidden" style={{ backgroundImage: "url('/grain-bg-lg.svg')", backgroundSize: "cover", backgroundPosition: "center" }}>
-                        <div className="absolute inset-0 bg-gradient-to-br from-white/55 to-white/35 dark:from-[#0D1B2E]/80 dark:to-[#0D1B2E]/60 pointer-events-none rounded-xl" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-white/55 to-white/35 dark:from-[#171717]/80 dark:to-[#171717]/60 pointer-events-none rounded-xl" />
                         <div className="relative flex items-start gap-3">
                           <div className="mt-0.5"><Avatar initials={q.consultant_initials} /></div>
                           <div className="flex-1 min-w-0">
@@ -223,7 +223,7 @@ export default function DashboardPage() {
               </div>
 
               {/* ── On-going consultations ── */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-bold text-gray-900 dark:text-white">On-going consultations</p>
                   <button className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1 transition-colors">
@@ -251,7 +251,7 @@ export default function DashboardPage() {
             <div className="w-full lg:w-[300px] flex-shrink-0 flex flex-col gap-4">
 
               {/* Next upcoming */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] flex flex-col">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] flex flex-col">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Next consultation</p>
                 {nextUpcoming ? (
                   <>
@@ -284,7 +284,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Upcoming list */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-bold text-gray-900 dark:text-white">Upcoming</p>
                   <button className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex items-center gap-1 transition-colors">
@@ -334,7 +334,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Referral CTA */}
-              <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ backgroundColor: 'rgba(219,207,99,0.18)' }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A89A30" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6"/><path d="m16 2 6 6-9 9-4 1 1-4z"/></svg>
                 </div>

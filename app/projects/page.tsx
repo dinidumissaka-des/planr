@@ -71,7 +71,7 @@ function NewProjectModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-end md:items-center justify-center z-50 px-4">
-      <div className="bg-white dark:bg-[#0D1B2E] w-full md:max-w-md rounded-t-3xl md:rounded-2xl p-6 shadow-2xl">
+      <div className="bg-white dark:bg-[#171717] w-full md:max-w-md rounded-t-3xl md:rounded-2xl p-6 shadow-2xl">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-base font-bold text-gray-900 dark:text-white">New Project</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
@@ -167,7 +167,7 @@ function DeleteModal({ onConfirm, onCancel }: { onConfirm: () => Promise<void>; 
   const [loading, setLoading] = useState(false)
   return (
     <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-end md:items-center justify-center z-50 px-4">
-      <div className="bg-white dark:bg-[#0D1B2E] w-full md:max-w-xs rounded-t-3xl md:rounded-2xl p-7 shadow-2xl text-center">
+      <div className="bg-white dark:bg-[#171717] w-full md:max-w-xs rounded-t-3xl md:rounded-2xl p-7 shadow-2xl text-center">
         <div className="w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-500/10 flex items-center justify-center mx-auto mb-4">
           <Trash2 className="w-5 h-5 text-red-500" />
         </div>
@@ -267,7 +267,7 @@ function ProjectRow({
 
 function EmptyProjectsState({ onNew }: { onNew: () => void }) {
   return (
-    <div className="relative flex-1 rounded-2xl border border-gray-100 dark:border-white/8 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] flex flex-col items-center justify-center px-8 text-center min-h-0 bg-[#EAF3FB] dark:bg-[#0D1B2E] overflow-hidden">
+    <div className="relative flex-1 rounded-2xl border border-gray-100 dark:border-white/8 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] flex flex-col items-center justify-center px-8 text-center min-h-0 bg-[#EAF3FB] dark:bg-[#171717] overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center opacity-60 dark:opacity-20 pointer-events-none" style={{ backgroundImage: "url('/grain-bg-lg.png')" }} />
       <div className="relative mb-7">
         <div className="w-24 h-24 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(129, 185, 233, 0.18)' }}>
@@ -320,7 +320,7 @@ function RightSidebar({
     <div className="hidden lg:flex w-72 flex-col gap-4 flex-shrink-0">
 
       {/* Stats card */}
-      <div className="bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+      <div className="bg-white dark:bg-[#171717] rounded-2xl border border-gray-100 dark:border-white/8 p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
         <p className="text-sm font-bold text-gray-900 dark:text-white mb-4">Overview</p>
 
         <div className="space-y-3">
@@ -458,7 +458,7 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Projects" />
@@ -470,7 +470,7 @@ export default function ProjectsPage() {
             <EmptyProjectsState onNew={() => setShowNew(true)} />
           ) : (
             /* ── Main panel ── */
-            <div className="flex-1 bg-white dark:bg-[#0D1B2E] rounded-2xl border border-gray-100 dark:border-white/8 flex flex-col overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] min-w-0">
+            <div className="flex-1 bg-white dark:bg-[#171717] rounded-2xl border border-gray-100 dark:border-white/8 flex flex-col overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)] min-w-0">
 
               {/* Panel header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/8">

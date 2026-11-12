@@ -49,7 +49,7 @@ function BookingCard({
   }
 
   return (
-    <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+    <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
       {/* Header row */}
       <button
         className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-gray-50/50 dark:hover:bg-white/3 transition-colors"
@@ -159,7 +159,7 @@ export default function ConsultantBookingsPage() {
   const nextSession = upcoming[0] ?? null
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <ConsultantSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Bookings" />
@@ -171,7 +171,7 @@ export default function ConsultantBookingsPage() {
             <div className="flex-1 min-w-0 flex flex-col gap-5">
 
               {/* Tab filter */}
-              <div className="flex gap-2 p-1 bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl">
+              <div className="flex gap-2 p-1 bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl">
                 {TABS.map(t => (
                   <button
                     key={t.value}
@@ -216,7 +216,7 @@ export default function ConsultantBookingsPage() {
             <div className="hidden lg:flex w-[280px] flex-shrink-0 flex-col gap-4 self-start">
 
               {/* Status overview */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-4">Overview</p>
                 <div className="space-y-3">
                   {[
@@ -236,7 +236,7 @@ export default function ConsultantBookingsPage() {
               </div>
 
               {/* Next session */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Next session</p>
                 {nextSession ? (
                   <>
@@ -265,7 +265,7 @@ export default function ConsultantBookingsPage() {
               </div>
 
               {/* Status guide */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Status guide</p>
                 <div className="space-y-2.5">
                   {[

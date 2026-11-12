@@ -45,7 +45,7 @@ This project uses **Next.js 16.2.2** which has breaking changes vs earlier versi
 Every authenticated page uses this shell:
 
 ```tsx
-<div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+<div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
   <AppSidebar />  {/* or <ConsultantSidebar /> for consultant pages */}
   <div className="flex-1 flex flex-col overflow-hidden">
     <AppHeader title="Page Title" />
@@ -94,11 +94,12 @@ Full rules: `.claude/agents/planr-brand.md`
 
 | Surface | Light | Dark |
 |---|---|---|
-| Page | `bg-gray-50` | `dark:bg-[#07111E]` |
-| Card | `bg-white border border-gray-100 rounded-2xl` | `dark:bg-[#0D1B2E] dark:border-white/8` |
-| Sidebar | `bg-white` | `dark:bg-[#0A1525]` |
+| Page | `bg-gray-50` | `dark:bg-[#0A0A0A]` |
+| Card | `bg-white border border-gray-100 rounded-2xl` | `dark:bg-[#171717] dark:border-white/8` |
+| Sidebar | `bg-white` | `dark:bg-[#111111]` |
 
 - **Primary button**: `bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl`
+- **Dark mode is neutral** (blacks and greys, no navy or blue surfaces); see the table above
 - **Brand color backgrounds**: never add `dark:` overrides — both modes must look identical
 - **Inline `color:` styles**: can't respond to dark mode; split into `className` with `dark:text-*`
 - **Card shadow**: `shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]`

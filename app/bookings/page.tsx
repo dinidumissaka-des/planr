@@ -65,7 +65,7 @@ function ProfileDrawer({ architect, onClose, onSelect }: { architect: Consultant
       <div className="fixed inset-0 bg-black/40 dark:bg-black/60 z-40" onClick={onClose} />
 
       {/* Drawer — right side on desktop, bottom on mobile */}
-      <div className="fixed bottom-0 left-0 right-0 md:bottom-0 md:top-0 md:left-auto md:right-0 md:w-[420px] z-50 flex flex-col bg-white dark:bg-[#0D1B2E] rounded-t-3xl md:rounded-none md:rounded-l-3xl shadow-2xl max-h-[90vh] md:max-h-full overflow-hidden">
+      <div className="fixed bottom-0 left-0 right-0 md:bottom-0 md:top-0 md:left-auto md:right-0 md:w-[420px] z-50 flex flex-col bg-white dark:bg-[#171717] rounded-t-3xl md:rounded-none md:rounded-l-3xl shadow-2xl max-h-[90vh] md:max-h-full overflow-hidden">
 
         {/* Header */}
         <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-gray-100 dark:border-white/8 flex-shrink-0">
@@ -327,7 +327,7 @@ function ArchitectBar({ architect, dateLabel, timeLabel, leftLabel, rightLabel, 
 function SuccessModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 bg-gray-600/60 dark:bg-black/70 flex items-end md:items-center justify-center z-50">
-      <div className="bg-white dark:bg-[#0D1B2E] rounded-t-3xl md:rounded-2xl shadow-2xl w-full md:max-w-md p-8 relative md:mx-4">
+      <div className="bg-white dark:bg-[#171717] rounded-t-3xl md:rounded-2xl shadow-2xl w-full md:max-w-md p-8 relative md:mx-4">
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-400 transition-colors">
           <X className="w-4 h-4" />
         </button>
@@ -514,7 +514,7 @@ export default function BookingsPage() {
     setSelectedCategories(prev => prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat])
   }
 
-  const cardBase = "bg-white dark:bg-[#0D1B2E] border border-secondary/15 dark:border-white/8 rounded-2xl p-5 md:p-7 max-w-5xl"
+  const cardBase = "bg-white dark:bg-[#171717] border border-secondary/15 dark:border-white/8 rounded-2xl p-5 md:p-7 max-w-5xl"
 
   // Step-level hint messages shown in the banner when the user clicks Next while invalid
   const stepHints: Record<number, string> = {
@@ -595,7 +595,7 @@ export default function BookingsPage() {
           {footerContent(onBack, onNext, nextLabel, hint)}
         </div>
         {/* Mobile: sticky footer above bottom nav */}
-        <div className="md:hidden fixed bottom-16 left-0 right-0 z-40 bg-white dark:bg-[#0D1B2E] border-t border-gray-100 dark:border-white/8 px-4 py-3 flex items-center justify-between">
+        <div className="md:hidden fixed bottom-16 left-0 right-0 z-40 bg-white dark:bg-[#171717] border-t border-gray-100 dark:border-white/8 px-4 py-3 flex items-center justify-between">
           {footerContent(onBack, onNext, nextLabel, hint)}
         </div>
         {/* Spacer so content isn't hidden under sticky footer on mobile */}
@@ -605,7 +605,7 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Booking Consultation" />
@@ -1050,7 +1050,7 @@ export default function BookingsPage() {
             <div className="max-w-5xl flex flex-col lg:flex-row gap-5 items-start">
 
               {/* Payment form */}
-              <div className="flex-1 bg-white dark:bg-[#0D1B2E] border border-secondary/15 dark:border-white/8 rounded-2xl p-5 md:p-7">
+              <div className="flex-1 bg-white dark:bg-[#171717] border border-secondary/15 dark:border-white/8 rounded-2xl p-5 md:p-7">
                 <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-5">Payment details</h3>
 
                 <div className="space-y-4">
@@ -1134,7 +1134,7 @@ export default function BookingsPage() {
               </div>
 
               {/* Booking summary */}
-              <div className="w-full lg:w-72 flex-shrink-0 bg-white dark:bg-[#0D1B2E] border border-secondary/15 dark:border-white/8 rounded-2xl p-5">
+              <div className="w-full lg:w-72 flex-shrink-0 bg-white dark:bg-[#171717] border border-secondary/15 dark:border-white/8 rounded-2xl p-5">
                 <p className="text-sm font-bold text-gray-800 dark:text-white mb-4">Booking Summary</p>
 
                 <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100 dark:border-white/8">

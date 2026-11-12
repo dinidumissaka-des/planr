@@ -92,7 +92,7 @@ export default function OnboardingShell() {
       </div>
 
       {/* Right Panel */}
-      <div className="flex-1 bg-white dark:bg-[#07111E] flex flex-col overflow-hidden">
+      <div className="flex-1 bg-white dark:bg-[#0A0A0A] flex flex-col overflow-hidden">
 
         {/* Progress — pinned to top on mobile */}
         <div className="px-6 md:px-14 pt-8 md:pt-10 max-w-sm w-full mx-auto w-full">

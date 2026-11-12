@@ -29,7 +29,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <AppSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Notification" />
@@ -37,7 +37,7 @@ export default function NotificationsPage() {
         <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-20 md:pb-8">
           <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Recent Notification</p>
 
-          <div className="flex flex-col gap-0 bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl overflow-hidden shadow-sm divide-y divide-gray-100 dark:divide-white/8">
+          <div className="flex flex-col gap-0 bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl overflow-hidden shadow-sm divide-y divide-gray-100 dark:divide-white/8">
             {loading ? (
               <div className="divide-y divide-gray-100 dark:divide-white/8">
                 {[...Array(3)].map((_, i) => (

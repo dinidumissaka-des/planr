@@ -92,7 +92,7 @@ function SignupForm() {
       </div>
 
       {/* ── Right Panel ── */}
-      <div className="flex-1 bg-white dark:bg-[#07111E] flex flex-col px-6 md:px-14 py-8 md:py-10 overflow-y-auto relative">
+      <div className="flex-1 bg-white dark:bg-[#0A0A0A] flex flex-col px-6 md:px-14 py-8 md:py-10 overflow-y-auto relative">
 
         {/* Form */}
         <div className="relative z-10 flex-1 flex flex-col justify-center max-w-sm w-full mx-auto py-8">
@@ -109,7 +109,7 @@ function SignupForm() {
               onClick={() => setRole("client")}
               className={`flex-1 h-9 rounded-lg text-sm font-semibold transition-all ${
                 role === "client"
-                  ? "bg-white dark:bg-[#1A3050] text-gray-900 dark:text-white shadow-sm"
+                  ? "bg-white dark:bg-[#262626] text-gray-900 dark:text-white shadow-sm"
                   : "text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               }`}
             >
@@ -120,7 +120,7 @@ function SignupForm() {
               onClick={() => setRole("consultant")}
               className={`flex-1 h-9 rounded-lg text-sm font-semibold transition-all ${
                 role === "consultant"
-                  ? "bg-white dark:bg-[#1A3050] text-gray-900 dark:text-white shadow-sm"
+                  ? "bg-white dark:bg-[#262626] text-gray-900 dark:text-white shadow-sm"
                   : "text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               }`}
             >

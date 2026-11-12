@@ -155,7 +155,7 @@ export default function ConsultantProfilePage() {
   const initials = displayName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2) || "?"
 
   const inputCls = "h-11 bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 dark:text-white dark:placeholder:text-gray-600 text-sm rounded-xl"
-  const sectionCls = "bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 flex flex-col gap-4 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]"
+  const sectionCls = "bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 flex flex-col gap-4 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]"
 
   const checklist = [
     { label: "Display name",      done: displayName.trim().length > 0 },
@@ -169,7 +169,7 @@ export default function ConsultantProfilePage() {
   const completionPct = Math.round((checklist.filter(c => c.done).length / checklist.length) * 100)
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <ConsultantSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Profile" />
@@ -180,7 +180,7 @@ export default function ConsultantProfilePage() {
             <div className="flex-1 min-w-0 flex flex-col gap-5">
 
             {/* Avatar card */}
-            <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-6 flex items-center gap-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+            <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-6 flex items-center gap-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
               <div
                 className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-bold flex-shrink-0 text-[#003618] dark:text-[#4ade80]"
                 style={{ backgroundColor: "rgba(0,54,24,0.12)" }}
@@ -435,7 +435,7 @@ export default function ConsultantProfilePage() {
             <div className="hidden lg:flex w-[280px] flex-shrink-0 flex-col gap-4 sticky top-0">
 
               {/* Profile completeness */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-4">Profile completeness</p>
 
                 <div className="mb-4">
@@ -467,7 +467,7 @@ export default function ConsultantProfilePage() {
               </div>
 
               {/* Visibility tips */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Visibility tips</p>
                 <div className="space-y-3">
                   {[

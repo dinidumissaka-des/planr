@@ -40,7 +40,7 @@ function SignOutModal({ onConfirm, onCancel }: { onConfirm: () => Promise<void>;
 
   return (
     <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-end md:items-center justify-center z-50 px-4">
-      <div className="bg-white dark:bg-[#0D1B2E] w-full md:max-w-xs rounded-t-3xl md:rounded-2xl p-7 shadow-2xl">
+      <div className="bg-white dark:bg-[#171717] w-full md:max-w-xs rounded-t-3xl md:rounded-2xl p-7 shadow-2xl">
         <div className="flex justify-center mb-5">
           <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${loading ? "bg-gray-100 dark:bg-white/8" : "bg-red-50 dark:bg-red-500/10"}`}>
             {loading
@@ -177,7 +177,7 @@ export function AppHeader({ title }: AppHeaderProps) {
 
   return (
     <>
-      <header className="md:h-16 bg-white dark:bg-[#0A1525] border-b border-gray-100 dark:border-white/8 flex flex-col justify-end px-4 md:px-8 flex-shrink-0 relative z-30 safe-t md:pt-0">
+      <header className="md:h-16 bg-white dark:bg-[#111111] border-b border-gray-100 dark:border-white/8 flex flex-col justify-end px-4 md:px-8 flex-shrink-0 relative z-30 safe-t md:pt-0">
         <div className="h-14 flex items-center justify-between w-full">
           {/* Mobile: logo; Desktop: page title */}
         <img src="/planr-logo.svg" alt="Planr" className="h-6 md:hidden dark:hidden" /><img src="/planr-logo-light.svg" alt="Planr" className="hidden h-6 dark:block dark:md:hidden" />
@@ -224,7 +224,7 @@ export function AppHeader({ title }: AppHeaderProps) {
 
             {/* Desktop dropdown */}
             {notifOpen && (
-              <div className="hidden md:block absolute right-0 top-10 w-80 bg-white dark:bg-[#0D1B2E] rounded-2xl shadow-xl border border-gray-100 dark:border-white/8 overflow-hidden">
+              <div className="hidden md:block absolute right-0 top-10 w-80 bg-white dark:bg-[#171717] rounded-2xl shadow-xl border border-gray-100 dark:border-white/8 overflow-hidden">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-white/8">
                   <p className="text-sm font-bold text-gray-900 dark:text-white">Notifications</p>
                   <Link
@@ -293,7 +293,7 @@ export function AppHeader({ title }: AppHeaderProps) {
 
             {/* Desktop dropdown */}
             {userOpen && (
-              <div className="hidden md:block absolute right-0 top-11 w-56 bg-white dark:bg-[#0D1B2E] rounded-2xl shadow-xl border border-gray-100 dark:border-white/8 overflow-hidden">
+              <div className="hidden md:block absolute right-0 top-11 w-56 bg-white dark:bg-[#171717] rounded-2xl shadow-xl border border-gray-100 dark:border-white/8 overflow-hidden">
                 <div className="px-4 py-3.5 border-b border-gray-100 dark:border-white/8">
                   <div className="flex items-center gap-3">
                     <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${isConsultant ? "bg-[rgba(0,54,24,0.15)] text-[#003618] dark:bg-[rgba(0,54,24,0.35)] dark:text-[#4ade80]" : "bg-secondary/25 dark:bg-secondary/20 text-primary dark:text-secondary"}`}>
@@ -342,7 +342,7 @@ export function AppHeader({ title }: AppHeaderProps) {
 
       {/* Mobile full-screen notifications */}
       {notifOpen && (
-        <div className="fixed inset-0 bg-white dark:bg-[#07111E] z-50 flex flex-col md:hidden">
+        <div className="fixed inset-0 bg-white dark:bg-[#0A0A0A] z-50 flex flex-col md:hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/8">
             <p className="text-base font-bold text-gray-900 dark:text-white">Notifications</p>
             <button onClick={() => setNotifOpen(false)} className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
@@ -391,7 +391,7 @@ export function AppHeader({ title }: AppHeaderProps) {
 
       {/* Mobile full-screen profile */}
       {userOpen && (
-        <div className="fixed inset-0 bg-white dark:bg-[#07111E] z-50 flex flex-col md:hidden">
+        <div className="fixed inset-0 bg-white dark:bg-[#0A0A0A] z-50 flex flex-col md:hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/8">
             <p className="text-base font-bold text-gray-900 dark:text-white">Account</p>
             <button onClick={() => setUserOpen(false)} className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">

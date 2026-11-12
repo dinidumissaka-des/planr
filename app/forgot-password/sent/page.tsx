@@ -49,7 +49,7 @@ function SentContent() {
       </div>
 
       {/* ── Right Panel ── */}
-      <div className="flex-1 bg-white dark:bg-[#07111E] flex flex-col px-6 md:px-14 py-8 md:py-10 overflow-y-auto">
+      <div className="flex-1 bg-white dark:bg-[#0A0A0A] flex flex-col px-6 md:px-14 py-8 md:py-10 overflow-y-auto">
         <div className="flex-1 flex flex-col justify-center max-w-sm w-full mx-auto text-center">
 
           <div className="flex justify-center mb-6">

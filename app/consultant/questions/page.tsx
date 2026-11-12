@@ -38,7 +38,7 @@ function QuestionCard({
   }
 
   return (
-    <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+    <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl overflow-hidden shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
       {/* Row */}
       <button
         className="w-full flex items-start gap-4 px-5 py-4 text-left hover:bg-gray-50/50 dark:hover:bg-white/3 transition-colors"
@@ -166,7 +166,7 @@ export default function ConsultantQuestionsPage() {
   const responseRate = questions.length > 0 ? Math.round((answeredCount / questions.length) * 100) : 0
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-[#07111E] overflow-hidden">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0A0A0A] overflow-hidden">
       <ConsultantSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <AppHeader title="Questions" />
@@ -204,7 +204,7 @@ export default function ConsultantQuestionsPage() {
               )}
 
               {/* Tab filter */}
-              <div className="flex gap-2 p-1 bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl">
+              <div className="flex gap-2 p-1 bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl">
                 {TABS.map(t => (
                   <button
                     key={t.value}
@@ -253,7 +253,7 @@ export default function ConsultantQuestionsPage() {
             <div className="hidden lg:flex w-[280px] flex-shrink-0 flex-col gap-4 self-start">
 
               {/* Response overview */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-4">Overview</p>
                 <div className="space-y-3">
                   {[
@@ -288,7 +288,7 @@ export default function ConsultantQuestionsPage() {
               </div>
 
               {/* Tips */}
-              <div className="bg-white dark:bg-[#0D1B2E] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
+              <div className="bg-white dark:bg-[#171717] border border-gray-100 dark:border-white/8 rounded-2xl p-5 shadow-[inset_0_0_1px_0_rgba(7,16,29,0.32)]">
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-3">Tips</p>
                 <div className="space-y-3">
                   {[
